@@ -1,0 +1,39 @@
+@font-face {
+  font-family: Inter;
+  src: url("../fonts/InterVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+*, *::before, *::after { box-sizing: border-box; }
+.cr-ui { margin: 0; color: var(--cr-text); background: var(--cr-bg); font: 400 1rem/1.5 var(--cr-family-sans); }
+.cr-ui a { color: var(--cr-link); text-underline-offset: .18em; }
+.cr-ui :focus-visible { outline: 3px solid var(--cr-focus); outline-offset: 3px; }
+.cr-ui :where(button, input, select, textarea) { font: inherit; }
+.cr-btn, a.cr-btn { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; gap: var(--cr-space-s8); padding: .55rem 1rem; background: var(--cr-action); border: 1px solid var(--cr-action-edge); color: var(--cr-on-action); font-weight: 650; border-radius: var(--cr-radius-control); text-decoration: none; transition: background var(--cr-duration-fast) var(--cr-ease-standard); }
+.cr-btn:hover { background: var(--cr-action-hover); }
+.cr-btn:active { background: var(--cr-action-active); }
+.cr-btn.secondary { background: var(--cr-surface); color: var(--cr-text); border-color: var(--cr-edge); }
+.cr-btn.secondary:hover { background: var(--cr-surface-hover); }
+.cr-btn:disabled, .cr-field :disabled { background: var(--cr-disabled-bg); color: var(--cr-disabled-text); border-color: var(--cr-edge); cursor: default; }
+.cr-field { display: grid; gap: .38rem; margin-bottom: 1rem; font-weight: 600; }
+.cr-field input, .cr-field select, .cr-field textarea { min-width: 0; width: 100%; min-height: 44px; background: var(--cr-surface); color: var(--cr-text); border: 1px solid var(--cr-edge); border-radius: var(--cr-radius-control); padding: .65rem .8rem; font-weight: 400; }
+.cr-field small, .cr-muted { color: var(--cr-muted); font-weight: 450; }
+.cr-field [aria-invalid="true"] { border-color: var(--cr-error); }
+.cr-error { color: var(--cr-error); }
+.cr-card { background: var(--cr-surface); border: 1px solid var(--cr-rule); border-radius: var(--cr-radius-panel); padding: var(--cr-space-s24); }
+.cr-table-wrap { overflow-x: auto; }
+.cr-table { width: 100%; border-collapse: collapse; text-align: left; }
+.cr-table :is(th, td) { border-bottom: 1px solid var(--cr-rule); padding: .75rem .5rem; }
+.cr-table th { color: var(--cr-muted); font-size: var(--cr-type-caption-size); }
+.cr-table td, .cr-time { font-variant-numeric: tabular-nums; }
+.cr-dialog { max-width: min(31rem, 94vw); color: var(--cr-text); background: var(--cr-surface); padding: var(--cr-space-s24); border: 1px solid var(--cr-edge); border-radius: var(--cr-radius-dialog); box-shadow: var(--cr-shadow-overlay); }
+.cr-dialog::backdrop { background: rgb(16 24 40 / .7); }
+.cr-status { display: inline-flex; align-items: center; gap: .35rem; font-weight: 600; }
+.cr-status.success { color: var(--cr-success); }
+.cr-status.warning { color: var(--cr-warning); }
+.cr-status.error { color: var(--cr-error); }
+.cr-status.info { color: var(--cr-info); }
+.cr-ui progress { accent-color: var(--cr-selected); width: 100%; }
+.cr-ui [hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) { .cr-ui *, .cr-ui *::before, .cr-ui *::after { scroll-behavior: auto !important; transition-duration: 0s !important; animation-duration: 0s !important; } }
+@media (forced-colors: active) { .cr-btn, .cr-card, .cr-field input, .cr-field select { border: 1px solid ButtonText; } .cr-ui :focus-visible { outline: 3px solid Highlight; } }
