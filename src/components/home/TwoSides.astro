@@ -1,20 +1,21 @@
 ---
 /**
  * Both sides in one picture: the streamer puts up the prize, clippers race for it.
- * Interactive leaderboard (visitor drags the prize) + one door per side.
+ * Contest screen as it will look in the app + one door per side.
  */
 import CtaDoors from './CtaDoors.astro';
-import PrizeBoard from '@/components/islands/PrizeBoard.svelte';
+import AppFrame from '@/components/mock/AppFrame.astro';
+import Leaderboard from '@/components/mock/Leaderboard.astro';
 import { localizedPath, type Locale } from '@/config/routes';
 import { homeCopy } from '@/content/home';
-import { prize } from '@/content/prize';
+import { mocks } from '@/content/mocks';
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
 const c = homeCopy[locale].sides;
-const p = prize[locale];
+const m = mocks[locale];
 ---
 
 <section class="container-cr py-24 md:py-32" aria-labelledby="sides-title">
@@ -25,27 +26,9 @@ const p = prize[locale];
       </h2>
       <CtaDoors locale={locale} class="mt-10" />
     </div>
-    <PrizeBoard
-      client:visible
-      lang={p.lang}
-      currency={p.currency}
-      pool={p.pool}
-      min={p.min}
-      max={p.max}
-      step={p.step}
-      split={p.split}
-      handles={p.handles}
-      labels={{
-        contest: p.contest,
-        host: p.host,
-        total: p.total,
-        slider: p.slider.clipper,
-        you: p.you,
-        join: p.join,
-        joinHref: localizedPath('clippers', locale),
-        note: p.note,
-      }}
-    />
+    <AppFrame tabs={m.app.tabs} active={1} label={m.contest.host}>
+      <Leaderboard data={m.contest} joinHref={localizedPath('clippers', locale)} />
+    </AppFrame>
   </div>
 </section>
 

@@ -20,7 +20,7 @@ if out.exists():
 (out / 'media').mkdir()
 for f in (src / '_astro').iterdir():
     shutil.copy(f, out / 'assets' / f.name)
-for n in ['horizontal-light.svg', 'horizontal-dark.svg']:
+for n in ['horizontal-light.svg', 'horizontal-dark.svg', 'symbol.svg']:
     shutil.copy(src / 'brand' / n, out / 'brand' / n)
 shutil.copy(src / 'media' / 'night-stage.mp4', out / 'media' / 'night-stage.mp4')
 

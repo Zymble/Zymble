@@ -1,17 +1,19 @@
 ---
 /**
- * /streamers/ — "control room", v2: minimal text, visual triggers.
- * Hero = live radar of who's clipping you. Then the contest builder (streamer drags the prize),
- * pay-for-results tiles and the rules on your name.
+ * /streamers/ — v3: "Got R$ 100?" for streamers starting out. Static product screens
+ * (how the app will look): a small campaign with big-channel clippers asking in, the live
+ * radar of your crew, a contest, pay-for-results and rules.
  */
-import PrizeBoard from '@/components/islands/PrizeBoard.svelte';
+import AppFrame from '@/components/mock/AppFrame.astro';
+import BoostCard from '@/components/mock/BoostCard.astro';
+import Leaderboard from '@/components/mock/Leaderboard.astro';
 import Door from '@/components/ui/Door.astro';
 import FaqBlock from '@/components/ui/FaqBlock.astro';
 import SignupBand from '@/components/waitlist/SignupBand.astro';
 import type { Locale } from '@/config/routes';
 import { homeCopy } from '@/content/home';
 import { streamerCopy } from '@/content/landings';
-import { prize } from '@/content/prize';
+import { mocks } from '@/content/mocks';
 
 interface Props {
   locale: Locale;
@@ -19,7 +21,7 @@ interface Props {
 const { locale } = Astro.props;
 const c = streamerCopy[locale];
 const who = homeCopy[locale].doors.streamer.who;
-const p = prize[locale];
+const m = mocks[locale];
 const payIcons = [
   'M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z',
   'm4 12 5 5 11-11',
@@ -30,45 +32,62 @@ const payIcons = [
 <section data-theme="dark" class="bg-cr-bg text-cr-text" aria-labelledby="s-title">
   <div class="container-cr grid items-center gap-12 py-12 md:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
     <div>
-      <p class="text-cr-label text-cr-muted">{c.hero.kicker}</p>
-      <h1 id="s-title" class="s-title mt-4">
-        <span class="block">{c.hero.titleA}</span>
-        <span class="cut">{c.hero.titleB}</span>
+      <p class="kicker">{c.hero.kicker}</p>
+      <h1 id="s-title" class="s-title mt-5">
+        {c.hero.before} <span class="cut">{c.hero.cut}</span>
+        {c.hero.after.startsWith('?') ? '' : ' '}
+        {c.hero.after}
       </h1>
       <p class="mt-6 max-w-[30rem] text-xl leading-snug text-cr-muted">{c.hero.sub}</p>
       <Door href="#signup" who={who} action={c.hero.cta} class="mt-8 max-w-[22rem]" />
     </div>
-
-    <figure class="radar m-0" aria-label={c.radar.title}>
-      <div class="radar-bar">
-        <span class="live-tag" aria-hidden="true">
-          LIVE
-        </span>
-        <span class="tabular-nums">{c.radar.live}</span>
-        <span class="ml-auto truncate text-cr-muted">{c.radar.title}</span>
-      </div>
-      <ul class="radar-list">
-        {c.radar.rows.map((r) => (
-          <li>
-            <span class="avatar" aria-hidden="true">
-              {r.handle.charAt(1).toUpperCase()}
-            </span>
-            <span class="min-w-0">
-              <span class="block truncate font-semibold">{r.handle}</span>
-              <span class="block truncate text-cr-caption text-cr-muted">{r.clip}</span>
-            </span>
-            <span class="where">{r.where}</span>
-            <span class={`state ${r.state}`}>{r.status}</span>
-          </li>
-        ))}
-      </ul>
-    </figure>
+    <AppFrame tabs={m.app.tabs} label={m.boost.title}>
+      <BoostCard data={m.boost} />
+    </AppFrame>
   </div>
 </section>
 
-<!-- Contest builder -->
-<section class="container-cr py-24 md:py-28" aria-labelledby="s-contest">
+<!-- Your crew, live -->
+<section class="container-cr py-24 md:py-28" aria-labelledby="s-crew">
   <div class="grid items-center gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16">
+    <div>
+      <h2 id="s-crew" class="text-title-cr">
+        {c.crew.title}
+      </h2>
+      <p class="mt-4 max-w-[30rem] text-lg text-cr-muted">{c.crew.sub}</p>
+    </div>
+    <AppFrame tabs={m.app.tabs} label={c.radar.title}>
+      <div class="radar">
+        <div class="radar-bar">
+          <span class="live-tag" aria-hidden="true">
+            LIVE
+          </span>
+          <span class="tabular-nums">{c.radar.live}</span>
+          <span class="ml-auto truncate text-cr-muted">{c.radar.title}</span>
+        </div>
+        <ul class="radar-list">
+          {c.radar.rows.map((r) => (
+            <li>
+              <span class="avatar" aria-hidden="true">
+                {r.handle.charAt(1).toUpperCase()}
+              </span>
+              <span class="min-w-0">
+                <span class="block truncate font-semibold">{r.handle}</span>
+                <span class="block truncate text-cr-caption text-cr-muted">{r.clip}</span>
+              </span>
+              <span class="where">{r.where}</span>
+              <span class={`state ${r.state}`}>{r.status}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </AppFrame>
+  </div>
+</section>
+
+<!-- Contest -->
+<section class="border-y border-cr-rule bg-cr-surface py-24 md:py-28" aria-labelledby="s-contest">
+  <div class="container-cr grid items-center gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16">
     <div>
       <h2 id="s-contest" class="text-title-cr">
         {c.contest.title}
@@ -94,32 +113,14 @@ const payIcons = [
         ))}
       </ul>
     </div>
-    <PrizeBoard
-      client:visible
-      lang={p.lang}
-      currency={p.currency}
-      pool={p.pool}
-      min={p.min}
-      max={p.max}
-      step={p.step}
-      split={p.split}
-      handles={p.handles}
-      labels={{
-        contest: p.contest,
-        host: p.host,
-        total: p.total,
-        slider: p.slider.streamer,
-        you: p.you,
-        join: p.join,
-        joinHref: '#signup',
-        note: p.note,
-      }}
-    />
+    <AppFrame tabs={m.app.tabs} active={1} label={m.contest.host}>
+      <Leaderboard data={m.contest} joinHref="#signup" />
+    </AppFrame>
   </div>
 </section>
 
 <!-- Pay for results -->
-<section class="border-y border-cr-rule bg-cr-surface py-20" aria-labelledby="s-pay">
+<section class="py-20" aria-labelledby="s-pay">
   <div class="container-cr">
     <h2 id="s-pay" class="text-title-cr">
       {c.pay.title}
@@ -150,7 +151,7 @@ const payIcons = [
 </section>
 
 <!-- Rules -->
-<section class="container-cr py-20" aria-labelledby="s-rules">
+<section class="container-cr pb-20" aria-labelledby="s-rules">
   <div class="grid gap-8 md:grid-cols-[auto_1fr] md:items-center md:gap-16">
     <h2 id="s-rules" class="text-title-cr">
       {c.rules.title}
@@ -169,19 +170,23 @@ const payIcons = [
 
 <style>
   .s-title {
-    font-size: clamp(2.6rem, 5.6vw, 4.75rem);
+    font-size: clamp(3rem, 7vw, 5.75rem);
+    text-wrap: balance;
     line-height: 0.98;
     letter-spacing: -0.045em;
     font-weight: var(--cr-weight-display);
   }
 
   /* ---------- Radar ---------- */
+  .kicker {
+    font-size: 1.2rem;
+    font-weight: 650;
+  }
   .radar {
     border: 1px solid var(--cr-rule);
-    border-radius: var(--cr-radius-dialog);
+    border-radius: var(--cr-radius-panel);
     background: var(--cr-surface);
     overflow: hidden;
-    box-shadow: 0 30px 80px -30px rgb(0 0 0 / 0.6);
   }
   .radar-bar {
     display: flex;

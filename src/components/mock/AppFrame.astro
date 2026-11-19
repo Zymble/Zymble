@@ -1,0 +1,93 @@
+---
+/** A product window: how the ClipyRush app will look. Purely visual (aria-hidden content). */
+interface Props {
+  tabs: string[];
+  active?: number;
+  label: string;
+  class?: string;
+}
+const { tabs, active = 0, label, class: className } = Astro.props;
+---
+
+<figure class:list={['app', className]} aria-label={label}>
+  <div class="app-bar" aria-hidden="true">
+    <img src="/brand/symbol.svg" alt="" width="22" height="22" />
+    <nav class="app-tabs">
+      {tabs.map((t, i) => (
+        <span class:list={['app-tab', i === active && 'on']}>{t}</span>
+      ))}
+    </nav>
+    <span class="app-me"></span>
+  </div>
+  <div class="app-body">
+    <slot />
+  </div>
+</figure>
+
+<style>
+  .app {
+    margin: 0;
+    border: 1px solid var(--cr-rule);
+    border-radius: var(--cr-radius-dialog);
+    background: var(--cr-bg);
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.02),
+      0 40px 90px -35px rgb(0 0 0 / 0.75);
+  }
+  .app-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-height: 3rem;
+    padding: 0 1rem;
+    border-bottom: 1px solid var(--cr-rule);
+    background: var(--cr-surface);
+  }
+  .app-tabs {
+    display: flex;
+    gap: 1.1rem;
+    min-width: 0;
+    overflow: hidden;
+    font-size: var(--cr-type-label-size);
+    font-weight: 600;
+  }
+  .app-tab {
+    position: relative;
+    padding: 0.9rem 0;
+    color: var(--cr-muted);
+    white-space: nowrap;
+  }
+  .app-tab.on {
+    color: var(--cr-text);
+  }
+  /* Narrow screens: show two tabs, never a clipped word. */
+  @media (width < 30rem) {
+    .app-tab:nth-child(n + 3) {
+      display: none;
+    }
+  }
+  .app-tab.on::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: var(--cr-selected);
+  }
+  .app-me {
+    flex: none;
+    width: 1.75rem;
+    height: 1.75rem;
+    margin-left: auto;
+    border-radius: 50%;
+    background: var(--cr-raised);
+    border: 1px solid var(--cr-edge);
+  }
+  .app-body {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+</style>

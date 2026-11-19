@@ -1,0 +1,145 @@
+---
+/** Per-view campaign as it will look in the app. */
+import type { MockData } from '@/content/mocks';
+
+interface Props {
+  data: MockData['campaign'];
+}
+const { data } = Astro.props;
+---
+
+<div class="card" aria-hidden="true">
+  <div class="top">
+    <span class="av">{data.streamer.charAt(1).toUpperCase()}</span>
+    <span class="min-w-0">
+      <span class="who">{data.streamer}</span>
+      <span class="title">{data.title}</span>
+    </span>
+  </div>
+  <div class="rate">
+    <span class="rate-v">{data.rate}</span>
+    <span class="rate-l">{data.rateLabel}</span>
+  </div>
+  <div class="budget">
+    <span class="row">
+      <span>{data.budgetLabel}</span>
+      <b>{data.left}</b>
+      <span class="of">{data.of}</span>
+    </span>
+    <span class="track">
+      <i style={`transform:scaleX(${data.progress})`}></i>
+    </span>
+  </div>
+  <div class="foot">
+    <span class="plats">{data.platforms.join(' · ')}</span>
+    <span class="btn">{data.join}</span>
+  </div>
+</div>
+
+<style>
+  .card {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--cr-rule);
+    border-radius: var(--cr-radius-panel);
+    background: var(--cr-surface);
+  }
+  .top {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .av {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: var(--cr-raised);
+    font-weight: 800;
+  }
+  .who {
+    display: block;
+    font-size: var(--cr-type-caption-size);
+    color: var(--cr-muted);
+  }
+  .title {
+    display: block;
+    font-weight: 700;
+  }
+  .rate {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  .rate-v {
+    font-size: 2.25rem;
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    color: var(--cr-success);
+  }
+  .rate-l {
+    color: var(--cr-muted);
+    font-weight: 600;
+  }
+  .budget {
+    display: grid;
+    gap: 0.45rem;
+  }
+  .row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    font-size: var(--cr-type-label-size);
+    color: var(--cr-muted);
+  }
+  .row > span:first-child {
+    flex: 1;
+  }
+  .row b {
+    color: var(--cr-text);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .of {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .track {
+    height: 0.4rem;
+    border-radius: 2px;
+    background: var(--cr-raised);
+    overflow: hidden;
+  }
+  .track i {
+    display: block;
+    height: 100%;
+    background: var(--cr-success);
+    transform-origin: left;
+  }
+  .foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .plats {
+    min-width: 0;
+    font-size: var(--cr-type-caption-size);
+    font-weight: 600;
+    color: var(--cr-muted);
+  }
+  .btn {
+    padding: 0.55rem 0.8rem;
+    border-radius: var(--cr-radius-control);
+    background: var(--cr-action);
+    color: var(--cr-on-action);
+    font-size: var(--cr-type-label-size);
+    font-weight: 750;
+    white-space: nowrap;
+  }
+</style>

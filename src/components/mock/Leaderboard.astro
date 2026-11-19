@@ -1,0 +1,188 @@
+---
+/** Contest card as it will look in the app: prize pool, top 3, and a "You?" row that links in. */
+import type { MockData } from '@/content/mocks';
+
+interface Props {
+  data: MockData['contest'];
+  joinHref: string;
+}
+const { data, joinHref } = Astro.props;
+---
+
+<div class="card">
+  <div class="head" aria-hidden="true">
+    <span class="tag">{data.tag}</span>
+    <span class="host">{data.host}</span>
+  </div>
+  <div class="pool" aria-hidden="true">
+    <span class="label">{data.total}</span>
+    <span class="value">{data.pool}</span>
+  </div>
+  <ol class="ranks">
+    {data.rows.map((r, i) => (
+      <li class:list={[i === 0 && 'first']} aria-hidden="true">
+        <span class="pos">{i + 1}</span>
+        <span class="who">{r.handle}</span>
+        <span class="bar">
+          <i style={`transform:scaleX(${r.share})`} />
+        </span>
+        <span class="amt">{r.amount}</span>
+      </li>
+    ))}
+    <li class="you">
+      <span class="pos" aria-hidden="true">
+        {data.rows.length + 1}
+      </span>
+      <span class="who">{data.you}</span>
+      <a class="join" href={joinHref}>
+        {data.join}
+      </a>
+    </li>
+  </ol>
+</div>
+
+<style>
+  .card {
+    border: 1px solid var(--cr-rule);
+    border-radius: var(--cr-radius-panel);
+    background: var(--cr-surface);
+    overflow: hidden;
+  }
+  .head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    border-bottom: 1px solid var(--cr-rule);
+    font-size: var(--cr-type-label-size);
+    font-weight: 600;
+  }
+  .tag {
+    flex: none;
+    padding: 0.05rem 0.45rem;
+    border-radius: 2px;
+    background: var(--cr-palette-gold);
+    color: var(--cr-palette-navy);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .host {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--cr-muted);
+  }
+  .pool {
+    display: grid;
+    gap: 0.1rem;
+    padding: 1.1rem 1rem;
+  }
+  .label {
+    font-size: var(--cr-type-label-size);
+    color: var(--cr-muted);
+  }
+  .value {
+    font-size: clamp(2.5rem, 7vw, 3.75rem);
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    color: var(--cr-success);
+  }
+  .ranks {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--cr-rule);
+  }
+  .ranks li {
+    display: grid;
+    grid-template-columns: 1.75rem minmax(0, 1fr) auto;
+    grid-template-areas: 'pos who amt' 'pos bar bar';
+    align-items: center;
+    gap: 0.35rem 0.75rem;
+    padding: 0.8rem 1rem;
+  }
+  .ranks li + li {
+    border-top: 1px solid var(--cr-rule);
+  }
+  @media (width >= 40rem) {
+    .ranks li {
+      grid-template-columns: 1.75rem minmax(7rem, 1fr) minmax(4rem, 1.2fr) auto;
+      grid-template-areas: 'pos who bar amt';
+    }
+  }
+  .pos {
+    grid-area: pos;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--cr-muted);
+  }
+  .first .pos {
+    color: var(--cr-warning);
+  }
+  .who {
+    grid-area: who;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 650;
+  }
+  .bar {
+    grid-area: bar;
+    height: 0.4rem;
+    border-radius: 2px;
+    background: var(--cr-raised);
+    overflow: hidden;
+  }
+  .bar i {
+    display: block;
+    height: 100%;
+    background: var(--cr-success);
+    transform-origin: left;
+  }
+  .first .bar i {
+    background: var(--cr-warning);
+  }
+  .amt {
+    grid-area: amt;
+    font-size: 1.15rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: var(--cr-success);
+    text-align: right;
+  }
+  .you {
+    background: var(--cr-raised);
+  }
+  .you .who {
+    color: var(--cr-muted);
+  }
+  .join {
+    grid-area: amt;
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0 0.9rem;
+    border-radius: var(--cr-radius-control);
+    background: var(--cr-action);
+    color: var(--cr-on-action);
+    font-weight: 750;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .join:hover {
+    background: var(--cr-action-hover);
+  }
+  @media (width >= 40rem) {
+    .you .join {
+      grid-column: 3 / 5;
+    }
+  }
+</style>

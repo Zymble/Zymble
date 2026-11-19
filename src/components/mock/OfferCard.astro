@@ -1,0 +1,78 @@
+---
+/** An offer a clipper receives: a streamer paying to appear on the clipper's channel. */
+import type { MockData } from '@/content/mocks';
+
+interface Props {
+  data: MockData['offer'];
+}
+const { data } = Astro.props;
+---
+
+<div class="card" aria-hidden="true">
+  <div class="top">
+    <span class="av">{data.from.charAt(1).toUpperCase()}</span>
+    <span class="min-w-0">
+      <b>{data.from}</b>
+      <span class="text">{data.text}</span>
+    </span>
+  </div>
+  <span class="amount">{data.amount}</span>
+  <span class="btn">{data.accept}</span>
+</div>
+
+<style>
+  .card {
+    position: relative;
+    display: grid;
+    gap: 0.85rem;
+    padding: 1.1rem;
+    border: 1px solid var(--cr-rule);
+    border-radius: var(--cr-radius-panel);
+    background: var(--cr-surface);
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0.45rem;
+    left: 0.45rem;
+    width: 0.7rem;
+    height: 0.7rem;
+    border: 0 solid var(--cr-palette-orange);
+    border-width: 2.5px 0 0 2.5px;
+  }
+  .top {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .av {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: var(--cr-raised);
+    font-weight: 800;
+  }
+  .text {
+    display: block;
+    color: var(--cr-muted);
+  }
+  .amount {
+    font-size: 3rem;
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    color: var(--cr-success);
+  }
+  .btn {
+    justify-self: start;
+    padding: 0.6rem 0.9rem;
+    border-radius: var(--cr-radius-control);
+    background: var(--cr-action);
+    color: var(--cr-on-action);
+    font-weight: 750;
+  }
+</style>

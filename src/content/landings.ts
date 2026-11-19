@@ -11,7 +11,8 @@ type Pair = [string, string];
 
 export interface StreamerCopy {
   meta: { title: string; description: string };
-  hero: { kicker: string; titleA: string; titleB: string; sub: string; cta: string };
+  hero: { kicker: string; before: string; cut: string; after: string; sub: string; cta: string };
+  crew: { title: string; sub: string };
   radar: {
     title: string;
     live: string;
@@ -37,8 +38,7 @@ export interface ClipperCopy {
     title: string;
     views: string;
     contest: Pair;
-    affiliate: Pair;
-    badge: Pair;
+    offer: Pair;
     disclaimer: string;
   };
   steps: { title: string; items: string[] };
@@ -50,16 +50,21 @@ export interface ClipperCopy {
 export const streamerCopy: Record<Locale, StreamerCopy> = {
   en: {
     meta: {
-      title: 'A clipping crew on your stream — ClipyRush',
+      title: 'Got $20? Get clippers posting your stream — ClipyRush',
       description:
         'Set a prize, run clip contests and see who’s clipping your stream, live. Nothing goes out under your name without your rules.',
     },
     hero: {
-      kicker: 'For streamers on Twitch, YouTube and Kick',
-      titleA: 'A crew clipping',
-      titleB: 'your stream.',
-      sub: 'Set a prize, run a contest and see who’s clipping you, live.',
+      kicker: 'Just starting to stream?',
+      before: 'Got',
+      cut: '$20',
+      after: '?',
+      sub: 'Offer it to clippers to post your best plays on their channels. More people find you.',
       cta: 'Find my clippers',
+    },
+    crew: {
+      title: 'A crew in your corner.',
+      sub: 'Clippers cut your stream while you play, and you see it all live.',
     },
     radar: {
       title: 'Clipping you now',
@@ -112,6 +117,10 @@ export const streamerCopy: Record<Locale, StreamerCopy> = {
       title: 'Streamer questions',
       items: [
         {
+          q: 'How much do I need to start?',
+          a: 'Start small: you set the campaign budget and pay only for approved clips. Final minimums come with early access.',
+        },
+        {
           q: 'Do I have to pay clippers?',
           a: 'No. Rewards and contests are optional, and you set the amounts and rules.',
         },
@@ -134,16 +143,21 @@ export const streamerCopy: Record<Locale, StreamerCopy> = {
 
   'pt-br': {
     meta: {
-      title: 'Um time clipando sua live — ClipyRush',
+      title: 'Tem R$ 100? Clipadores postam sua live — ClipyRush',
       description:
         'Ponha prêmio, abra campeonato de cortes e veja quem está clipando sua live, ao vivo. Nada sai com seu nome sem as suas regras.',
     },
     hero: {
-      kicker: 'Pra quem faz live na Twitch, YouTube e Kick',
-      titleA: 'Um time clipando',
-      titleB: 'sua live.',
-      sub: 'Ponha prêmio, abra campeonato e veja quem te clipa, ao vivo.',
+      kicker: 'Tá começando na live?',
+      before: 'Tem',
+      cut: 'R$ 100',
+      after: 'aí?',
+      sub: 'Ofereça pra clipadores postarem seus melhores lances no canal deles. Mais gente te descobre.',
       cta: 'Achar meus clipadores',
+    },
+    crew: {
+      title: 'Um time te assessorando.',
+      sub: 'Clipadores cortam sua live enquanto você joga, e você vê tudo ao vivo.',
     },
     radar: {
       title: 'Te clipando agora',
@@ -192,6 +206,10 @@ export const streamerCopy: Record<Locale, StreamerCopy> = {
       title: 'Dúvidas de streamer',
       items: [
         {
+          q: 'Quanto preciso pra começar?',
+          a: 'Dá pra começar com pouco: você define o orçamento da campanha e paga só os cortes aprovados. O valor mínimo final sai com o acesso antecipado.',
+        },
+        {
           q: 'Preciso pagar os clipadores?',
           a: 'Não é obrigatório. Recompensas e campeonatos são opcionais, e você define valores e regras.',
         },
@@ -218,16 +236,21 @@ export const streamerCopy: Record<Locale, StreamerCopy> = {
   // TODO review: native Spanish (LatAm neutral) pass before launch.
   es: {
     meta: {
-      title: 'Un equipo clipeando tu stream — ClipyRush',
+      title: '¿Tienes US$20? Clippers publican tu stream — ClipyRush',
       description:
         'Pon un premio, abre torneos de clips y mira quién clipea tu stream, en vivo. Nada sale con tu nombre sin tus reglas.',
     },
     hero: {
-      kicker: 'Para quien hace streams en Twitch, YouTube y Kick',
-      titleA: 'Un equipo clipeando',
-      titleB: 'tu stream.',
-      sub: 'Pon un premio, abre un torneo y mira quién te clipea, en vivo.',
+      kicker: '¿Estás empezando a hacer streams?',
+      before: '¿Tienes',
+      cut: 'US$20',
+      after: '?',
+      sub: 'Ofrécelo a clippers para que publiquen tus mejores jugadas en sus canales. Más gente te descubre.',
       cta: 'Encontrar mis clippers',
+    },
+    crew: {
+      title: 'Un equipo de tu lado.',
+      sub: 'Los clippers recortan tu stream mientras juegas, y tú lo ves todo en vivo.',
     },
     radar: {
       title: 'Clipeándote ahora',
@@ -276,6 +299,10 @@ export const streamerCopy: Record<Locale, StreamerCopy> = {
       title: 'Preguntas de streamers',
       items: [
         {
+          q: '¿Cuánto necesito para empezar?',
+          a: 'Puedes empezar con poco: tú defines el presupuesto de la campaña y pagas solo los clips aprobados. El mínimo final llega con el acceso anticipado.',
+        },
+        {
           q: '¿Tengo que pagar a los clippers?',
           a: 'No. Las recompensas y los torneos son opcionales, y tú defines montos y reglas.',
         },
@@ -318,8 +345,7 @@ export const clipperCopy: Record<Locale, ClipperCopy> = {
       title: 'Three ways to earn.',
       views: 'Per 1,000 views',
       contest: ['Contests', 'Prize for the top of the board.'],
-      affiliate: ['Affiliation', 'Become a channel’s official clipper.'],
-      badge: ['Official clipper', '@nightlap'],
+      offer: ['Your channel pays', 'Streamers pay to get their clips on it.'],
       disclaimer: 'ClipyRush doesn’t guarantee income. Earnings depend on each streamer’s rules.',
     },
     steps: { title: 'Three taps.', items: ['Paste the link', 'Connect TikTok', 'Let it clip'] },
@@ -369,8 +395,7 @@ export const clipperCopy: Record<Locale, ClipperCopy> = {
       title: 'Três jeitos de ganhar.',
       views: 'Por mil views',
       contest: ['Campeonatos', 'Prêmio pro topo do ranking.'],
-      affiliate: ['Afiliação', 'Vire o clipador oficial de um canal.'],
-      badge: ['Clipador oficial', '@lancedozeca'],
+      offer: ['Seu canal vale dinheiro', 'Streamers pagam pra aparecer nele.'],
       disclaimer: 'A ClipyRush não garante renda. Os ganhos dependem das regras de cada streamer.',
     },
     steps: { title: 'Três toques.', items: ['Cole o link', 'Conecte o TikTok', 'Deixe clipando'] },
@@ -424,8 +449,7 @@ export const clipperCopy: Record<Locale, ClipperCopy> = {
       title: 'Tres formas de ganar.',
       views: 'Por mil views',
       contest: ['Torneos', 'Premio para el top del ranking.'],
-      affiliate: ['Afiliación', 'Conviértete en el clipper oficial de un canal.'],
-      badge: ['Clipper oficial', '@rutalu'],
+      offer: ['Tu canal vale dinero', 'Los streamers pagan por aparecer en él.'],
       disclaimer:
         'ClipyRush no garantiza ingresos. Las ganancias dependen de las reglas de cada streamer.',
     },

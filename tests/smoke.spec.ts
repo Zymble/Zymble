@@ -96,11 +96,8 @@ test('home doors lead to each side', async ({ page }) => {
   await expect(page).toHaveURL(/\/pt-br\/streamers\/$/);
 });
 
-test('prize board splits the pool the visitor sets', async ({ page }) => {
-  await page.goto('/pt-br/clippers/');
-  const slider = page.locator('.board input[type=range]').first();
-  await slider.scrollIntoViewIfNeeded();
-  await slider.fill('20000');
-  await expect(page.locator('.board .pool-value').first()).toHaveText(/20\.000/);
-  await expect(page.locator('.board .amt').first()).toHaveText(/10\.000/);
+test('streamer page leads with the small-budget hook', async ({ page }) => {
+  await page.goto('/pt-br/streamers/');
+  await expect(page.locator('h1')).toContainText('R$ 100');
+  await expect(page.locator('.app').first()).toBeVisible();
 });
