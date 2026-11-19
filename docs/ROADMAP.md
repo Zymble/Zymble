@@ -19,8 +19,8 @@ Cada fase = 1 branch + 1 PR + 1 link de preview. Pelo celular, mande o prompt da
 ---
 
 ## Fase 1 — Home + waitlist (MVP publicável)
-- [ ] Todas as seções da Home (PRD §5), com a prova social oculta enquanto vazia
-- [ ] InOutTimeline (ilha Svelte): IA sugere, usuário arrasta as alças In/Out (teclado também)
+- [x] Todas as seções da Home (PRD §5), com a prova social oculta enquanto vazia
+- [x] InOutTimeline (ilha Svelte): IA sugere, usuário arrasta as alças In/Out (teclado também)
 - [ ] WaitlistForm + `/api/waitlist` (Resend, Turnstile, honeypot, double opt-in, consentimento)
 - [ ] `/early-access/` e página de confirmação
 - [ ] Eventos Plausible: `hero_link_paste`, `waitlist_submit`, `waitlist_confirmed`

@@ -1,0 +1,41 @@
+---
+import type { Locale } from '@/config/routes';
+import { homeCopy } from '@/content/home';
+import { useTranslations } from '@/i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const c = homeCopy[locale].pricing;
+const { href } = useTranslations(locale);
+---
+
+<section class="container-cr py-20 md:py-28" aria-labelledby="pricing-title">
+  <p class="eyebrow-cr">{c.eyebrow}</p>
+  <h2 id="pricing-title" class="mt-3 text-title-cr">
+    {c.title}
+  </h2>
+  <p class="mt-4 inline-flex items-center gap-2 rounded-cr-circle border border-cr-rule bg-cr-surface px-3 py-1 text-cr-caption font-semibold">
+    <span class="size-2 rounded-cr-circle bg-cr-action" aria-hidden="true"></span>
+    {c.badge}
+  </p>
+
+  <ul class="mt-10 grid gap-4 md:grid-cols-3">
+    {c.plans.map((p, i) => (
+      <li
+        class:list={[
+          'reveal flex flex-col rounded-cr-panel border bg-cr-surface p-6',
+          i === 0 ? 'border-cr-action' : 'border-cr-rule',
+        ]}
+      >
+        <h3 class="text-cr-section">{p.name}</h3>
+        <p class="mt-2 flex-1 text-cr-muted">{p.for}</p>
+        <p class="mt-6 text-cr-label text-cr-text">{c.price}</p>
+      </li>
+    ))}
+  </ul>
+  <a href={href('pricing')} class="mt-8 inline-flex min-h-11 items-center font-semibold">
+    {c.link} →
+  </a>
+</section>

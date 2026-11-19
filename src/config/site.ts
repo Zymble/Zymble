@@ -27,7 +27,9 @@ export const site = {
    * Platforms the app will actually support at launch. Confirm with the app repo
    * before adding anything here; this list is rendered on the home page.
    */
-  platforms: ['Twitch', 'YouTube', 'Kick', 'File upload'],
+  platforms: ['Twitch', 'YouTube', 'Kick'],
+  /** Where clips are published/scheduled. Same rule: only what the app will support. */
+  destinations: ['TikTok', 'YouTube Shorts', 'Instagram Reels'],
 } as const;
 
 /** Primary CTA target: waitlist before launch, app signup after. */

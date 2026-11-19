@@ -1,0 +1,54 @@
+---
+/**
+ * "Paste a stream link" + primary CTA. Same contract as brand/implementation/ClipImport
+ * (field name `url`). Before launch it carries the link to the waitlist page;
+ * with PUBLIC_APP_LIVE=true it sends it to app.clipyrush.com/import.
+ * Inside a dark band, wrap it in data-theme="dark" and the kit tokens flip.
+ */
+import { localizedPath, type Locale } from '@/config/routes';
+import { site } from '@/config/site';
+import { homeCopy } from '@/content/home';
+
+interface Props {
+  locale: Locale;
+  id: string;
+}
+const { locale, id } = Astro.props;
+const c = homeCopy[locale].hero;
+const action = site.appLive ? `${site.appUrl}/import` : localizedPath('early-access', locale);
+---
+
+<form action={action} method="get" class="link-form w-full max-w-xl">
+  <label for={`${id}-url`} class="block text-cr-label text-cr-text">
+    {c.linkLabel}
+  </label>
+  <div class="mt-2 flex flex-col gap-2 rounded-cr-panel border border-cr-edge bg-cr-surface p-1.5 shadow-cr-overlay sm:flex-row sm:items-center">
+    <input
+      id={`${id}-url`}
+      name="url"
+      type="text"
+      inputmode="url"
+      autocomplete="url"
+      spellcheck="false"
+      placeholder={c.linkPlaceholder}
+      aria-describedby={`${id}-hint`}
+      class="min-h-11 min-w-0 flex-1 rounded-cr-control border-0 bg-transparent px-3 text-cr-text outline-none placeholder:text-cr-muted"
+    />
+    <button type="submit" class="cr-btn shrink-0 whitespace-nowrap">
+      {c.submit}
+    </button>
+  </div>
+  <p id={`${id}-hint`} class="mt-2 text-cr-caption text-cr-muted">
+    {c.linkHint}
+  </p>
+</form>
+
+<style>
+  .link-form input:focus-visible {
+    outline: none;
+  }
+  .link-form div:has(input:focus-visible) {
+    outline: 3px solid var(--cr-focus);
+    outline-offset: 2px;
+  }
+</style>

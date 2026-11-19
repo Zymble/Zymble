@@ -1,0 +1,48 @@
+---
+import LinkForm from './LinkForm.astro';
+import type { Locale } from '@/config/routes';
+import { homeCopy } from '@/content/home';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const c = homeCopy[locale].final;
+---
+
+<section class="container-cr py-20 md:py-28" aria-labelledby="final-title" id="final-cta">
+  <div
+    data-theme="dark"
+    class="final-band relative overflow-hidden rounded-cr-dialog bg-cr-bg px-6 py-14 text-cr-text md:px-14 md:py-20"
+  >
+    <span class="bracket bracket-in" aria-hidden="true"></span>
+    <span class="bracket bracket-out" aria-hidden="true"></span>
+    <h2 id="final-title" class="reveal text-hero-cr" lang="en">
+      {c.title}
+    </h2>
+    <p class="mt-5 max-w-xl text-lg text-cr-muted">{c.body}</p>
+    <div class="mt-8">
+      <LinkForm locale={locale} id="final" />
+    </div>
+  </div>
+</section>
+
+<style>
+  /* In/Out brackets framing the band, from the brand symbol. */
+  .bracket {
+    position: absolute;
+    width: 4rem;
+    height: 3rem;
+    border: 0 solid var(--cr-palette-orange);
+  }
+  .bracket-in {
+    top: 1.25rem;
+    left: 1.25rem;
+    border-width: 5px 0 0 5px;
+  }
+  .bracket-out {
+    right: 1.25rem;
+    bottom: 1.25rem;
+    border-width: 0 5px 5px 0;
+  }
+</style>

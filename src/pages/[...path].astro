@@ -7,7 +7,7 @@
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import ComingSoon from '@/components/pages/ComingSoon.astro';
-import HomeSkeleton from '@/components/pages/HomeSkeleton.astro';
+import HomePage from '@/components/pages/HomePage.astro';
 import {
   defaultLocale,
   locales,
@@ -41,5 +41,5 @@ const description = id === 'home' ? t('meta.home.description') : t('soon.body');
 ---
 
 <BaseLayout locale={locale} routeId={id} title={title} description={description} noindex={!live}>
-  {id === 'home' ? <HomeSkeleton locale={locale} /> : <ComingSoon locale={locale} routeId={id} />}
+  {id === 'home' ? <HomePage locale={locale} /> : <ComingSoon locale={locale} routeId={id} />}
 </BaseLayout>

@@ -1,0 +1,58 @@
+---
+import BrandIcon, { type BrandIconName } from '@/components/brand/BrandIcon.astro';
+import type { Locale, RouteId } from '@/config/routes';
+import { homeCopy } from '@/content/home';
+import { useTranslations } from '@/i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const c = homeCopy[locale].features;
+const { href } = useTranslations(locale);
+const icon: Partial<Record<RouteId, BrandIconName>> = {
+  'features/ai-moments': 'playhead',
+  'features/in-out-editor': 'trim',
+  'features/captions': 'captions',
+  'features/vertical-reframe': 'reframe',
+  'features/scheduling': 'calendar',
+  'features/analytics': 'chart',
+};
+---
+
+<section class="container-cr py-20 md:py-28" aria-labelledby="features-title">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <p class="eyebrow-cr">{c.eyebrow}</p>
+      <h2 id="features-title" class="mt-3 max-w-3xl text-title-cr">
+        {c.title}
+      </h2>
+    </div>
+    <a href={href('features')} class="font-semibold">
+      {c.more} →
+    </a>
+  </div>
+
+  <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {c.items.map((f) => (
+      <li class="reveal">
+        <a
+          href={href(f.id)}
+          class="feature-card group flex h-full flex-col rounded-cr-panel border border-cr-rule bg-cr-surface p-6 text-cr-text no-underline transition-[border-color,transform] duration-[var(--cr-duration-base)] hover:-translate-y-0.5 hover:border-cr-action"
+        >
+          <span class="grid size-11 place-items-center rounded-cr-control bg-cr-raised text-cr-selected">
+            <BrandIcon name={icon[f.id] ?? 'check'} />
+          </span>
+          <h3 class="mt-5 text-cr-section">{f.title}</h3>
+          <p class="mt-2 flex-1 text-cr-muted">{f.body}</p>
+          <span
+            class="mt-4 text-cr-label text-cr-link transition-transform duration-[var(--cr-duration-base)] group-hover:translate-x-1"
+            aria-hidden="true"
+          >
+            →
+          </span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>

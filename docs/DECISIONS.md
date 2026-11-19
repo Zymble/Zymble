@@ -15,3 +15,7 @@
 | 2026-11-19 | Local preview uses `scripts/serve-static.mjs` | The Vercel adapter does not support `astro preview` |
 | 2026-11-19 | UI UX Pro Max skill adopted as UX reference only (no palettes/fonts/fake social proof) | Better UX patterns and checklists without breaking brand or honesty rules |
 | 2026-11-19 | Copy is written per market (US, BR, Spanish-speaking), see docs/LOCALIZATION.md | Owner works as CX for each market; translation alone reads foreign |
+| 2026-11-19 | Animation stack: CSS keyframes + CSS scroll-driven animations (0 KB) and Svelte 5 islands; no GSAP/Lottie/Motion for now | Lighthouse mobile ≥ 95 with a rich hero (measured 98). Motion (motion.dev) is the fallback if we need JS-driven sequences |
+| 2026-11-19 | Hero = looping 14 s "story" (live → AI finds moment → 9:16 + captions → scheduled), synced with rotating questions; pause button, paused off-screen, static frame with reduced motion | Shows the product promise before reading; meets WCAG 2.2.2 |
+| 2026-11-19 | Mobile sticky CTA appears after the hero form scrolls away and hides at the final CTA | Keeps the CTA in reach while scrolling ("CTA descendo") |
+| 2026-11-19 | Pricing preview shows plans without prices ("Price announced at launch") | Prices not defined yet; no invented numbers |

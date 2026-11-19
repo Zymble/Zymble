@@ -80,3 +80,35 @@
 :root:not([data-theme='dark']) .logo-on-dark {
   display: none;
 }
+
+/*
+ * Scroll reveal with zero JS: CSS scroll-driven animations where supported
+ * (Chromium, Safari 26+); elsewhere content is simply visible.
+ */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: cr-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 25%;
+    }
+  }
+}
+@keyframes cr-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility eyebrow-cr {
+  font-size: var(--cr-type-label-size);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cr-selected);
+}

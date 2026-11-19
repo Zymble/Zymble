@@ -1,0 +1,984 @@
+---
+/**
+ * Hero: rotating questions + a looping, CSS-only "story" of a stream becoming a clip:
+ * 1 live → 2 AI finds the moment (In/Out closes on it) → 3 reframed 9:16 with captions → 4 scheduled.
+ * One 14 s loop drives every element (no JS animation library). Pause button for WCAG 2.2.2,
+ * paused off-screen, static end state with prefers-reduced-motion.
+ */
+import { getImage } from 'astro:assets';
+import poster from '../../../brand/mockups/night-stage.jpg';
+import LinkForm from './LinkForm.astro';
+import type { Locale } from '@/config/routes';
+import { site } from '@/config/site';
+import { homeCopy } from '@/content/home';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const c = homeCopy[locale];
+const posterImg = await getImage({ src: poster, width: 720, format: 'webp', quality: 70 });
+
+// Deterministic "audio waveform" for the track (no randomness between builds).
+const bars = Array.from({ length: 56 }, (_, i) => {
+  const base = 0.28 + 0.22 * Math.abs(Math.sin(i * 1.7)) + 0.12 * Math.abs(Math.sin(i * 0.43));
+  const spike = i >= 32 && i <= 39 ? 0.35 + 0.05 * (i % 3) : 0;
+  return Math.min(1, base + spike);
+});
+---
+
+<section class="hero-story relative overflow-hidden" data-story aria-labelledby="hero-title">
+  <div class="hero-grid container-cr pt-10 pb-16 md:pt-16 lg:pt-20 lg:pb-24">
+    <div class="hero-top">
+      <p class="inline-flex items-center gap-2 rounded-cr-circle border border-cr-rule bg-cr-surface px-3 py-1 text-cr-label">
+        <span class="live-dot" aria-hidden="true"></span>
+        {c.hero.live}
+      </p>
+
+      <p class="sr-only">{c.hero.questions.join(' ')}</p>
+      <p
+        class="questions mt-5 text-cr-section font-semibold text-cr-selected md:text-[1.375rem]"
+        aria-hidden="true"
+      >
+        {c.hero.questions.map((q, i) => (
+          <span class={`q q${i + 1}`}>{q}</span>
+        ))}
+      </p>
+
+      <h1 id="hero-title" class="mt-2 text-hero-cr" lang="en">
+        {site.tagline}
+      </h1>
+    </div>
+
+    <div class="hero-bottom">
+      <p class="max-w-xl text-lg text-cr-muted">{c.hero.lead}</p>
+      <div class="mt-8" id="hero-cta">
+        <LinkForm locale={locale} id="hero" />
+      </div>
+      {!site.appLive && <p class="mt-3 text-cr-caption text-cr-muted">{c.hero.note}</p>}
+    </div>
+
+    <figure class="stage-wrap hero-stage" data-theme="dark" aria-labelledby="stage-label">
+      <figcaption id="stage-label" class="sr-only">
+        {c.stage.label}: {c.stage.steps.join(', ')}.
+      </figcaption>
+
+      <div class="stage rounded-cr-dialog border border-cr-rule bg-cr-bg p-3 text-cr-text shadow-cr-overlay sm:p-4">
+        <div class="screen" aria-hidden="true">
+          <video
+            class="video"
+            muted
+            loop
+            playsinline
+            preload="none"
+            poster={posterImg.src}
+            data-src="/media/night-stage.mp4"
+            tabindex="-1"
+          >
+            <track kind="captions" src="/media/night-stage.vtt" srclang="en" label="English" />
+          </video>
+          <img
+            class="video poster"
+            src={posterImg.src}
+            alt=""
+            width="720"
+            height="405"
+            decoding="async"
+            fetchpriority="high"
+          />
+
+          <span class="side side-l"></span>
+          <span class="side side-r"></span>
+          <span class="crop">
+            <span class="cap cap1">{c.stage.caption[0]}</span>
+            <span class="cap cap2">{c.stage.caption[1]}</span>
+          </span>
+
+          <span class="live-badge">
+            <span class="live-dot"></span>LIVE <span class="tabular-nums">{c.stage.liveTime}</span>
+          </span>
+
+          <span class="chat">
+            {c.stage.chat.map((m, i) => (
+              <span class={`msg msg${i + 1}`}>{m}</span>
+            ))}
+          </span>
+
+          <span class="found">
+            <span class="found-title">{c.stage.found}</span>
+            <span class="found-why">{c.stage.foundWhy}</span>
+          </span>
+
+          <span class="post">
+            <span class="post-icon">
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m5 12 5 5L20 7" />
+              </svg>
+            </span>
+            <span>
+              <span class="post-title">{c.stage.post}</span>
+              <span class="post-when">{c.stage.postWhen}</span>
+            </span>
+          </span>
+        </div>
+
+        <div class="track" aria-hidden="true">
+          <span class="bars">
+            {bars.map((h) => (
+              <span class="bar" style={`--h:${h.toFixed(2)}`} />
+            ))}
+          </span>
+          <span class="segment"></span>
+          <span class="handle h-in">
+            <span>In</span>
+          </span>
+          <span class="handle h-out">
+            <span>Out</span>
+          </span>
+          <span class="playhead"></span>
+        </div>
+
+        <div class="mt-3 flex items-start gap-3">
+          <ol class="steps grid flex-1 grid-cols-4 gap-2" aria-hidden="true">
+            {c.stage.steps.map((s, i) => (
+              <li class={`step step${i + 1}`}>
+                <span class="step-bar" />
+                <span class="step-label">{s}</span>
+              </li>
+            ))}
+          </ol>
+          <button
+            type="button"
+            class="story-toggle inline-flex size-11 shrink-0 items-center justify-center rounded-cr-control border border-cr-rule bg-cr-surface text-cr-text hover:bg-cr-surface-hover"
+            aria-pressed="false"
+            data-label-pause={c.stage.pause}
+            data-label-play={c.stage.play}
+            aria-label={c.stage.pause}
+          >
+            <svg
+              class="i-pause"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <rect x="6" y="5" width="4" height="14" rx="1" />
+              <rect x="14" y="5" width="4" height="14" rx="1" />
+            </svg>
+            <svg
+              class="i-play"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M8 5.5v13l11-6.5z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<style is:global>
+  .hero-story {
+    --loop: 14s;
+  }
+  .hero-story::before {
+    /* Soft brand glow behind the stage. Decorative. */
+    content: '';
+    position: absolute;
+    inset: -20% -10% auto auto;
+    width: 60rem;
+    height: 40rem;
+    background: radial-gradient(
+      closest-side,
+      color-mix(in srgb, var(--cr-action) 16%, transparent),
+      transparent
+    );
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .live-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--cr-palette-orange);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--cr-palette-orange) 60%, transparent);
+    animation: cr-pulse 1.6s var(--cr-ease-standard) infinite;
+  }
+
+  /* Mobile: question + title, then the story, then the form. Desktop: copy left, story right. */
+  .hero-grid {
+    display: grid;
+    gap: 1.75rem;
+    grid-template-areas: 'top' 'stage' 'bottom';
+  }
+  .hero-top {
+    grid-area: top;
+  }
+  .hero-stage {
+    grid-area: stage;
+  }
+  .hero-bottom {
+    grid-area: bottom;
+  }
+  @media (width >= 64rem) {
+    .hero-grid {
+      grid-template-columns: 1fr 1.05fr;
+      grid-template-areas: 'top stage' 'bottom stage';
+      grid-template-rows: auto 1fr;
+      column-gap: 3.5rem;
+      row-gap: 1.25rem;
+      align-items: start;
+    }
+    .hero-stage {
+      align-self: center;
+    }
+  }
+
+  /* Rotating questions: all stacked in one grid cell, so no layout shift. */
+  .hero-story .questions {
+    display: grid;
+    min-height: 1.3em;
+  }
+  .hero-story .q {
+    grid-area: 1 / 1;
+    opacity: 0;
+    animation: cr-q var(--loop) linear infinite;
+  }
+  .hero-story .q2 {
+    animation-delay: calc(var(--loop) * 0.25);
+  }
+  .hero-story .q3 {
+    animation-delay: calc(var(--loop) * 0.5);
+  }
+  .hero-story .q4 {
+    animation-delay: calc(var(--loop) * 0.75);
+  }
+
+  /* ---------- Stage ---------- */
+  .stage-wrap {
+    margin: 0;
+  }
+  .hero-story .screen {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: var(--cr-radius-panel);
+    background: var(--cr-palette-night);
+    container-type: inline-size;
+  }
+  .hero-story .video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero-story .video.poster {
+    transition: opacity var(--cr-duration-enter) var(--cr-ease-standard);
+  }
+  .hero-story [data-playing] .video.poster {
+    opacity: 0;
+  }
+
+  /* Reframe to 9:16: crop = (9/16) / (16/9) of the width = 31.64%. */
+  .hero-story .side {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 34.18%;
+    background: rgb(11 18 32 / 0.78);
+    transform: scaleX(0);
+    animation: cr-side var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero-story .side-l {
+    left: 0;
+    transform-origin: left;
+  }
+  .hero-story .side-r {
+    right: 0;
+    transform-origin: right;
+  }
+
+  .hero-story .crop {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 34.18%;
+    width: 31.64%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 12%;
+    opacity: 0;
+    animation: cr-crop var(--loop) var(--cr-ease-standard) infinite;
+  }
+  /* In/Out brackets from the symbol. */
+  .hero-story .crop::before,
+  .hero-story .crop::after {
+    content: '';
+    position: absolute;
+    width: 28%;
+    height: 16%;
+    border: 0 solid var(--cr-palette-orange);
+  }
+  .hero-story .crop::before {
+    top: 4%;
+    left: 6%;
+    border-width: 4px 0 0 4px;
+  }
+  .hero-story .crop::after {
+    bottom: 4%;
+    right: 6%;
+    border-width: 0 4px 4px 0;
+  }
+
+  .hero-story .cap {
+    font-weight: 800;
+    font-size: clamp(0.7rem, 3.4cqi, 1.15rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--cr-palette-white);
+    text-align: center;
+    text-shadow:
+      0 2px 0 var(--cr-palette-night),
+      0 0 12px rgb(11 18 32 / 0.9);
+    opacity: 0;
+    transform: translateY(6px) scale(0.92);
+    animation: cr-cap1 var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero-story .cap2 {
+    color: var(--cr-palette-orange);
+    animation-name: cr-cap2;
+  }
+
+  .hero-story .live-badge {
+    position: absolute;
+    top: 4%;
+    left: 3%;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--cr-radius-control);
+    background: rgb(11 18 32 / 0.8);
+    color: var(--cr-palette-paper);
+    font-size: clamp(0.62rem, 2.2cqi, 0.8rem);
+    font-weight: 700;
+    animation: cr-live var(--loop) linear infinite;
+  }
+
+  .hero-story .chat {
+    position: absolute;
+    right: 3%;
+    bottom: 6%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.3rem;
+  }
+  .hero-story .msg {
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    background: rgb(16 24 40 / 0.85);
+    border: 1px solid var(--cr-palette-line-dark);
+    color: var(--cr-palette-paper);
+    font-size: clamp(0.6rem, 2.1cqi, 0.78rem);
+    font-weight: 650;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: cr-msg1 var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero-story .msg1 {
+    color: var(--cr-palette-orange-hover);
+  }
+  .hero-story .msg2 {
+    animation-name: cr-msg2;
+  }
+  .hero-story .msg3 {
+    animation-name: cr-msg3;
+  }
+
+  .hero-story .found {
+    position: absolute;
+    top: 4%;
+    right: 3%;
+    display: grid;
+    padding: 0.35rem 0.65rem;
+    border-radius: var(--cr-radius-control);
+    background: var(--cr-palette-orange);
+    color: var(--cr-palette-navy);
+    font-size: clamp(0.62rem, 2.2cqi, 0.82rem);
+    line-height: 1.25;
+    opacity: 0;
+    transform: translateY(-8px);
+    animation: cr-found var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero-story .found-title {
+    font-weight: 800;
+  }
+  .hero-story .found-why {
+    font-weight: 600;
+  }
+
+  .hero-story .post {
+    position: absolute;
+    left: 3%;
+    bottom: 6%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 40%;
+    padding: 0.4rem 0.6rem;
+    border-radius: var(--cr-radius-panel);
+    background: var(--cr-palette-paper);
+    color: var(--cr-palette-navy);
+    font-size: clamp(0.58rem, 2cqi, 0.78rem);
+    line-height: 1.25;
+    box-shadow: var(--cr-shadow-overlay);
+    opacity: 0;
+    transform: translateY(14px);
+    animation: cr-post var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero-story .post-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 1.6em;
+    height: 1.6em;
+    border-radius: 999px;
+    background: var(--cr-palette-green);
+    color: var(--cr-palette-white);
+  }
+  .hero-story .post-title {
+    display: block;
+    font-weight: 800;
+  }
+  .hero-story .post-when {
+    display: block;
+    font-weight: 600;
+  }
+
+  /* ---------- Track (timeline under the screen) ---------- */
+  .hero-story .track {
+    position: relative;
+    height: 3.25rem;
+    margin-top: 0.75rem;
+    border-radius: var(--cr-radius-control);
+    background: var(--cr-raised);
+    overflow: hidden;
+  }
+  .hero-story .bars {
+    position: absolute;
+    inset: 0.5rem 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .hero-story .bar {
+    flex: 1;
+    height: calc(var(--h) * 100%);
+    border-radius: 2px;
+    background: var(--cr-edge);
+  }
+  .hero-story .bar:nth-child(n + 33):nth-child(-n + 40) {
+    background: var(--cr-palette-orange);
+    opacity: 0.85;
+  }
+  /* Segment = the suggested clip (bars 33–40 ≈ 57%–71%). */
+  .hero-story .segment {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 56%;
+    width: 16%;
+    background: color-mix(in srgb, var(--cr-palette-orange) 22%, transparent);
+    opacity: 0;
+    animation: cr-seg var(--loop) var(--cr-ease-standard) infinite;
+  }
+  /* Handles span the full track so translateX(%) maps to track width. */
+  .hero-story .handle {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .hero-story .handle > span {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 0.6rem;
+    display: grid;
+    place-items: end center;
+    padding-bottom: 2px;
+    background: var(--cr-palette-orange);
+    color: var(--cr-palette-navy);
+    font-size: 0.55rem;
+    font-weight: 800;
+    writing-mode: vertical-rl;
+  }
+  .hero-story .h-in > span {
+    border-radius: 4px 0 0 4px;
+  }
+  .hero-story .h-out > span {
+    border-radius: 0 4px 4px 0;
+    left: -0.6rem;
+  }
+  .hero-story .h-in {
+    animation: cr-hin var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero-story .h-out {
+    animation: cr-hout var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero-story .playhead {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    animation: cr-play var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero-story .playhead::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    background: var(--cr-playhead);
+    box-shadow: 0 0 8px var(--cr-playhead);
+  }
+
+  /* ---------- Steps ---------- */
+  .hero-story .step {
+    display: grid;
+    gap: 0.35rem;
+  }
+  .hero-story .step-bar {
+    position: relative;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--cr-rule);
+    overflow: hidden;
+  }
+  .hero-story .step-bar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--cr-palette-orange);
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: cr-stepbar var(--loop) linear infinite;
+  }
+  .hero-story .step-label {
+    font-size: clamp(0.66rem, 1.8vw, 0.8rem);
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--cr-muted);
+    animation: cr-steplabel var(--loop) linear infinite;
+  }
+  .hero-story .step2 .step-bar::after,
+  .hero-story .step2 .step-label {
+    animation-delay: calc(var(--loop) * 0.25);
+  }
+  .hero-story .step3 .step-bar::after,
+  .hero-story .step3 .step-label {
+    animation-delay: calc(var(--loop) * 0.5);
+  }
+  .hero-story .step4 .step-bar::after,
+  .hero-story .step4 .step-label {
+    animation-delay: calc(var(--loop) * 0.75);
+  }
+
+  .story-toggle .i-play {
+    display: none;
+  }
+  .story-toggle[aria-pressed='true'] .i-play {
+    display: block;
+  }
+  .story-toggle[aria-pressed='true'] .i-pause {
+    display: none;
+  }
+
+  /* Paused by the visitor or off-screen. */
+  .hero-story:is([data-paused], [data-offscreen]) :is(*, *::before, *::after) {
+    animation-play-state: paused !important;
+  }
+
+  /* ---------- Keyframes (percent of the 14 s loop) ---------- */
+  @keyframes cr-pulse {
+    0% {
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--cr-palette-orange) 60%, transparent);
+    }
+    100% {
+      box-shadow: 0 0 0 0.5rem transparent;
+    }
+  }
+  @keyframes cr-q {
+    0% {
+      opacity: 0;
+      transform: translateY(0.4em);
+    }
+    3%,
+    22% {
+      opacity: 1;
+      transform: none;
+    }
+    25%,
+    100% {
+      opacity: 0;
+      transform: translateY(-0.4em);
+    }
+  }
+  @keyframes cr-live {
+    0%,
+    48% {
+      opacity: 1;
+    }
+    52%,
+    97% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes cr-msg1 {
+    0%,
+    3% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    6%,
+    26% {
+      opacity: 1;
+      transform: none;
+    }
+    30%,
+    100% {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+  @keyframes cr-msg2 {
+    0%,
+    8% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    11%,
+    26% {
+      opacity: 1;
+      transform: none;
+    }
+    30%,
+    100% {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+  @keyframes cr-msg3 {
+    0%,
+    13% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    16%,
+    26% {
+      opacity: 1;
+      transform: none;
+    }
+    30%,
+    100% {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+  @keyframes cr-play {
+    0% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(64%);
+    }
+    50% {
+      transform: translateX(64%);
+    }
+    75%,
+    96% {
+      transform: translateX(72%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  @keyframes cr-seg {
+    0%,
+    27% {
+      opacity: 0;
+    }
+    32%,
+    96% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes cr-hin {
+    0%,
+    27% {
+      opacity: 0;
+      transform: translateX(40%);
+    }
+    31% {
+      opacity: 1;
+      transform: translateX(40%);
+    }
+    42%,
+    96% {
+      opacity: 1;
+      transform: translateX(56%);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(56%);
+    }
+  }
+  @keyframes cr-hout {
+    0%,
+    27% {
+      opacity: 0;
+      transform: translateX(88%);
+    }
+    31% {
+      opacity: 1;
+      transform: translateX(88%);
+    }
+    42%,
+    96% {
+      opacity: 1;
+      transform: translateX(72%);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(72%);
+    }
+  }
+  @keyframes cr-found {
+    0%,
+    30% {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    34%,
+    48% {
+      opacity: 1;
+      transform: none;
+    }
+    52%,
+    100% {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+  @keyframes cr-side {
+    0%,
+    50% {
+      transform: scaleX(0);
+    }
+    56%,
+    96% {
+      transform: scaleX(1);
+    }
+    100% {
+      transform: scaleX(0);
+    }
+  }
+  @keyframes cr-crop {
+    0%,
+    53% {
+      opacity: 0;
+    }
+    57%,
+    96% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes cr-cap1 {
+    0%,
+    58% {
+      opacity: 0;
+      transform: translateY(6px) scale(0.92);
+    }
+    61%,
+    96% {
+      opacity: 1;
+      transform: none;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes cr-cap2 {
+    0%,
+    63% {
+      opacity: 0;
+      transform: translateY(6px) scale(0.92);
+    }
+    66%,
+    96% {
+      opacity: 1;
+      transform: none;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes cr-post {
+    0%,
+    76% {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    80%,
+    96% {
+      opacity: 1;
+      transform: none;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+  }
+  @keyframes cr-stepbar {
+    0% {
+      transform: scaleX(0);
+    }
+    25% {
+      transform: scaleX(1);
+    }
+    25.01%,
+    100% {
+      transform: scaleX(0);
+    }
+  }
+  @keyframes cr-steplabel {
+    0%,
+    24.9% {
+      color: var(--cr-text);
+    }
+    25%,
+    100% {
+      color: var(--cr-muted);
+    }
+  }
+
+  /* ---------- Reduced motion: one composed, static frame ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-story :is(*, *::before, *::after) {
+      animation: none !important;
+    }
+    .hero-story .q1 {
+      opacity: 1;
+    }
+    .hero-story :is(.side) {
+      transform: scaleX(1);
+    }
+    .hero-story :is(.crop, .cap, .segment, .post) {
+      opacity: 1;
+      transform: none;
+    }
+    .hero-story .h-in {
+      opacity: 1;
+      transform: translateX(56%);
+    }
+    .hero-story .h-out {
+      opacity: 1;
+      transform: translateX(72%);
+    }
+    .hero-story .live-badge {
+      opacity: 0;
+    }
+    .hero-story .playhead {
+      transform: translateX(64%);
+    }
+    .hero-story .step-bar::after {
+      transform: scaleX(1);
+    }
+    .hero-story .step-label {
+      color: var(--cr-text);
+    }
+    .story-toggle {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const story = document.querySelector<HTMLElement>('[data-story]');
+  const toggle = story?.querySelector<HTMLButtonElement>('.story-toggle');
+  const video = story?.querySelector<HTMLVideoElement>('video.video');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
+    ?.saveData;
+
+  function setPaused(paused: boolean) {
+    if (!story || !toggle) return;
+    story.toggleAttribute('data-paused', paused);
+    toggle.setAttribute('aria-pressed', String(paused));
+    toggle.setAttribute(
+      'aria-label',
+      (paused ? toggle.dataset.labelPlay : toggle.dataset.labelPause) ?? '',
+    );
+    if (video?.src) {
+      if (paused) video.pause();
+      else video.play().catch(() => {});
+    }
+  }
+
+  toggle?.addEventListener('click', () => setPaused(!story?.hasAttribute('data-paused')));
+
+  // Load the clip after the page is idle; never with reduced motion or Save-Data.
+  function loadVideo() {
+    if (!video || reduce.matches || saveData || !video.dataset.src) return;
+    video.src = video.dataset.src;
+    video.addEventListener(
+      'playing',
+      () => video.closest('.screen')?.setAttribute('data-playing', ''),
+      { once: true },
+    );
+    if (!story?.hasAttribute('data-paused')) video.play().catch(() => {});
+  }
+  if ('requestIdleCallback' in window) requestIdleCallback(loadVideo, { timeout: 2500 });
+  else setTimeout(loadVideo, 1500);
+
+  // Pause everything while the hero is off-screen (saves battery on phones).
+  if (story) {
+    new IntersectionObserver(([entry]) => {
+      const off = !entry?.isIntersecting;
+      story.toggleAttribute('data-offscreen', off);
+      if (!video?.src) return;
+      if (off) video.pause();
+      else if (!story.hasAttribute('data-paused')) video.play().catch(() => {});
+    }).observe(story);
+  }
+</script>
