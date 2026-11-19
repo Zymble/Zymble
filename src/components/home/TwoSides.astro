@@ -1,0 +1,47 @@
+---
+/**
+ * Both sides of ClipyRush, side by side: what a streamer does and what a clipper does,
+ * each ending in its own door. Steps are a real sequence, so they are numbered.
+ */
+import CtaDoors from './CtaDoors.astro';
+import type { Locale } from '@/config/routes';
+import { homeCopy } from '@/content/home';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const c = homeCopy[locale].sides;
+const sides = [
+  { role: 'streamer' as const, ...c.streamer },
+  { role: 'clipper' as const, ...c.clipper },
+];
+---
+
+<section class="container-cr pt-24 pb-16 md:pt-32" aria-labelledby="sides-title">
+  <h2 id="sides-title" class="max-w-[24ch] text-title-cr [text-wrap:balance]">
+    {c.title}
+  </h2>
+
+  <div class="mt-12 grid border-t border-cr-text md:grid-cols-2">
+    {sides.map((side, i) => (
+      <article
+        class:list={[
+          'flex flex-col pt-8 pb-10',
+          i === 0 ? 'md:pr-10' : 'border-t border-cr-rule md:border-t-0 md:border-l md:pl-10',
+        ]}
+      >
+        <h3 class="text-cr-section">{side.who}</h3>
+        <ol class="mt-6 grid flex-1 content-start gap-5">
+          {side.steps.map((step, n) => (
+            <li class="grid grid-cols-[2rem_1fr] items-baseline gap-3 text-lg">
+              <span class="text-cr-time text-cr-selected tabular-nums">{n + 1}</span>
+              <span>{step}</span>
+            </li>
+          ))}
+        </ol>
+        <CtaDoors locale={locale} only={side.role} class="mt-8" />
+      </article>
+    ))}
+  </div>
+</section>

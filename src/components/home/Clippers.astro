@@ -1,14 +1,14 @@
 ---
 /**
  * For clippers (people who clip other streamers' channels for a living).
- * Honest triggers only: identity ("clipador"), the real pain (a moment cools off fast),
+ * Honest triggers only: identity ("clipador"), the real pain (a clip posted the next day lands cold),
  * specificity (channels, reasons, timecodes) and a product view instead of promises.
  * Visual: a multi-channel clip queue (mock, sample data) + the finished 9:16 clip.
  */
 import { getImage } from 'astro:assets';
 import poster from '../../../brand/mockups/night-stage.jpg';
 import type { Locale } from '@/config/routes';
-import { primaryCtaHref } from '@/config/site';
+import CtaDoors from './CtaDoors.astro';
 import { homeCopy } from '@/content/home';
 
 interface Props {
@@ -18,7 +18,6 @@ const { locale } = Astro.props;
 const c = homeCopy[locale].clippers;
 const caption = homeCopy[locale].stage.caption;
 const img = await getImage({ src: poster, width: 720, format: 'webp', quality: 70 });
-const ctaHref = `${primaryCtaHref(locale)}#clipper`;
 ---
 
 <section class="clippers pt-8 pb-24 md:pt-12 md:pb-32" aria-labelledby="clippers-title">
@@ -38,12 +37,10 @@ const ctaHref = `${primaryCtaHref(locale)}#clipper`;
         ))}
       </dl>
 
-      <a href={ctaHref} class="cr-btn mt-8">
-        {c.cta}
-      </a>
+      <CtaDoors locale={locale} only="clipper" class="mt-8" />
     </div>
 
-    <figure class="visual m-0" aria-labelledby="queue-caption">
+    <figure class="visual m-0" aria-label={c.queueTitle}>
       <div class="stack">
         <div class="queue" aria-hidden="true">
           <div class="queue-bar">
@@ -80,10 +77,6 @@ const ctaHref = `${primaryCtaHref(locale)}#clipper`;
           </span>
         </div>
       </div>
-
-      <figcaption id="queue-caption" class="mt-4 text-cr-caption text-cr-muted">
-        {c.note}
-      </figcaption>
     </figure>
   </div>
 </section>
@@ -195,14 +188,24 @@ const ctaHref = `${primaryCtaHref(locale)}#clipper`;
     border-radius: 50%;
     background: currentColor;
   }
-  .q-status.review {
-    color: var(--cr-warning);
+  .q-status.live {
+    color: var(--cr-selected);
   }
-  .q-status.approved {
+  .q-status.ready {
     color: var(--cr-success);
   }
-  .q-status.scheduled {
+  .q-status.posted {
     color: var(--cr-info);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .q-status.live::before {
+      animation: q-pulse 1.4s var(--cr-ease-standard) infinite;
+    }
+  }
+  @keyframes q-pulse {
+    50% {
+      opacity: 0.35;
+    }
   }
 
   /* ---------- Finished 9:16 clip ---------- */

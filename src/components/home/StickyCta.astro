@@ -1,10 +1,10 @@
 ---
 /**
- * Mobile-only CTA bar: shown whenever the hero form is off screen, hides again
- * when the final CTA is on screen. Desktop keeps the header CTA.
+ * Mobile-only CTA bar with both sides (I stream / I clip): shown whenever the hero doors
+ * are off screen, hidden when the final CTA is on screen or the menu is open.
  */
 import type { Locale } from '@/config/routes';
-import { primaryCtaHref } from '@/config/site';
+import { roleCtaHref } from '@/config/site';
 import { homeCopy } from '@/content/home';
 
 interface Props {
@@ -18,9 +18,14 @@ const { locale } = Astro.props;
   data-sticky-cta
   hidden
 >
-  <a href={primaryCtaHref(locale)} class="cr-btn w-full">
-    {homeCopy[locale].sticky}
-  </a>
+  <div class="grid grid-cols-2 gap-2">
+    <a href={roleCtaHref(locale, 'streamer')} class="cr-btn w-full">
+      {homeCopy[locale].sticky.streamer}
+    </a>
+    <a href={roleCtaHref(locale, 'clipper')} class="cr-btn w-full">
+      {homeCopy[locale].sticky.clipper}
+    </a>
+  </div>
 </div>
 
 <style>

@@ -5,12 +5,12 @@ import Faq from '@/components/home/Faq.astro';
 import Features from '@/components/home/Features.astro';
 import FinalCta from '@/components/home/FinalCta.astro';
 import Hero from '@/components/home/Hero.astro';
-import HowItWorks from '@/components/home/HowItWorks.astro';
 import InOutShowcase from '@/components/home/InOutShowcase.astro';
 import Personas from '@/components/home/Personas.astro';
 import PricingPreview from '@/components/home/PricingPreview.astro';
 import SocialProof from '@/components/home/SocialProof.astro';
 import StickyCta from '@/components/home/StickyCta.astro';
+import TwoSides from '@/components/home/TwoSides.astro';
 import type { Locale } from '@/config/routes';
 import { site } from '@/config/site';
 import { homeCopy } from '@/content/home';
@@ -52,7 +52,7 @@ const { lang } = useTranslations(locale);
 />
 
 <Hero locale={locale} />
-<HowItWorks locale={locale} />
+<TwoSides locale={locale} />
 <Clippers locale={locale} />
 <InOutShowcase locale={locale} />
 <Features locale={locale} />

@@ -2,13 +2,14 @@
 /**
  * Hero. Always dark (broadcast feel), whatever the site theme.
  * The stage is a mock editor: one 14 s CSS loop tells the story in four beats
- *   1 live + chat → 2 AI flags the moment, In/Out close on it → 3 reframed 9:16 with captions → 4 scheduled
+ *   1 live + chat → 2 AI flags the play, In/Out close on it → 3 reframed 9:16 with captions → 4 posted,
+ *   all while the stream is still on
  * and a timecoded log under it follows the same beats. No JS animation library.
  * Pause control (WCAG 2.2.2), paused off-screen, single static frame with reduced motion.
  */
 import { getImage } from 'astro:assets';
 import poster from '../../../brand/mockups/night-stage.jpg';
-import LinkForm from './LinkForm.astro';
+import CtaDoors from './CtaDoors.astro';
 import type { Locale } from '@/config/routes';
 import { site } from '@/config/site';
 import { homeCopy } from '@/content/home';
@@ -41,7 +42,7 @@ const bars = Array.from({ length: 56 }, (_, i) => {
     <div class="hero-copy">
       <p class="max-w-[34rem] text-lg leading-relaxed text-cr-muted">{c.hero.lead}</p>
       <div class="mt-8" id="hero-cta">
-        <LinkForm locale={locale} id="hero" />
+        <CtaDoors locale={locale} />
       </div>
       {!site.appLive && <p class="mt-4 text-cr-caption text-cr-muted">{c.hero.note}</p>}
       <p class="mt-8 max-w-[34rem] border-t border-cr-rule pt-4 text-cr-caption text-cr-muted">
@@ -61,10 +62,7 @@ const bars = Array.from({ length: 56 }, (_, i) => {
             <span class="tag-clip">CLIP</span>
           </span>
           <span class="bar-time tabular-nums" aria-hidden="true">
-            <span class="t-live">
-              {c.stage.liveTime}
-              <span class="text-cr-muted"> / {c.stage.duration}</span>
-            </span>
+            <span class="t-live">{c.stage.liveTime}</span>
             <span class="t-clip">{c.stage.clipLen}</span>
           </span>
           <span class="ml-auto"></span>
@@ -121,6 +119,10 @@ const bars = Array.from({ length: 56 }, (_, i) => {
             height="405"
             decoding="async"
           />
+
+          <span class="hud">
+            <b>{c.stage.hud.pos}</b> {c.stage.hud.lap} · {c.stage.hud.speed}
+          </span>
 
           <span class="chat">
             {c.stage.chat.map(([user, msg], i) => (
@@ -330,6 +332,25 @@ const bars = Array.from({ length: 56 }, (_, i) => {
   }
   .hero [data-playing] .video.poster {
     opacity: 0;
+  }
+
+  /* Racing-game HUD: makes the demo read as a game stream. */
+  .hero .hud {
+    position: absolute;
+    top: 4%;
+    right: 3%;
+    padding: 0.15rem 0.45rem;
+    background: rgb(11 18 32 / 0.55);
+    color: var(--cr-palette-paper);
+    font-size: clamp(0.58rem, 2cqi, 0.8rem);
+    font-style: italic;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .hero .hud b {
+    color: var(--cr-palette-gold);
+    font-weight: 850;
   }
 
   /* Stream chat overlay, like an on-screen chat box. */

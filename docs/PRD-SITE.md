@@ -14,6 +14,8 @@ Site público global (clipyrush.com) que apresenta a ClipyRush, gera confiança 
 | Agência / gestor de vários canais | Aprovação, versões, fusos, calendário | Fila de revisão compartilhada, versões explícitas, agendamento por fuso |
 
 ## 3. Posicionamento e diferencial
+> **Atualização 19/11/2026 (decisão do dono):** o site passa a ser de dois lados. O streamer encontra seu clipador; o clipador clipa ao vivo e posta com o momento ainda quente. Gancho: **"Não perca o momento. Clipe ao vivo."** A tagline "Your stream. Your cut." vira assinatura (fechamento e rodapé). CTA principal = duas portas: "Eu faço live → Achar meu clipador" e "Eu clipo → Clipar ao vivo". Confirmar com o repo do app que clipe ao vivo e a conexão streamer↔clipador fazem parte do produto.
+
 - Tagline: **Your stream. Your cut.** Alternativas: *Find the moment. Make the cut.* / *Give the best part a replay.*
 - Diferencial contra OpusClip/Eklipse/StreamLadder/Medal: **a IA sugere, o criador decide**. As alças In/Out (do símbolo da marca) aparecem no hero, nas seções e no editor como prova visual.
 - Foco em **streams/VODs longos**, não em "qualquer vídeo".

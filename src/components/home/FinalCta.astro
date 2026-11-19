@@ -1,6 +1,6 @@
 ---
-/** Closing band: the tagline as a signature, framed by the In/Out brackets, plus the link form. */
-import LinkForm from './LinkForm.astro';
+/** Closing band: the tagline as a signature, framed by the In/Out brackets, plus both doors. */
+import CtaDoors from './CtaDoors.astro';
 import type { Locale } from '@/config/routes';
 import { homeCopy } from '@/content/home';
 
@@ -24,7 +24,7 @@ const c = homeCopy[locale].final;
       </h2>
       <p class="mt-6 max-w-[40ch] text-lg leading-relaxed text-cr-muted">{c.body}</p>
       <div class="mt-8">
-        <LinkForm locale={locale} id="final" />
+        <CtaDoors locale={locale} />
       </div>
     </div>
   </div>

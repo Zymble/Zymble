@@ -3,9 +3,14 @@ import type { Locale, RouteId } from '../config/routes';
 /**
  * Home page copy, written per market (see docs/LOCALIZATION.md):
  * en = US creators, pt-br = Brazilian creators, es = Spanish-speaking creators (LatAm neutral).
- * Rules: concrete over generic, no virality promises, no numbers presented as results.
- * The 4:12:33 / 3 / 0:38 figures are an illustrative example and are labeled as such.
+ *
+ * Positioning (2026-11-19, owner): two-sided. Streamers find their clipper; clippers clip
+ * live and post while the moment is hot. Hook: "Don't miss the moment. Clip it live."
+ * Rules: concrete over generic, no virality or earnings promises, no invented results.
+ * Channel names in UI mocks are obviously fictional handles.
  */
+type Door = { who: string; action: string };
+
 export interface HomeCopy {
   meta: { description: string };
   hero: {
@@ -13,18 +18,15 @@ export interface HomeCopy {
     titleA: string;
     titleB: string;
     lead: string;
-    linkLabel: string;
-    linkPlaceholder: string;
-    linkHint: string;
-    submit: string;
     note: string;
     worksWith: string;
   };
+  doors: { streamer: Door; clipper: Door };
   stage: {
     label: string;
-    duration: string;
     liveTime: string;
     clipLen: string;
+    hud: { pos: string; lap: string; speed: string };
     chat: [string, string][];
     caption: [string, string];
     log: { tc: string; text: string }[];
@@ -33,15 +35,25 @@ export interface HomeCopy {
     pause: string;
     play: string;
   };
-  story: {
+  sides: {
     title: string;
-    example: string;
-    stats: { value: string; label: string }[];
-    note: string;
+    streamer: { who: string; steps: string[] };
+    clipper: { who: string; steps: string[] };
   };
-  steps: {
+  clippers: {
     title: string;
-    items: { title: string; body: string }[];
+    body: string;
+    points: { title: string; body: string }[];
+    queueTitle: string;
+    queue: {
+      channel: string;
+      title: string;
+      why: string;
+      len: string;
+      status: string;
+      state: 'live' | 'ready' | 'posted';
+    }[];
+    clipSource: string;
   };
   inout: {
     title: string;
@@ -66,102 +78,131 @@ export interface HomeCopy {
     title: string;
     items: { id: RouteId; who: string; problem: string; answer: string; link: string }[];
   };
-  clippers: {
-    title: string;
-    body: string;
-    points: { title: string; body: string }[];
-    cta: string;
-    queueTitle: string;
-    queue: {
-      channel: string;
-      title: string;
-      why: string;
-      len: string;
-      status: string;
-      state: 'review' | 'approved' | 'scheduled';
-    }[];
-    clipSource: string;
-    note: string;
-  };
   pricing: { title: string; body: string; note: string; link: string };
   faq: { title: string; items: { q: string; a: string }[] };
   final: { title: string; body: string };
-  sticky: string;
+  sticky: { streamer: string; clipper: string };
 }
 
 export const homeCopy: Record<Locale, HomeCopy> = {
   en: {
     meta: {
       description:
-        'ClipyRush watches your whole stream, flags where chat and audio blew up and hands you the moment in 9:16 with captions. You set the start and end.',
+        'Clip streams live. ClipyRush flags the plays as they happen and hands over the moment in 9:16 with captions. Streamers find their clipper; clippers cut and post while it’s hot.',
     },
     hero: {
-      kicker: 'Stream clips for TikTok, Shorts and Reels',
-      titleA: 'Your stream ran four hours.',
-      titleB: 'The clip is 38 seconds.',
-      lead: 'ClipyRush watches the whole stream, flags where chat and audio blew up, and hands you the moment in 9:16 with captions. You set the start and the end, then schedule it to TikTok.',
-      linkLabel: 'Paste a link to one of your streams',
-      linkPlaceholder: 'twitch.tv/videos/…',
-      linkHint:
-        'A past broadcast on Twitch, YouTube or Kick. When we open, it’s the first one we clip.',
-      submit: 'Get early access',
-      note: 'We haven’t launched yet. We’ll email you when it’s your turn.',
+      kicker: 'Live stream clipping for TikTok, Shorts and Reels',
+      titleA: 'Don’t miss the moment.',
+      titleB: 'Clip it live.',
+      lead: 'While the stream is still going, ClipyRush flags the plays and hands over the moment in 9:16 with captions. Streamers find their clipper. Clippers cut and post while the moment is still hot.',
+      note: 'We haven’t launched yet. Pick your side and you’re on the list.',
       worksWith:
-        'Works with past broadcasts on Twitch, YouTube and Kick, or a file upload. Schedules to TikTok, YouTube Shorts and Instagram Reels.',
+        'Twitch, YouTube and Kick, live or recorded. Posts to TikTok, YouTube Shorts and Instagram Reels.',
+    },
+    doors: {
+      streamer: { who: 'I stream', action: 'Find my clipper' },
+      clipper: { who: 'I clip', action: 'Start clipping live' },
     },
     stage: {
-      label: 'Example: how a stream becomes a clip',
-      duration: '4:12:33',
+      label: 'How a play in a live stream becomes a posted clip',
       liveTime: '02:14:07',
       clipLen: '0:38',
+      hud: { pos: 'P1', lap: 'STAGE 3/5', speed: '148 mph' },
       chat: [
-        ['jaxx', 'CLIP IT'],
-        ['mo_plays', 'NO WAY'],
-        ['kenz', 'run it back'],
+        ['jaxx', 'NO SHOT'],
+        ['mo_plays', 'KEKW KEKW KEKW'],
+        ['kenz', 'HOLY'],
       ],
       caption: ['DID HE JUST', 'DRIFT THAT?!'],
       log: [
-        { tc: '02:13:58', text: 'Chat spikes: “CLIP IT” ×42' },
-        { tc: '02:14:07', text: 'AI flags 38 s: audio peak + chat' },
-        { tc: '9:16', text: 'Captioned and reframed, ready for your tweaks' },
-        { tc: '7:00 PM', text: 'Scheduled to TikTok, New York time' },
+        { tc: '02:13:58', text: 'Chat explodes: KEKW, NO SHOT, HOLY' },
+        { tc: '02:14:07', text: 'AI flags the play, stream still live' },
+        { tc: '02:14:40', text: 'Clipper sets In/Out · captions and 9:16' },
+        { tc: '02:16:02', text: 'Posted to TikTok. The stream is still on' },
       ],
       post: 'TikTok',
-      postWhen: 'Today, 7:00 PM · New York',
+      postWhen: 'Posted · @jaxxclips',
       pause: 'Pause animation',
       play: 'Play animation',
     },
-    story: {
-      title: 'Nobody’s watching four hours to find the good 38 seconds.',
-      example: 'A Saturday stream, for example:',
-      stats: [
-        { value: '4:12:33', label: 'of recorded stream' },
-        { value: '3', label: 'moments flagged by the AI, each with its reason' },
-        { value: '0:38', label: 'the cut you approved and posted' },
-      ],
-      note: 'Illustrative example.',
+    sides: {
+      title: 'Streamers find clippers. Clippers find the moment.',
+      streamer: {
+        who: 'If you stream',
+        steps: [
+          'Connect your Twitch, YouTube or Kick channel.',
+          'Let clippers cut your stream while you play.',
+          'See the clips and approve what goes out.',
+        ],
+      },
+      clipper: {
+        who: 'If you clip',
+        steps: [
+          'Pick the streams you want to clip.',
+          'Get the plays the AI flags, live.',
+          'Set In/Out, caption it and post to your TikTok.',
+        ],
+      },
     },
-    steps: {
-      title: 'You paste the link. The AI does the boring part. You make the call.',
-      items: [
+    clippers: {
+      title: 'Clip it live. Post while it’s still hot.',
+      body: 'A clip that drops the next day lands cold. With ClipyRush you follow several streams in one queue, the AI flags the plays as they happen, and you trim, caption and post without waiting for the stream to end.',
+      points: [
         {
-          title: 'Paste the stream link',
-          body: 'The link to a past broadcast on Twitch, YouTube or Kick, or the file itself. ClipyRush reads the speech, the audio and the chat.',
+          title: 'Plays flagged live',
+          body: 'A chat spike, a scream, a laugh: the AI flags it on the spot and shows why.',
         },
         {
-          title: 'Review what the AI flagged',
-          body: 'Every moment shows why it was picked: a chat spike, a scream, a laugh. Skip the ones that miss.',
+          title: 'Many streams, one queue',
+          body: 'Each stream comes in with its channel name. See everything that’s live at once.',
         },
         {
-          title: 'Trim, caption, schedule',
-          body: 'Drag In and Out, fix a word in the captions, pick the time. Nothing posts until you say so.',
+          title: 'Credit for the streamer',
+          body: 'Every clip keeps the channel and the stream timecode.',
+        },
+        { title: 'Captions and 9:16 ready', body: 'Fix what you need and post.' },
+      ],
+      queueTitle: 'Live now · 3 channels',
+      queue: [
+        {
+          channel: 'jaxx',
+          title: 'The drift at the finish',
+          why: 'Chat spike',
+          len: '0:38',
+          status: 'Live',
+          state: 'live',
+        },
+        {
+          channel: 'mo_plays',
+          title: 'Rage quit on the final boss',
+          why: 'Scream + chat',
+          len: '0:24',
+          status: 'Ready to post',
+          state: 'ready',
+        },
+        {
+          channel: 'kenz.live',
+          title: 'Chat loses it',
+          why: 'Laughter + chat',
+          len: '0:41',
+          status: 'Posted',
+          state: 'posted',
+        },
+        {
+          channel: 'jaxx',
+          title: 'Last-second save',
+          why: 'Audio peak',
+          len: '0:27',
+          status: 'Live',
+          state: 'live',
         },
       ],
+      clipSource: 'jaxx · 02:14:07',
     },
     inout: {
-      title: 'The AI flags it. You cut it.',
-      body: 'Sometimes the AI misses the timing of a joke. That’s why every suggestion shows its reason and comes with two handles: pull In back for the setup, push Out for the reaction.',
-      hint: 'Pick a moment, then drag the handles or use the arrow keys.',
+      title: 'The AI flags it. You make the cut.',
+      body: 'Sometimes the AI misses the timing of a joke. That’s why every flagged play shows its reason and comes with two handles: pull In back for the setup, push Out for the reaction.',
+      hint: 'Pick a play, then drag the handles or use the arrow keys.',
       clips: [
         { title: 'The drift', why: 'Chat spike' },
         { title: 'Last-second save', why: 'Audio peak' },
@@ -172,7 +213,7 @@ export const homeCopy: Record<Locale, HomeCopy> = {
       duration: 'Length',
       save: 'Save this cut',
       saved: 'Cut saved',
-      disclaimer: 'Demo with sample data. Nothing is uploaded.',
+      disclaimer: 'Try it here. Nothing is uploaded.',
       aiLabel: 'AI suggestion',
       youLabel: 'Your cut',
     },
@@ -181,13 +222,13 @@ export const homeCopy: Record<Locale, HomeCopy> = {
       items: [
         {
           id: 'features/ai-moments',
-          title: 'AI moments',
-          body: 'Reads speech, audio peaks and chat pace, and tells you why it flagged each moment.',
+          title: 'Live moments',
+          body: 'Flags plays while the stream is on, from speech, audio peaks and chat pace, always with the reason.',
         },
         {
           id: 'features/in-out-editor',
           title: 'In/Out editor',
-          body: 'Frame-accurate start and end. Nothing leaves without your approval.',
+          body: 'Frame-accurate start and end. Nothing goes out without your approval.',
         },
         {
           id: 'features/captions',
@@ -201,8 +242,8 @@ export const homeCopy: Record<Locale, HomeCopy> = {
         },
         {
           id: 'features/scheduling',
-          title: 'Scheduling',
-          body: 'TikTok, Shorts and Reels, in your audience’s time zone.',
+          title: 'Post or schedule',
+          body: 'Post right away or schedule to TikTok, Shorts and Reels in your audience’s time zone.',
         },
         {
           id: 'features/analytics',
@@ -213,23 +254,15 @@ export const homeCopy: Record<Locale, HomeCopy> = {
       more: 'All features',
     },
     personas: {
-      title: 'For people who stream, edit, or run channels.',
+      title: 'Also for editors and agencies.',
       items: [
-        {
-          id: 'use-cases/streamers',
-          who: 'Streamers',
-          problem: 'You stream for hours and don’t want to become an editor the next day.',
-          answer:
-            'When you come back, your best moments are already flagged. Review, adjust, post.',
-          link: 'How it works for streamers',
-        },
         {
           id: 'use-cases/editors',
           who: 'Editors',
           problem:
             'You edit for several creators and lose hours hunting for the moment on the timeline.',
           answer:
-            'Start from flagged moments with source timecode, and captions and framing you can still edit.',
+            'Start from flagged plays with source timecode, and captions and framing you can still edit.',
           link: 'How it works for editors',
         },
         {
@@ -241,66 +274,9 @@ export const homeCopy: Record<Locale, HomeCopy> = {
         },
       ],
     },
-    clippers: {
-      title: 'Clippers can’t spend the night watching streams.',
-      body: 'You clip for several channels and a moment cools off fast. ClipyRush puts every channel’s streams in one queue, flags the moments with a reason, and lets you review, trim and schedule without scrubbing a timeline.',
-      points: [
-        {
-          title: 'Many channels, one queue',
-          body: 'Each stream comes in tagged with its channel. See what the AI flagged across all of them at once.',
-        },
-        {
-          title: 'A reason for every clip',
-          body: 'A chat spike, a scream, a laugh. You know why a moment was flagged before you hit play.',
-        },
-        {
-          title: 'Source always attached',
-          body: 'Every clip keeps the channel and the stream timecode, so crediting the streamer is easy.',
-        },
-        { title: 'Captions and 9:16 done', body: 'You only fix what needs fixing, then schedule.' },
-      ],
-      cta: 'Join as a clipper',
-      queueTitle: 'Clip queue · 3 channels',
-      queue: [
-        {
-          channel: 'jaxx',
-          title: 'The drift at the finish',
-          why: 'Chat spike',
-          len: '0:38',
-          status: 'To review',
-          state: 'review',
-        },
-        {
-          channel: 'mo_plays',
-          title: 'Rage quit on the final boss',
-          why: 'Scream + chat',
-          len: '0:24',
-          status: 'Approved',
-          state: 'approved',
-        },
-        {
-          channel: 'kenz.live',
-          title: 'Chat loses it',
-          why: 'Laughter + chat',
-          len: '0:41',
-          status: 'Scheduled 7 PM',
-          state: 'scheduled',
-        },
-        {
-          channel: 'jaxx',
-          title: 'Last-second save',
-          why: 'Audio peak',
-          len: '0:27',
-          status: 'To review',
-          state: 'review',
-        },
-      ],
-      clipSource: 'jaxx · 02:14:07',
-      note: 'Example with made-up channels.',
-    },
     pricing: {
       title: 'Pricing',
-      body: 'Three plans: Creator, Editor and Agency. Prices come out at launch, and people on the list hear first.',
+      body: 'Plans for streamers, clippers, editors and agencies. Prices come out at launch, and people on the list hear first.',
       note: 'Early access. Pricing may change.',
       link: 'See the plans',
     },
@@ -308,32 +284,32 @@ export const homeCopy: Record<Locale, HomeCopy> = {
       title: 'Before you ask',
       items: [
         {
-          q: 'What does ClipyRush do?',
-          a: 'It finds the best moments in long streams and turns them into vertical, captioned clips. You review and adjust every cut before it goes anywhere.',
+          q: 'Do you really clip live?',
+          a: 'Yes. While the stream is on, the AI flags the plays and the clipper can already trim, caption and post. Recorded streams work too.',
         },
         {
-          q: 'Does the AI post for me?',
-          a: 'No. The AI suggests. Nothing is published until you approve the cut and the time.',
+          q: 'How does a streamer find a clipper?',
+          a: 'Streamers open their stream to clippers on ClipyRush, and clippers pick the streams they want to cut. The details of how each side connects come with early access.',
         },
         {
-          q: 'Does it work if I clip for other streamers?',
+          q: 'Does the AI post on its own?',
+          a: 'No. The AI flags. You decide the cut and when it goes out.',
+        },
+        {
+          q: 'Can I clip other people’s streams?',
           a: 'Yes. Each stream enters the queue with its channel, and every clip keeps the source timecode. Permission to clip and post is between you and the streamer, under each platform’s rules.',
         },
         {
-          q: 'Which platforms does it work with?',
-          a: 'We’re building for past broadcasts on Twitch, YouTube and Kick plus file upload, and scheduling to TikTok, YouTube Shorts and Instagram Reels.',
+          q: 'Which platforms?',
+          a: 'We’re building for Twitch, YouTube and Kick, live or recorded, and posting to TikTok, YouTube Shorts and Instagram Reels.',
+        },
+        {
+          q: 'Who owns the clips?',
+          a: 'The stream belongs to the streamer. How each clip can be used is agreed between streamer and clipper; the details will be in our Terms before launch.',
         },
         {
           q: 'Which caption languages?',
           a: 'We’ll confirm the launch languages before early access opens. English, Portuguese and Spanish come first.',
-        },
-        {
-          q: 'Who owns my clips?',
-          a: 'You do. Your streams and clips are your content. The details will be in our Terms before launch.',
-        },
-        {
-          q: 'What happens to my email?',
-          a: 'We use it to send your early access invite and the updates you agree to. You can leave the list at any time.',
         },
         {
           q: 'When does it launch?',
@@ -343,83 +319,129 @@ export const homeCopy: Record<Locale, HomeCopy> = {
     },
     final: {
       title: 'Your stream. Your cut.',
-      body: 'Paste a link to one of your streams. When we open, it’s the first one we clip.',
+      body: 'Pick your side and join the list. The people who join now get to test it first.',
     },
-    sticky: 'Get early access',
+    sticky: { streamer: 'I stream', clipper: 'I clip' },
   },
 
   'pt-br': {
     meta: {
       description:
-        'A ClipyRush assiste à sua live inteira, marca onde o chat e o áudio explodiram e entrega o trecho em 9:16, já legendado. Você decide o começo e o fim.',
+        'Clipe lives ao vivo. A ClipyRush marca os lances na hora e entrega o trecho em 9:16, legendado. Streamer encontra clipador; clipador corta e posta com o momento ainda quente.',
     },
     hero: {
-      kicker: 'Cortes de live para TikTok, Shorts e Reels',
-      titleA: 'Sua live teve quatro horas.',
-      titleB: 'O corte tem 38 segundos.',
-      lead: 'A ClipyRush assiste à live inteira, marca onde o chat e o áudio explodiram e te entrega o trecho em 9:16, já legendado. Você acerta o começo e o fim e agenda no TikTok.',
-      linkLabel: 'Cole o link de uma live sua',
-      linkPlaceholder: 'twitch.tv/videos/…',
-      linkHint:
-        'Live gravada da Twitch, YouTube ou Kick. Quando a gente abrir, ela é a primeira a virar corte.',
-      submit: 'Quero acesso antecipado',
-      note: 'Ainda não lançamos. A gente avisa por e-mail quando chegar a sua vez.',
+      kicker: 'Cortes de live ao vivo para TikTok, Shorts e Reels',
+      titleA: 'Não perca o momento.',
+      titleB: 'Clipe ao vivo.',
+      lead: 'Enquanto a live rola, a ClipyRush marca os lances e entrega o trecho em 9:16, já legendado. Quem faz live encontra quem clipa. Quem clipa corta e posta com o momento ainda quente.',
+      note: 'Ainda não lançamos. Escolha seu lado e você entra na lista.',
       worksWith:
-        'Funciona com lives gravadas da Twitch, YouTube e Kick ou upload de arquivo. Agenda no TikTok, YouTube Shorts e Instagram Reels.',
+        'Twitch, YouTube e Kick, ao vivo ou gravadas. Posta no TikTok, YouTube Shorts e Instagram Reels.',
+    },
+    doors: {
+      streamer: { who: 'Eu faço live', action: 'Achar meu clipador' },
+      clipper: { who: 'Eu clipo', action: 'Clipar ao vivo' },
     },
     stage: {
-      label: 'Exemplo: como uma live vira corte',
-      duration: '4:12:33',
+      label: 'Como um lance da live vira corte postado, com a live no ar',
       liveTime: '02:14:07',
       clipLen: '0:38',
+      hud: { pos: 'P1', lap: 'ETAPA 3/5', speed: '238 km/h' },
       chat: [
-        ['rafa_gg', 'CLIPA ISSO'],
-        ['duda', 'KKKKKKKK'],
-        ['teteu', 'replay pfv'],
+        ['rafa_gg', 'MANOOOO'],
+        ['duda', 'KKKKKKKKKKK'],
+        ['teteu', 'QUE ISSO KEKW'],
       ],
       caption: ['QUE CURVA', 'FOI ESSA?!'],
       log: [
-        { tc: '02:13:58', text: 'Chat dispara: “CLIPA ISSO” ×42' },
-        { tc: '02:14:07', text: 'IA marca 38 s: pico de áudio + chat' },
-        { tc: '9:16', text: 'Legendado e enquadrado, pronto pra você ajustar' },
-        { tc: '19h', text: 'Agendado no TikTok, horário de São Paulo' },
+        { tc: '02:13:58', text: 'Chat explode: KKKK, KEKW, MANOOOO' },
+        { tc: '02:14:07', text: 'IA marca o lance, com a live rolando' },
+        { tc: '02:14:40', text: 'Clipador ajusta In/Out · legenda e 9:16' },
+        { tc: '02:16:02', text: 'Postado no TikTok. A live segue no ar' },
       ],
       post: 'TikTok',
-      postWhen: 'Hoje, 19h · São Paulo',
+      postWhen: 'Postado · @cortesdorafa',
       pause: 'Pausar animação',
       play: 'Reproduzir animação',
     },
-    story: {
-      title: 'Ninguém vai assistir quatro horas pra achar os 38 segundos bons.',
-      example: 'Uma live de sábado, por exemplo:',
-      stats: [
-        { value: '4:12:33', label: 'de live gravada' },
-        { value: '3', label: 'momentos marcados pela IA, cada um com o motivo' },
-        { value: '0:38', label: 'o corte que você aprovou e postou' },
-      ],
-      note: 'Exemplo ilustrativo.',
+    sides: {
+      title: 'Streamer encontra clipador. Clipador encontra o lance.',
+      streamer: {
+        who: 'Se você faz live',
+        steps: [
+          'Conecte seu canal da Twitch, YouTube ou Kick.',
+          'Libere clipadores pra cortar sua live enquanto você joga.',
+          'Veja os cortes e aprove o que vai pro ar.',
+        ],
+      },
+      clipper: {
+        who: 'Se você clipa',
+        steps: [
+          'Escolha as lives que você quer clipar.',
+          'Receba os lances que a IA marca, ao vivo.',
+          'Ajuste In/Out, legende e poste no seu TikTok.',
+        ],
+      },
     },
-    steps: {
-      title: 'Você cola o link. A IA faz a parte chata. Você decide.',
-      items: [
+    clippers: {
+      title: 'Clipe ao vivo. Poste com o lance ainda quente.',
+      body: 'Corte que sai no dia seguinte chega frio. Na ClipyRush você acompanha várias lives numa fila só, a IA marca os lances na hora e você ajusta, legenda e posta sem esperar a live acabar.',
+      points: [
         {
-          title: 'Cole o link da live',
-          body: 'Link da live gravada na Twitch, YouTube ou Kick, ou o próprio arquivo. A ClipyRush lê a fala, o áudio e o chat.',
+          title: 'Lances marcados ao vivo',
+          body: 'Pico no chat, grito, risada: a IA marca na hora e mostra o motivo.',
         },
         {
-          title: 'Revise o que a IA marcou',
-          body: 'Cada momento mostra por que foi escolhido: pico no chat, grito, risada. Descarte o que não serve.',
+          title: 'Várias lives, uma fila',
+          body: 'Cada live entra com o nome do canal. Você vê tudo que está rolando de uma vez.',
         },
         {
-          title: 'Corte, legende, agende',
-          body: 'Arraste o In e o Out, corrija uma palavra da legenda, escolha o horário. Nada vai ao ar sem o seu ok.',
+          title: 'Crédito pro streamer',
+          body: 'Cada corte guarda o canal e o timecode da live.',
+        },
+        { title: 'Legenda e 9:16 prontos', body: 'Você corrige o que precisar e posta.' },
+      ],
+      queueTitle: 'Ao vivo agora · 3 canais',
+      queue: [
+        {
+          channel: 'rafa_gg',
+          title: 'A curva no fim da etapa',
+          why: 'Pico no chat',
+          len: '0:38',
+          status: 'Ao vivo',
+          state: 'live',
+        },
+        {
+          channel: 'duda.joga',
+          title: 'Rage quit no chefão',
+          why: 'Grito + chat',
+          len: '0:24',
+          status: 'Pronto pra postar',
+          state: 'ready',
+        },
+        {
+          channel: 'teteu_aovivo',
+          title: 'Chat perdeu a linha',
+          why: 'Risada + chat',
+          len: '0:41',
+          status: 'Postado',
+          state: 'posted',
+        },
+        {
+          channel: 'rafa_gg',
+          title: 'Defesa no último segundo',
+          why: 'Pico no áudio',
+          len: '0:27',
+          status: 'Ao vivo',
+          state: 'live',
         },
       ],
+      clipSource: 'rafa_gg · 02:14:07',
     },
     inout: {
       title: 'A IA marca. O corte é seu.',
-      body: 'Às vezes a IA erra o tempo da piada. Por isso cada sugestão mostra o motivo e vem com duas alças: puxe o In pra pegar o contexto, empurre o Out pra pegar a reação.',
-      hint: 'Escolha um momento e arraste as alças ou use as setas do teclado.',
+      body: 'Às vezes a IA erra o tempo da piada. Por isso cada lance marcado mostra o motivo e vem com duas alças: puxe o In pra pegar o contexto, empurre o Out pra pegar a reação.',
+      hint: 'Escolha um lance e arraste as alças ou use as setas do teclado.',
       clips: [
         { title: 'A curva', why: 'Pico no chat' },
         { title: 'Defesa no último segundo', why: 'Pico no áudio' },
@@ -430,7 +452,7 @@ export const homeCopy: Record<Locale, HomeCopy> = {
       duration: 'Duração',
       save: 'Salvar este corte',
       saved: 'Corte salvo',
-      disclaimer: 'Demonstração com dados de exemplo. Nada é enviado.',
+      disclaimer: 'Teste aqui. Nada é enviado.',
       aiLabel: 'Sugestão da IA',
       youLabel: 'Seu corte',
     },
@@ -439,8 +461,8 @@ export const homeCopy: Record<Locale, HomeCopy> = {
       items: [
         {
           id: 'features/ai-moments',
-          title: 'Momentos com IA',
-          body: 'Lê a fala, os picos de áudio e o ritmo do chat, e mostra por que marcou cada trecho.',
+          title: 'Lances ao vivo',
+          body: 'Marca os lances com a live no ar, pela fala, pelos picos de áudio e pelo ritmo do chat, sempre com o motivo.',
         },
         {
           id: 'features/in-out-editor',
@@ -459,8 +481,8 @@ export const homeCopy: Record<Locale, HomeCopy> = {
         },
         {
           id: 'features/scheduling',
-          title: 'Agendamento',
-          body: 'TikTok, Shorts e Reels, no fuso de quem vai assistir.',
+          title: 'Postar ou agendar',
+          body: 'Poste na hora ou agende no TikTok, Shorts e Reels, no fuso de quem vai assistir.',
         },
         {
           id: 'features/analytics',
@@ -471,23 +493,15 @@ export const homeCopy: Record<Locale, HomeCopy> = {
       more: 'Todos os recursos',
     },
     personas: {
-      title: 'Pra quem faz live, edita ou cuida de canal.',
+      title: 'Também pra editores e agências.',
       items: [
-        {
-          id: 'use-cases/streamers',
-          who: 'Streamers',
-          problem: 'Você faz live de horas e não quer virar editor no dia seguinte.',
-          answer:
-            'Quando você volta, os melhores momentos já estão marcados. Revisa, ajusta e posta.',
-          link: 'Como funciona pra streamers',
-        },
         {
           id: 'use-cases/editors',
           who: 'Editores',
           problem:
             'Você edita pra vários criadores e perde horas procurando o momento na timeline.',
           answer:
-            'Comece pelos momentos marcados, com o timecode da origem e legenda e enquadramento editáveis.',
+            'Comece pelos lances marcados, com o timecode da origem e legenda e enquadramento editáveis.',
           link: 'Como funciona pra editores',
         },
         {
@@ -499,66 +513,9 @@ export const homeCopy: Record<Locale, HomeCopy> = {
         },
       ],
     },
-    clippers: {
-      title: 'Clipador não pode passar a noite assistindo live.',
-      body: 'Você corta pra vários canais e o momento esfria rápido. A ClipyRush junta as lives de todos eles numa fila, marca os trechos com o motivo e deixa você revisar, ajustar e agendar sem caçar nada na timeline.',
-      points: [
-        {
-          title: 'Vários canais, uma fila',
-          body: 'Cada live entra na fila com o nome do canal. Você vê o que a IA marcou em todos de uma vez.',
-        },
-        {
-          title: 'O motivo de cada corte',
-          body: 'Pico no chat, grito, risada. Você sabe por que o trecho foi marcado antes de dar play.',
-        },
-        {
-          title: 'Origem sempre junto',
-          body: 'Cada corte guarda o canal e o timecode da live. Fica fácil dar o crédito pro streamer.',
-        },
-        { title: 'Legenda e 9:16 prontos', body: 'Você só corrige o que precisar e agenda.' },
-      ],
-      cta: 'Entrar como clipador',
-      queueTitle: 'Fila de cortes · 3 canais',
-      queue: [
-        {
-          channel: 'rafa_gg',
-          title: 'A curva no fim da corrida',
-          why: 'Pico no chat',
-          len: '0:38',
-          status: 'Para revisar',
-          state: 'review',
-        },
-        {
-          channel: 'duda.joga',
-          title: 'Rage quit no chefão',
-          why: 'Grito + chat',
-          len: '0:24',
-          status: 'Aprovado',
-          state: 'approved',
-        },
-        {
-          channel: 'teteu_aovivo',
-          title: 'Chat perdeu a linha',
-          why: 'Risada + chat',
-          len: '0:41',
-          status: 'Agendado 19h',
-          state: 'scheduled',
-        },
-        {
-          channel: 'rafa_gg',
-          title: 'Defesa no último segundo',
-          why: 'Pico no áudio',
-          len: '0:27',
-          status: 'Para revisar',
-          state: 'review',
-        },
-      ],
-      clipSource: 'rafa_gg · 02:14:07',
-      note: 'Exemplo com canais fictícios.',
-    },
     pricing: {
       title: 'Preço',
-      body: 'Três planos: Creator, Editor e Agency. Os valores saem no lançamento, e quem está na lista fica sabendo antes.',
+      body: 'Planos pra streamers, clipadores, editores e agências. Os valores saem no lançamento, e quem está na lista fica sabendo antes.',
       note: 'Acesso antecipado. Os preços podem mudar.',
       link: 'Ver os planos',
     },
@@ -566,32 +523,32 @@ export const homeCopy: Record<Locale, HomeCopy> = {
       title: 'Antes de você perguntar',
       items: [
         {
-          q: 'O que a ClipyRush faz?',
-          a: 'Encontra os melhores momentos de lives longas e transforma em cortes verticais com legenda. Você revisa e ajusta cada corte antes de ir pra qualquer lugar.',
+          q: 'Clipa ao vivo mesmo?',
+          a: 'Sim. Enquanto a live acontece, a IA marca os lances e o clipador já pode ajustar, legendar e postar. Live gravada também funciona.',
         },
         {
-          q: 'A IA posta por mim?',
-          a: 'Não. A IA sugere. Nada é publicado sem você aprovar o corte e o horário.',
+          q: 'Como o streamer encontra um clipador?',
+          a: 'O streamer libera a live na ClipyRush e os clipadores escolhem quais lives querem cortar. Os detalhes de como cada lado se conecta saem junto com o acesso antecipado.',
         },
         {
-          q: 'Serve pra quem corta live de outros streamers?',
-          a: 'Serve. Cada live entra na fila com o canal, e cada corte guarda o timecode da origem. A autorização pra cortar e postar é combinada entre você e o streamer, dentro das regras de cada plataforma.',
+          q: 'A IA posta sozinha?',
+          a: 'Não. A IA marca. Quem decide o corte e a hora de postar é você.',
         },
         {
-          q: 'Funciona com quais plataformas?',
-          a: 'Estamos construindo para lives gravadas da Twitch, YouTube e Kick, além de upload de arquivo, e agendamento no TikTok, YouTube Shorts e Instagram Reels.',
+          q: 'Posso clipar live de outros streamers?',
+          a: 'Pode. Cada live entra na fila com o canal, e cada corte guarda o timecode da origem. A autorização pra cortar e postar é combinada entre você e o streamer, dentro das regras de cada plataforma.',
+        },
+        {
+          q: 'Quais plataformas?',
+          a: 'Estamos construindo para Twitch, YouTube e Kick, ao vivo ou gravadas, e postagem no TikTok, YouTube Shorts e Instagram Reels.',
+        },
+        {
+          q: 'De quem são os cortes?',
+          a: 'A live é do streamer. Como cada corte pode ser usado é combinado entre streamer e clipador; os detalhes vão estar nos Termos antes do lançamento.',
         },
         {
           q: 'Legenda em quais idiomas?',
           a: 'Vamos confirmar os idiomas antes de abrir o acesso antecipado. Português, inglês e espanhol vêm primeiro.',
-        },
-        {
-          q: 'De quem são os cortes?',
-          a: 'Seus. As lives e os cortes são conteúdo seu. Os detalhes vão estar nos Termos antes do lançamento.',
-        },
-        {
-          q: 'O que acontece com meu e-mail?',
-          a: 'A gente usa pra mandar seu convite de acesso antecipado e as novidades que você autorizar. Dá pra sair da lista quando quiser.',
         },
         {
           q: 'Quando lança?',
@@ -601,84 +558,130 @@ export const homeCopy: Record<Locale, HomeCopy> = {
     },
     final: {
       title: 'Your stream. Your cut.',
-      body: 'Cole o link de uma live sua. Quando a gente abrir, ela é a primeira a virar corte.',
+      body: 'Escolha seu lado e entre na lista. Quem entra agora testa primeiro.',
     },
-    sticky: 'Quero acesso antecipado',
+    sticky: { streamer: 'Faço live', clipper: 'Eu clipo' },
   },
 
   // TODO review: native Spanish (LatAm neutral) pass before launch.
   es: {
     meta: {
       description:
-        'ClipyRush mira tu stream completo, marca dónde explotaron el chat y el audio y te entrega el momento en 9:16 con subtítulos. Tú decides el inicio y el final.',
+        'Clipea streams en vivo. ClipyRush marca las jugadas al momento y entrega el clip en 9:16 con subtítulos. El streamer encuentra a su clipper; el clipper recorta y publica mientras está caliente.',
     },
     hero: {
-      kicker: 'Clips de streams para TikTok, Shorts y Reels',
-      titleA: 'Tu stream duró cuatro horas.',
-      titleB: 'El clip dura 38 segundos.',
-      lead: 'ClipyRush mira el stream completo, marca dónde explotaron el chat y el audio y te entrega el momento en 9:16, ya con subtítulos. Tú ajustas el inicio y el final y lo programas en TikTok.',
-      linkLabel: 'Pega el enlace de uno de tus streams',
-      linkPlaceholder: 'twitch.tv/videos/…',
-      linkHint:
-        'Un stream grabado de Twitch, YouTube o Kick. Cuando abramos, será el primero que recortemos.',
-      submit: 'Quiero acceso anticipado',
-      note: 'Todavía no lanzamos. Te avisamos por correo cuando sea tu turno.',
+      kicker: 'Clips de streams en vivo para TikTok, Shorts y Reels',
+      titleA: 'No pierdas el momento.',
+      titleB: 'Clipea en vivo.',
+      lead: 'Mientras el stream sigue, ClipyRush marca las jugadas y entrega el momento en 9:16, ya con subtítulos. Quien hace streams encuentra a su clipper. Quien clipea recorta y publica con el momento todavía caliente.',
+      note: 'Todavía no lanzamos. Elige tu lado y entras en la lista.',
       worksWith:
-        'Funciona con streams grabados de Twitch, YouTube y Kick o subiendo un archivo. Programa en TikTok, YouTube Shorts e Instagram Reels.',
+        'Twitch, YouTube y Kick, en vivo o grabados. Publica en TikTok, YouTube Shorts e Instagram Reels.',
+    },
+    doors: {
+      streamer: { who: 'Hago streams', action: 'Encontrar mi clipper' },
+      clipper: { who: 'Hago clips', action: 'Clipear en vivo' },
     },
     stage: {
-      label: 'Ejemplo: cómo un stream se convierte en clip',
-      duration: '4:12:33',
+      label: 'Cómo una jugada del stream se convierte en un clip publicado, en vivo',
       liveTime: '02:14:07',
       clipLen: '0:38',
+      hud: { pos: 'P1', lap: 'ETAPA 3/5', speed: '238 km/h' },
       chat: [
-        ['lu_pro', 'CLIPEA ESO'],
-        ['nico', 'JAJAJAJA'],
-        ['vale', 'otra vez pls'],
+        ['lu_pro', 'NOOOOO'],
+        ['nico', 'JAJAJAJAJAJA'],
+        ['vale', 'QUÉ FUE ESO'],
       ],
       caption: ['¡¿QUÉ CURVA', 'FUE ESA?!'],
       log: [
-        { tc: '02:13:58', text: 'El chat explota: “CLIPEA ESO” ×42' },
-        { tc: '02:14:07', text: 'La IA marca 38 s: pico de audio + chat' },
-        { tc: '9:16', text: 'Con subtítulos y encuadre, listo para que lo ajustes' },
-        { tc: '19:00', text: 'Programado en TikTok, hora de Ciudad de México' },
+        { tc: '02:13:58', text: 'El chat explota: JAJAJA, NOOOO, QUÉ FUE ESO' },
+        { tc: '02:14:07', text: 'La IA marca la jugada, con el stream en vivo' },
+        { tc: '02:14:40', text: 'El clipper ajusta In/Out · subtítulos y 9:16' },
+        { tc: '02:16:02', text: 'Publicado en TikTok. El stream sigue en vivo' },
       ],
       post: 'TikTok',
-      postWhen: 'Hoy, 19:00 · Ciudad de México',
+      postWhen: 'Publicado · @clipsdelu',
       pause: 'Pausar animación',
       play: 'Reproducir animación',
     },
-    story: {
-      title: 'Nadie va a ver cuatro horas para encontrar los 38 segundos buenos.',
-      example: 'Un stream de sábado, por ejemplo:',
-      stats: [
-        { value: '4:12:33', label: 'de stream grabado' },
-        { value: '3', label: 'momentos marcados por la IA, cada uno con su motivo' },
-        { value: '0:38', label: 'el clip que aprobaste y publicaste' },
-      ],
-      note: 'Ejemplo ilustrativo.',
+    sides: {
+      title: 'El streamer encuentra a su clipper. El clipper encuentra el momento.',
+      streamer: {
+        who: 'Si haces streams',
+        steps: [
+          'Conecta tu canal de Twitch, YouTube o Kick.',
+          'Deja que clippers recorten tu stream mientras juegas.',
+          'Mira los clips y aprueba lo que se publica.',
+        ],
+      },
+      clipper: {
+        who: 'Si haces clips',
+        steps: [
+          'Elige los streams que quieres clipear.',
+          'Recibe las jugadas que marca la IA, en vivo.',
+          'Ajusta In/Out, ponle subtítulos y publica en tu TikTok.',
+        ],
+      },
     },
-    steps: {
-      title: 'Tú pegas el enlace. La IA hace la parte aburrida. Tú decides.',
-      items: [
+    clippers: {
+      title: 'Clipea en vivo. Publica con la jugada todavía caliente.',
+      body: 'Un clip que sale al día siguiente llega frío. Con ClipyRush sigues varios streams en una sola cola, la IA marca las jugadas al momento y tú ajustas, subtitulas y publicas sin esperar a que termine el stream.',
+      points: [
         {
-          title: 'Pega el enlace del stream',
-          body: 'El enlace de tu stream grabado en Twitch, YouTube o Kick, o el archivo. ClipyRush lee la voz, el audio y el chat.',
+          title: 'Jugadas marcadas en vivo',
+          body: 'Un pico de chat, un grito, una risa: la IA lo marca al momento y te dice por qué.',
         },
         {
-          title: 'Revisa lo que marcó la IA',
-          body: 'Cada momento muestra por qué se eligió: un pico de chat, un grito, una risa. Descarta lo que no sirve.',
+          title: 'Varios streams, una cola',
+          body: 'Cada stream entra con el nombre del canal. Ves todo lo que está en vivo a la vez.',
         },
         {
-          title: 'Recorta, subtitula, programa',
-          body: 'Arrastra el In y el Out, corrige una palabra del subtítulo, elige la hora. Nada se publica sin tu ok.',
+          title: 'Crédito para el streamer',
+          body: 'Cada clip guarda el canal y el timecode del stream.',
+        },
+        { title: 'Subtítulos y 9:16 listos', body: 'Corriges lo que haga falta y publicas.' },
+      ],
+      queueTitle: 'En vivo ahora · 3 canales',
+      queue: [
+        {
+          channel: 'lu_pro',
+          title: 'La curva al final de la etapa',
+          why: 'Pico de chat',
+          len: '0:38',
+          status: 'En vivo',
+          state: 'live',
+        },
+        {
+          channel: 'nico.juega',
+          title: 'Rage quit en el jefe final',
+          why: 'Grito + chat',
+          len: '0:24',
+          status: 'Listo para publicar',
+          state: 'ready',
+        },
+        {
+          channel: 'vale_envivo',
+          title: 'El chat se volvió loco',
+          why: 'Risas + chat',
+          len: '0:41',
+          status: 'Publicado',
+          state: 'posted',
+        },
+        {
+          channel: 'lu_pro',
+          title: 'Salvada de último segundo',
+          why: 'Pico de audio',
+          len: '0:27',
+          status: 'En vivo',
+          state: 'live',
         },
       ],
+      clipSource: 'lu_pro · 02:14:07',
     },
     inout: {
       title: 'La IA lo marca. El corte es tuyo.',
-      body: 'A veces la IA no le atina al tiempo del chiste. Por eso cada sugerencia muestra su motivo y trae dos controles: mueve el In hacia atrás para tener el contexto y el Out hacia adelante para tener la reacción.',
-      hint: 'Elige un momento y arrastra los controles o usa las flechas del teclado.',
+      body: 'A veces la IA no le atina al tiempo del chiste. Por eso cada jugada marcada muestra su motivo y trae dos controles: mueve el In hacia atrás para tener el contexto y el Out hacia adelante para tener la reacción.',
+      hint: 'Elige una jugada y arrastra los controles o usa las flechas del teclado.',
       clips: [
         { title: 'La curva', why: 'Pico de chat' },
         { title: 'Salvada de último segundo', why: 'Pico de audio' },
@@ -689,7 +692,7 @@ export const homeCopy: Record<Locale, HomeCopy> = {
       duration: 'Duración',
       save: 'Guardar este corte',
       saved: 'Corte guardado',
-      disclaimer: 'Demo con datos de ejemplo. No se sube nada.',
+      disclaimer: 'Pruébalo aquí. No se sube nada.',
       aiLabel: 'Sugerencia de la IA',
       youLabel: 'Tu corte',
     },
@@ -698,8 +701,8 @@ export const homeCopy: Record<Locale, HomeCopy> = {
       items: [
         {
           id: 'features/ai-moments',
-          title: 'Momentos con IA',
-          body: 'Lee la voz, los picos de audio y el ritmo del chat, y te dice por qué marcó cada momento.',
+          title: 'Jugadas en vivo',
+          body: 'Marca las jugadas con el stream en vivo, por la voz, los picos de audio y el ritmo del chat, siempre con el motivo.',
         },
         {
           id: 'features/in-out-editor',
@@ -718,8 +721,8 @@ export const homeCopy: Record<Locale, HomeCopy> = {
         },
         {
           id: 'features/scheduling',
-          title: 'Programación',
-          body: 'TikTok, Shorts y Reels, en la zona horaria de tu audiencia.',
+          title: 'Publicar o programar',
+          body: 'Publica al momento o programa en TikTok, Shorts y Reels, en la zona horaria de tu audiencia.',
         },
         {
           id: 'features/analytics',
@@ -730,23 +733,15 @@ export const homeCopy: Record<Locale, HomeCopy> = {
       more: 'Todas las funciones',
     },
     personas: {
-      title: 'Para quien hace streams, edita o maneja canales.',
+      title: 'También para editores y agencias.',
       items: [
-        {
-          id: 'use-cases/streamers',
-          who: 'Streamers',
-          problem: 'Haces streams de horas y no quieres convertirte en editor al día siguiente.',
-          answer:
-            'Cuando vuelves, tus mejores momentos ya están marcados. Revisas, ajustas y publicas.',
-          link: 'Cómo funciona para streamers',
-        },
         {
           id: 'use-cases/editors',
           who: 'Editores',
           problem:
             'Editas para varios creadores y pierdes horas buscando el momento en la línea de tiempo.',
           answer:
-            'Empieza por los momentos marcados, con el timecode de origen y subtítulos y encuadre editables.',
+            'Empieza por las jugadas marcadas, con el timecode de origen y subtítulos y encuadre editables.',
           link: 'Cómo funciona para editores',
         },
         {
@@ -759,66 +754,9 @@ export const homeCopy: Record<Locale, HomeCopy> = {
         },
       ],
     },
-    clippers: {
-      title: 'Un clipper no puede pasarse la noche viendo streams.',
-      body: 'Recortas para varios canales y el momento se enfría rápido. ClipyRush junta los streams de todos en una cola, marca los momentos con su motivo y te deja revisar, recortar y programar sin buscar nada en la línea de tiempo.',
-      points: [
-        {
-          title: 'Varios canales, una cola',
-          body: 'Cada stream entra con el nombre del canal. Ves lo que marcó la IA en todos a la vez.',
-        },
-        {
-          title: 'El motivo de cada clip',
-          body: 'Un pico de chat, un grito, una risa. Sabes por qué se marcó antes de darle play.',
-        },
-        {
-          title: 'El origen siempre a mano',
-          body: 'Cada clip guarda el canal y el timecode del stream, así es fácil darle crédito al streamer.',
-        },
-        { title: 'Subtítulos y 9:16 listos', body: 'Solo corriges lo que haga falta y programas.' },
-      ],
-      cta: 'Unirme como clipper',
-      queueTitle: 'Cola de clips · 3 canales',
-      queue: [
-        {
-          channel: 'lu_pro',
-          title: 'La curva al final',
-          why: 'Pico de chat',
-          len: '0:38',
-          status: 'Por revisar',
-          state: 'review',
-        },
-        {
-          channel: 'nico.juega',
-          title: 'Rage quit en el jefe final',
-          why: 'Grito + chat',
-          len: '0:24',
-          status: 'Aprobado',
-          state: 'approved',
-        },
-        {
-          channel: 'vale_envivo',
-          title: 'El chat se volvió loco',
-          why: 'Risas + chat',
-          len: '0:41',
-          status: 'Programado 19:00',
-          state: 'scheduled',
-        },
-        {
-          channel: 'lu_pro',
-          title: 'Salvada de último segundo',
-          why: 'Pico de audio',
-          len: '0:27',
-          status: 'Por revisar',
-          state: 'review',
-        },
-      ],
-      clipSource: 'lu_pro · 02:14:07',
-      note: 'Ejemplo con canales ficticios.',
-    },
     pricing: {
       title: 'Precios',
-      body: 'Tres planes: Creator, Editor y Agency. Los precios salen en el lanzamiento, y quienes están en la lista se enteran primero.',
+      body: 'Planes para streamers, clippers, editores y agencias. Los precios salen en el lanzamiento, y quienes están en la lista se enteran primero.',
       note: 'Acceso anticipado. Los precios pueden cambiar.',
       link: 'Ver los planes',
     },
@@ -826,32 +764,32 @@ export const homeCopy: Record<Locale, HomeCopy> = {
       title: 'Antes de que preguntes',
       items: [
         {
-          q: '¿Qué hace ClipyRush?',
-          a: 'Encuentra los mejores momentos de streams largos y los convierte en clips verticales con subtítulos. Revisas y ajustas cada corte antes de que vaya a cualquier lado.',
+          q: '¿De verdad clipea en vivo?',
+          a: 'Sí. Mientras el stream está en vivo, la IA marca las jugadas y el clipper ya puede ajustar, subtitular y publicar. Los streams grabados también funcionan.',
         },
         {
-          q: '¿La IA publica por mí?',
-          a: 'No. La IA sugiere. Nada se publica hasta que apruebes el corte y la hora.',
+          q: '¿Cómo encuentra un streamer a su clipper?',
+          a: 'El streamer abre su stream a clippers en ClipyRush y los clippers eligen qué streams quieren recortar. Los detalles de cómo se conecta cada lado llegan con el acceso anticipado.',
         },
         {
-          q: '¿Sirve si recorto streams de otros?',
+          q: '¿La IA publica sola?',
+          a: 'No. La IA marca. Tú decides el corte y cuándo se publica.',
+        },
+        {
+          q: '¿Puedo clipear streams de otros?',
           a: 'Sí. Cada stream entra en la cola con su canal, y cada clip guarda el timecode de origen. El permiso para recortar y publicar lo acuerdas con el streamer, según las reglas de cada plataforma.',
         },
         {
-          q: '¿Con qué plataformas funciona?',
-          a: 'Estamos construyendo para streams grabados de Twitch, YouTube y Kick, además de subida de archivos, y programación en TikTok, YouTube Shorts e Instagram Reels.',
+          q: '¿Qué plataformas?',
+          a: 'Estamos construyendo para Twitch, YouTube y Kick, en vivo o grabados, y publicación en TikTok, YouTube Shorts e Instagram Reels.',
+        },
+        {
+          q: '¿De quién son los clips?',
+          a: 'El stream es del streamer. Cómo se puede usar cada clip lo acuerdan streamer y clipper; los detalles estarán en los Términos antes del lanzamiento.',
         },
         {
           q: '¿En qué idiomas son los subtítulos?',
           a: 'Confirmaremos los idiomas antes de abrir el acceso anticipado. Español, inglés y portugués van primero.',
-        },
-        {
-          q: '¿De quién son los clips?',
-          a: 'Tuyos. Tus streams y clips son tu contenido. Los detalles estarán en los Términos antes del lanzamiento.',
-        },
-        {
-          q: '¿Qué pasa con mi correo?',
-          a: 'Lo usamos para enviarte tu invitación de acceso anticipado y las novedades que aceptes. Puedes salir de la lista cuando quieras.',
         },
         {
           q: '¿Cuándo se lanza?',
@@ -861,8 +799,8 @@ export const homeCopy: Record<Locale, HomeCopy> = {
     },
     final: {
       title: 'Your stream. Your cut.',
-      body: 'Pega el enlace de uno de tus streams. Cuando abramos, será el primero que recortemos.',
+      body: 'Elige tu lado y entra en la lista. Quienes entran ahora lo prueban primero.',
     },
-    sticky: 'Quiero acceso anticipado',
+    sticky: { streamer: 'Hago streams', clipper: 'Hago clips' },
   },
 };
