@@ -17,6 +17,7 @@ export const featureRoutes: RouteId[] = [
 
 export const useCaseRoutes: RouteId[] = [
   'use-cases/streamers',
+  'use-cases/clippers',
   'use-cases/editors',
   'use-cases/agencies',
 ];

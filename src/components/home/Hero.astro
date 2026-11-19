@@ -61,12 +61,13 @@ const bars = Array.from({ length: 56 }, (_, i) => {
             <span class="tag-clip">CLIP</span>
           </span>
           <span class="bar-time tabular-nums" aria-hidden="true">
-            <span class="t-live">{c.stage.liveTime}</span>
+            <span class="t-live">
+              {c.stage.liveTime}
+              <span class="text-cr-muted"> / {c.stage.duration}</span>
+            </span>
             <span class="t-clip">{c.stage.clipLen}</span>
           </span>
-          <span class="ml-auto text-cr-muted tabular-nums" aria-hidden="true">
-            {c.stage.vod}
-          </span>
+          <span class="ml-auto"></span>
           <button
             type="button"
             class="story-toggle"
@@ -335,15 +336,15 @@ const bars = Array.from({ length: 56 }, (_, i) => {
   .hero .chat {
     position: absolute;
     top: 0;
-    right: 0;
+    left: 0;
     bottom: 0;
-    width: 40%;
+    width: 42%;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     gap: 0.25rem;
     padding: 4% 4% 6%;
-    background: linear-gradient(to left, rgb(11 18 32 / 0.85), rgb(11 18 32 / 0));
+    background: linear-gradient(to right, rgb(11 18 32 / 0.85), rgb(11 18 32 / 0));
     font-size: clamp(0.62rem, 2.4cqi, 0.85rem);
     line-height: 1.3;
     color: var(--cr-palette-paper);
@@ -368,7 +369,7 @@ const bars = Array.from({ length: 56 }, (_, i) => {
   /* Beat 2: the brand In/Out brackets close on the moment. */
   .hero .mark {
     position: absolute;
-    inset: 14% 44% 18% 10%;
+    inset: 14% 1% 10% 45%;
     opacity: 0;
     animation: cr-mark var(--loop) var(--cr-ease-standard) infinite;
   }
@@ -395,29 +396,33 @@ const bars = Array.from({ length: 56 }, (_, i) => {
     border-width: 0 4px 4px 0;
   }
 
-  /* Beat 3: reframe to 9:16 (crop = 9/16 ÷ 16/9 = 31.64% of the width). */
+  /*
+   * Beat 3: reframe to 9:16 on the car (crop = 9/16 ÷ 16/9 = 31.64% of the width).
+   * The car sits at ~48–97% of the frame for the whole clip, so the crop starts at 57%.
+   */
   .hero .side {
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 34.18%;
     background: rgb(11 18 32 / 0.8);
     transform: scaleX(0);
     animation: cr-side var(--loop) var(--cr-ease-standard) infinite;
   }
   .hero .side-l {
     left: 0;
+    width: 57%;
     transform-origin: left;
   }
   .hero .side-r {
     right: 0;
+    width: 11.36%;
     transform-origin: right;
   }
   .hero .crop {
     position: absolute;
     top: 3%;
     bottom: 3%;
-    left: 34.18%;
+    left: 57%;
     width: 31.64%;
     display: flex;
     flex-direction: column;

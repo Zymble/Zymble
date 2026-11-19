@@ -23,3 +23,8 @@
 | 2026-11-19 | Hero H1 is a concrete local-language line ("Sua live teve quatro horas. O corte tem 38 segundos."); the English tagline moves to the closing band and footer | A BR/ES visitor understands the product in the first line; tagline stays as signature |
 | 2026-11-19 | Hero always dark (broadcast feel) with a mock editor: LIVE→CLIP tag, chat overlay, In/Out brackets, 9:16 reframe, timecoded log synced to the 14 s loop | Shows the product instead of describing it |
 | 2026-11-19 | Scroll progress line under the header in cyan (playhead), pure CSS scroll-driven | Page reads as a timeline; zero JS |
+| 2026-11-19 | No "VOD" in copy: "live gravada" / "past broadcast" / "stream grabado"; player-style time "02:14:07 / 4:12:33" | Owner feedback: most creators don't know the term |
+| 2026-11-19 | Hero 9:16 crop, In/Out brackets and chat overlay positioned for the demo clip (car at ~48–97% of the frame) | The reframe has to show the action, not the empty road |
+| 2026-11-19 | Theme control: contrast icon in the desktop header; "Light / Dark" segmented control in the mobile menu and footer | Clearer than sun/moon glyphs; fewer icons in the mobile header |
+| 2026-11-19 | Mobile menu: 4 top-level rows, groups collapsed (details), PT/EN/ES and theme as compact controls | Owner feedback: menu had too many items |
+| 2026-11-19 | New use case `use-cases/clippers` and a home section for clippers with a multi-channel queue mock and the finished 9:16 clip; honest triggers only (identity, real pain, specificity, product view) | Clipping is a growing profession; no earnings/virality promises (CLAUDE.md honesty rules) |

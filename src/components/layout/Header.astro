@@ -4,7 +4,7 @@ import Icon from './Icon.astro';
 import LocaleLinks from './LocaleLinks.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import { headerNav } from '@/config/nav';
-import { localeMeta, type Locale, type RouteId } from '@/config/routes';
+import { localeMeta, localizedPath, locales, type Locale, type RouteId } from '@/config/routes';
 import { primaryCtaHref, signInHref, site } from '@/config/site';
 import { useTranslations } from '@/i18n/utils';
 
@@ -22,6 +22,8 @@ const ctaHref = primaryCtaHref(locale);
 
 const linkBase =
   'flex min-h-11 items-center rounded-cr-control px-3 text-cr-label font-semibold text-cr-text no-underline hover:bg-cr-surface-hover aria-[current=page]:text-cr-selected';
+const mobileRow =
+  'flex min-h-14 w-full items-center justify-between border-b border-cr-rule text-lg font-semibold text-cr-text no-underline';
 ---
 
 <header class="sticky top-0 z-40 border-b border-cr-rule bg-cr-bg/95 backdrop-blur">
@@ -106,7 +108,9 @@ const linkBase =
       </div>
     </div>
 
-    <ThemeToggle locale={locale} />
+    <div class="hidden lg:block">
+      <ThemeToggle locale={locale} />
+    </div>
 
     {site.appLive && (
       <a href={signInHref()} class:list={[linkBase, 'hidden sm:flex']}>
@@ -131,30 +135,34 @@ const linkBase =
     </button>
   </div>
 
+  <!-- Mobile menu: few top-level rows; groups open on tap. -->
   <div
     id="mobile-menu"
     hidden
     class="max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-cr-rule bg-cr-bg lg:hidden"
   >
-    <nav aria-label={t('a11y.mainNav')} class="container-cr py-4">
+    <nav aria-label={t('a11y.mainNav')} class="container-cr pt-2 pb-6">
       {headerNav.map((entry) =>
         'route' in entry ? (
           <a
             href={href(entry.route)}
-            class={linkBase}
+            class={mobileRow}
             aria-current={routeId === entry.route ? 'page' : undefined}
           >
             {t(entry.label)}
           </a>
         ) : (
-          <section class="mt-4 first:mt-0">
-            <h2 class="px-3 text-cr-caption text-cr-muted">{t(entry.label)}</h2>
-            <ul class="mt-1 grid gap-0.5 sm:grid-cols-2">
+          <details class="m-group border-b border-cr-rule">
+            <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between text-lg font-semibold">
+              {t(entry.label)}
+              <Icon name="chevron" size={20} class="m-chevron text-cr-muted" />
+            </summary>
+            <ul class="pb-3">
               {entry.items.map((id) => (
                 <li>
                   <a
                     href={href(id)}
-                    class={linkBase}
+                    class="flex min-h-11 items-center text-cr-muted no-underline hover:text-cr-text aria-[current=page]:text-cr-selected"
                     aria-current={routeId === id ? 'page' : undefined}
                   >
                     {label(id)}
@@ -162,19 +170,35 @@ const linkBase =
                 </li>
               ))}
             </ul>
-          </section>
+          </details>
         ),
       )}
-      <section class="mt-4">
-        <h2 class="px-3 text-cr-caption text-cr-muted">{t('a11y.language')}</h2>
-        <LocaleLinks
-          locale={locale}
-          routeId={routeId}
-          class="mt-1 grid gap-0.5 sm:grid-cols-3"
-          linkClass={linkBase}
-        />
-      </section>
-      <div class="mt-6 grid gap-2 border-t border-cr-rule pt-4">
+
+      <div class="mt-6 grid gap-4">
+        <div class="flex items-center justify-between gap-4">
+          <span class="text-cr-label text-cr-muted">{t('a11y.language')}</span>
+          <div class="inline-flex rounded-cr-control border border-cr-rule p-0.5">
+            {locales.map((l) => (
+              <a
+                href={localizedPath(routeId, l)}
+                hreflang={localeMeta[l].lang}
+                lang={localeMeta[l].lang}
+                aria-label={localeMeta[l].label}
+                aria-current={l === locale ? 'true' : undefined}
+                class="grid min-h-9 min-w-12 place-items-center rounded-[4px] text-cr-label font-semibold text-cr-muted no-underline aria-[current=true]:bg-cr-raised aria-[current=true]:text-cr-text"
+              >
+                {localeMeta[l].short}
+              </a>
+            ))}
+          </div>
+        </div>
+        <div class="flex items-center justify-between gap-4">
+          <span class="text-cr-label text-cr-muted">{t('footer.theme')}</span>
+          <ThemeToggle locale={locale} variant="segmented" />
+        </div>
+      </div>
+
+      <div class="mt-6 grid gap-2">
         <a href={ctaHref} class="cr-btn w-full">
           {cta}
         </a>
@@ -187,6 +211,15 @@ const linkBase =
     </nav>
   </div>
 </header>
+
+<style>
+  .m-group summary::-webkit-details-marker {
+    display: none;
+  }
+  .m-group[open] :global(.m-chevron) {
+    transform: rotate(180deg);
+  }
+</style>
 
 <script>
   type Toggle = { button: HTMLButtonElement; panel: HTMLElement; root: HTMLElement };

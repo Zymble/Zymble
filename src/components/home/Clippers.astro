@@ -1,0 +1,286 @@
+---
+/**
+ * For clippers (people who clip other streamers' channels for a living).
+ * Honest triggers only: identity ("clipador"), the real pain (a moment cools off fast),
+ * specificity (channels, reasons, timecodes) and a product view instead of promises.
+ * Visual: a multi-channel clip queue (mock, sample data) + the finished 9:16 clip.
+ */
+import { getImage } from 'astro:assets';
+import poster from '../../../brand/mockups/night-stage.jpg';
+import type { Locale } from '@/config/routes';
+import { primaryCtaHref } from '@/config/site';
+import { homeCopy } from '@/content/home';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const c = homeCopy[locale].clippers;
+const caption = homeCopy[locale].stage.caption;
+const img = await getImage({ src: poster, width: 720, format: 'webp', quality: 70 });
+const ctaHref = `${primaryCtaHref(locale)}#clipper`;
+---
+
+<section class="clippers pt-8 pb-24 md:pt-12 md:pb-32" aria-labelledby="clippers-title">
+  <div class="container-cr grid gap-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+    <div>
+      <h2 id="clippers-title" class="text-title-cr [text-wrap:balance]">
+        {c.title}
+      </h2>
+      <p class="mt-5 max-w-[46ch] text-lg leading-relaxed text-cr-muted">{c.body}</p>
+
+      <dl class="mt-10 border-t border-cr-text">
+        {c.points.map((p) => (
+          <div class="border-b border-cr-rule py-5">
+            <dt class="font-semibold">{p.title}</dt>
+            <dd class="mt-1 text-cr-muted">{p.body}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <a href={ctaHref} class="cr-btn mt-8">
+        {c.cta}
+      </a>
+    </div>
+
+    <figure class="visual m-0" aria-labelledby="queue-caption">
+      <div class="stack">
+        <div class="queue" aria-hidden="true">
+          <div class="queue-bar">
+            <span class="font-semibold">{c.queueTitle}</span>
+            <span class="dots">
+              <i></i>
+              <i></i>
+              <i></i>
+            </span>
+          </div>
+          <ul>
+            {c.queue.map((row) => (
+              <li class="q-row">
+                <span class="avatar">{row.channel.charAt(0).toUpperCase()}</span>
+                <span class="min-w-0">
+                  <span class="q-title">{row.title}</span>
+                  <span class="q-meta">
+                    {row.channel} · {row.why}
+                  </span>
+                </span>
+                <span class="q-len tabular-nums">{row.len}</span>
+                <span class={`q-status ${row.state}`}>{row.status}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="phone" data-theme="dark" aria-hidden="true">
+          <img src={img.src} alt="" width="720" height="405" loading="lazy" decoding="async" />
+          <span class="phone-source tabular-nums">{c.clipSource}</span>
+          <span class="phone-cap">
+            <span>{caption[0]}</span>
+            <span class="accent">{caption[1]}</span>
+          </span>
+        </div>
+      </div>
+
+      <figcaption id="queue-caption" class="mt-4 text-cr-caption text-cr-muted">
+        {c.note}
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .visual {
+    align-self: center;
+  }
+  .stack {
+    position: relative;
+  }
+  @media (width >= 40rem) {
+    .stack {
+      padding-right: 11.5rem;
+      padding-bottom: 3.5rem;
+    }
+  }
+
+  /* ---------- Queue mock ---------- */
+  .queue {
+    border: 1px solid var(--cr-rule);
+    border-radius: var(--cr-radius-panel);
+    background: var(--cr-surface);
+    overflow: hidden;
+    box-shadow: 0 24px 60px -32px rgb(16 24 40 / 0.35);
+  }
+  .queue-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 2.75rem;
+    padding-inline: 1rem;
+    border-bottom: 1px solid var(--cr-rule);
+    font-size: var(--cr-type-label-size);
+  }
+  .dots {
+    display: inline-flex;
+    gap: 0.3rem;
+  }
+  .dots i {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--cr-rule);
+  }
+  .queue ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .q-row {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr) auto;
+    grid-template-areas: 'av main len' 'av status status';
+    align-items: center;
+    gap: 0.15rem 0.75rem;
+    padding: 0.85rem 1rem;
+  }
+  .q-row + .q-row {
+    border-top: 1px solid var(--cr-rule);
+  }
+  @media (width >= 40rem) {
+    .q-row {
+      grid-template-columns: 2.25rem minmax(0, 1fr) 3rem 8.5rem;
+      grid-template-areas: 'av main len status';
+    }
+  }
+  .avatar {
+    grid-area: av;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: var(--cr-raised);
+    color: var(--cr-text);
+    font-weight: 700;
+  }
+  .q-title {
+    display: block;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .q-meta {
+    display: block;
+    font-size: var(--cr-type-caption-size);
+    color: var(--cr-muted);
+  }
+  .q-len {
+    grid-area: len;
+    font-size: var(--cr-type-time-size);
+    color: var(--cr-muted);
+    text-align: right;
+  }
+  .q-status {
+    grid-area: status;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: var(--cr-type-caption-size);
+    font-weight: 600;
+  }
+  .q-status::before {
+    content: '';
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .q-status.review {
+    color: var(--cr-warning);
+  }
+  .q-status.approved {
+    color: var(--cr-success);
+  }
+  .q-status.scheduled {
+    color: var(--cr-info);
+  }
+
+  /* ---------- Finished 9:16 clip ---------- */
+  .phone {
+    position: relative;
+    width: min(11rem, 46%);
+    aspect-ratio: 9 / 16;
+    margin: -3rem 0 0 auto;
+    border: 6px solid var(--cr-palette-navy);
+    border-radius: 1.6rem;
+    overflow: hidden;
+    background: var(--cr-palette-night);
+    box-shadow: 0 30px 70px -25px rgb(0 0 0 / 0.55);
+  }
+  @media (width >= 40rem) {
+    .phone {
+      position: absolute;
+      right: 0;
+      top: 2.5rem;
+      width: 12.5rem;
+      margin: 0;
+    }
+  }
+  .phone img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 74% 50%;
+  }
+  .phone-source {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    background: rgb(11 18 32 / 0.75);
+    color: var(--cr-palette-paper);
+    font-size: 0.65rem;
+    font-weight: 600;
+  }
+  .phone-cap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 22%;
+    display: grid;
+    justify-items: center;
+    font-size: 1rem;
+    font-weight: 850;
+    line-height: 1.05;
+    color: var(--cr-palette-white);
+    text-shadow:
+      0 2px 0 var(--cr-palette-night),
+      0 0 14px rgb(11 18 32 / 0.95);
+  }
+  .phone-cap .accent {
+    color: var(--cr-palette-orange);
+  }
+  /* In/Out brackets on the finished clip. */
+  .phone::before,
+  .phone::after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    width: 26%;
+    height: 12%;
+    border: 0 solid var(--cr-palette-orange);
+  }
+  .phone::before {
+    top: 2.6rem;
+    left: 0.6rem;
+    border-width: 3px 0 0 3px;
+  }
+  .phone::after {
+    right: 0.6rem;
+    bottom: 0.6rem;
+    border-width: 0 3px 3px 0;
+  }
+</style>

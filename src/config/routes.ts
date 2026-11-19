@@ -30,6 +30,7 @@ export const routeIds = [
   'features/scheduling',
   'features/analytics',
   'use-cases/streamers',
+  'use-cases/clippers',
   'use-cases/editors',
   'use-cases/agencies',
   'pricing',

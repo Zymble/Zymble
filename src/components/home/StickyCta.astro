@@ -32,6 +32,10 @@ const { locale } = Astro.props;
       animation: cr-slide-up var(--cr-duration-enter) var(--cr-ease-standard);
     }
   }
+  /* Never on top of the open mobile menu. */
+  :global(body:has(#mobile-menu:not([hidden]))) .sticky-cta {
+    display: none;
+  }
   @keyframes cr-slide-up {
     from {
       transform: translateY(100%);

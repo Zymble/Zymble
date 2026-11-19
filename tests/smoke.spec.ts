@@ -46,14 +46,14 @@ test('placeholder pages are noindex', async ({ page }) => {
   await expect(page.locator('meta[name=robots]')).toHaveAttribute('content', /noindex/);
 });
 
-test('theme toggle persists across navigation', async ({ page }) => {
+test('theme choice persists across navigation', async ({ page }) => {
   await page.goto('/');
   const before = await page.locator('html').getAttribute('data-theme');
-  await page.locator('header .theme-toggle').first().click();
-  const after = await page.locator('html').getAttribute('data-theme');
-  expect(after).not.toBe(before);
+  const target = before === 'dark' ? 'light' : 'dark';
+  await page.locator(`footer [data-theme-set="${target}"]`).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', target);
   await page.goto('/pt-br/');
-  await expect(page.locator('html')).toHaveAttribute('data-theme', after ?? '');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', target);
 });
 
 test('skip link moves focus to main', async ({ page }) => {
