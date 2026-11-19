@@ -28,6 +28,13 @@ This repo is ONLY the marketing site (landing, features, use cases, pricing, blo
 - Voice: `brand/strategy/brand-voice.md` and `positioning.md`. Energetic in campaigns, precise in product copy. The creator decides the cut — the AI suggests.
 - Visual reference for product screenshots/mock UI: `brand/mockups/index.html` (13-screen prototype).
 
+## UX library: UI UX Pro Max
+- Installed at `.claude/skills/ui-ux-pro-max/` (from npm `uipro-cli@2.2.3`, installed offline). Use it for UX patterns, layout, accessibility and pre-delivery checklists: `python3 .claude/skills/ui-ux-pro-max/scripts/search.py "<query>" --domain ux|landing|web-interface` or `--stack astro|svelte|html-tailwind`.
+- Its palettes, fonts and styles are NOT used: brand tokens and Inter win. Ignore its conversion tactics that break the honesty rules (waitlist counters, testimonials, stat counters, unsourced percentages, countdown urgency).
+
+## Localization (CX per market)
+- Copy is written per market, not translated: `en` = United States creators, `pt-br` = Brazilian creators, `es` = Spanish-speaking creators. See `docs/LOCALIZATION.md` for voice, glossary and rules.
+
 ## Honesty rules (non-negotiable)
 - **Never invent** testimonials, customer logos, user counts, follower counts, "trusted by X", ratings, awards, security badges (SOC 2 etc.), press mentions, or performance claims ("10x faster", "go viral").
 - Sections that need social proof are built with a typed data file that starts EMPTY; the section renders nothing in production until real, approved entries exist.

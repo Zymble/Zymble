@@ -13,3 +13,5 @@
 | 2026-11-19 | Header CTA uses a short label and hides below 640 px (it stays in the menu and hero) | Avoid horizontal scroll at 360 px |
 | 2026-11-19 | Only `VERCEL_ENV=production` is indexable | Previews must never be indexed |
 | 2026-11-19 | Local preview uses `scripts/serve-static.mjs` | The Vercel adapter does not support `astro preview` |
+| 2026-11-19 | UI UX Pro Max skill adopted as UX reference only (no palettes/fonts/fake social proof) | Better UX patterns and checklists without breaking brand or honesty rules |
+| 2026-11-19 | Copy is written per market (US, BR, Spanish-speaking), see docs/LOCALIZATION.md | Owner works as CX for each market; translation alone reads foreign |
