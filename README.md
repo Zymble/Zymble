@@ -1,7 +1,7 @@
-# ClipyRush — marketing site
+# RushClippy — marketing site
 
-Public site for [clipyrush.com](https://clipyrush.com). The SaaS app lives in a separate repo
-(`app.clipyrush.com`). Read `CLAUDE.md` and `docs/` before contributing.
+Public site for [rushclippy.com](https://rushclippy.com). The SaaS app lives in a separate repo
+(`app.rushclippy.com`). Read `CLAUDE.md` and `docs/` before contributing.
 
 ## Stack
 
@@ -48,7 +48,7 @@ The same steps run in GitHub Actions (`.github/workflows/ci.yml`) on every PR.
 
 ```bash
 npm run build
-python3 scripts/preview-artifact.py .vercel/output/static /tmp/clipyrush-preview
+python3 scripts/preview-artifact.py .vercel/output/static /tmp/rushclippy-preview
 ```
 
 Produces every page as flat files (`index.html` = pt-br home, `pt-br-clippers.html`, …) with working

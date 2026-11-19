@@ -50,7 +50,7 @@ export interface ClipperCopy {
 export const streamerCopy: Record<Locale, StreamerCopy> = {
   en: {
     meta: {
-      title: 'Clippers from $30 — ClipyRush',
+      title: 'Clippers from $30 — RushClippy',
       description:
         'Set a prize, run clip contests and see who’s clipping your stream, live. Nothing goes out under your name without your rules.',
     },
@@ -126,7 +126,7 @@ export const streamerCopy: Record<Locale, StreamerCopy> = {
         },
         {
           q: 'Who can clip my stream?',
-          a: 'You choose: open it to every clipper on ClipyRush or only to people you invite.',
+          a: 'You choose: open it to every clipper on RushClippy or only to people you invite.',
         },
         {
           q: 'Can clips go out without me seeing them?',
@@ -143,7 +143,7 @@ export const streamerCopy: Record<Locale, StreamerCopy> = {
 
   'pt-br': {
     meta: {
-      title: 'Tem R$ 100? Clipadores postam sua live — ClipyRush',
+      title: 'Tem R$ 100? Clipadores postam sua live — RushClippy',
       description:
         'Ponha prêmio, abra campeonato de cortes e veja quem está clipando sua live, ao vivo. Nada sai com seu nome sem as suas regras.',
     },
@@ -215,7 +215,7 @@ export const streamerCopy: Record<Locale, StreamerCopy> = {
         },
         {
           q: 'Quem pode clipar minha live?',
-          a: 'Você escolhe: liberar pra todos os clipadores da ClipyRush ou só pra quem você convidar.',
+          a: 'Você escolhe: liberar pra todos os clipadores da RushClippy ou só pra quem você convidar.',
         },
         {
           q: 'Os cortes saem sem eu ver?',
@@ -236,7 +236,7 @@ export const streamerCopy: Record<Locale, StreamerCopy> = {
   // TODO review: native Spanish (LatAm neutral) pass before launch.
   es: {
     meta: {
-      title: '¿Tienes US$20? Clippers publican tu stream — ClipyRush',
+      title: '¿Tienes US$20? Clippers publican tu stream — RushClippy',
       description:
         'Pon un premio, abre torneos de clips y mira quién clipea tu stream, en vivo. Nada sale con tu nombre sin tus reglas.',
     },
@@ -308,7 +308,7 @@ export const streamerCopy: Record<Locale, StreamerCopy> = {
         },
         {
           q: '¿Quién puede clipear mi stream?',
-          a: 'Tú eliges: abrirlo a todos los clippers de ClipyRush o solo a quienes invites.',
+          a: 'Tú eliges: abrirlo a todos los clippers de RushClippy o solo a quienes invites.',
         },
         {
           q: '¿Los clips salen sin que los vea?',
@@ -330,7 +330,7 @@ export const streamerCopy: Record<Locale, StreamerCopy> = {
 export const clipperCopy: Record<Locale, ClipperCopy> = {
   en: {
     meta: {
-      title: 'Clip streams live and compete for prizes — ClipyRush',
+      title: 'Clip streams live and compete for prizes — RushClippy',
       description:
         'The AI flags plays live. You post, earn per view or approved clip and compete in contests streamers run. Results vary.',
     },
@@ -346,7 +346,7 @@ export const clipperCopy: Record<Locale, ClipperCopy> = {
       views: 'Per 1,000 views',
       contest: ['Contests', 'Prize for the top of the board.'],
       offer: ['Your channel pays', 'Streamers pay to get their clips on it.'],
-      disclaimer: 'ClipyRush doesn’t guarantee income. Earnings depend on each streamer’s rules.',
+      disclaimer: 'RushClippy doesn’t guarantee income. Earnings depend on each streamer’s rules.',
     },
     steps: { title: 'Three taps.', items: ['Paste the link', 'Connect TikTok', 'Let it clip'] },
     statement: 'The biggest channels have people clipping them. Be one.',
@@ -363,7 +363,7 @@ export const clipperCopy: Record<Locale, ClipperCopy> = {
         },
         {
           q: 'Can I clip any stream?',
-          a: 'You clip the streams that streamers open on ClipyRush, following each channel’s rules.',
+          a: 'You clip the streams that streamers open on RushClippy, following each channel’s rules.',
         },
         {
           q: 'Does the AI post for me?',
@@ -380,7 +380,7 @@ export const clipperCopy: Record<Locale, ClipperCopy> = {
 
   'pt-br': {
     meta: {
-      title: 'Clipe lives de canais gringos e receba em dólar — ClipyRush',
+      title: 'Clipe lives de canais gringos e receba em dólar — RushClippy',
       description:
         'A IA marca os lances ao vivo. Você posta, ganha por mil views ou por corte aprovado e disputa campeonatos dos streamers. Os resultados variam.',
     },
@@ -396,7 +396,7 @@ export const clipperCopy: Record<Locale, ClipperCopy> = {
       views: 'Por mil views',
       contest: ['Campeonatos', 'Prêmio pro topo do ranking.'],
       offer: ['Seu canal vale dinheiro', 'Streamers pagam pra aparecer nele.'],
-      disclaimer: 'A ClipyRush não garante renda. Os ganhos dependem das regras de cada streamer.',
+      disclaimer: 'A RushClippy não garante renda. Os ganhos dependem das regras de cada streamer.',
     },
     steps: { title: 'Três toques.', items: ['Cole o link', 'Conecte o TikTok', 'Deixe clipando'] },
     statement: 'Os maiores canais têm gente clipando. Seja um deles.',
@@ -417,7 +417,7 @@ export const clipperCopy: Record<Locale, ClipperCopy> = {
         },
         {
           q: 'Posso clipar qualquer live?',
-          a: 'Você clipa as lives que os streamers liberam na ClipyRush, seguindo as regras de cada canal.',
+          a: 'Você clipa as lives que os streamers liberam na RushClippy, seguindo as regras de cada canal.',
         },
         {
           q: 'A IA posta por mim?',
@@ -438,7 +438,7 @@ export const clipperCopy: Record<Locale, ClipperCopy> = {
   // TODO review: native Spanish (LatAm neutral) pass before launch.
   es: {
     meta: {
-      title: 'Clipea streams de canales de fuera y cobra en dólares — ClipyRush',
+      title: 'Clipea streams de canales de fuera y cobra en dólares — RushClippy',
       description:
         'La IA marca las jugadas en vivo. Publicas, ganas por mil views o por clip aprobado y compites en torneos de streamers. Los resultados varían.',
     },
@@ -455,7 +455,7 @@ export const clipperCopy: Record<Locale, ClipperCopy> = {
       contest: ['Torneos', 'Premio para el top del ranking.'],
       offer: ['Tu canal vale dinero', 'Los streamers pagan por aparecer en él.'],
       disclaimer:
-        'ClipyRush no garantiza ingresos. Las ganancias dependen de las reglas de cada streamer.',
+        'RushClippy no garantiza ingresos. Las ganancias dependen de las reglas de cada streamer.',
     },
     steps: {
       title: 'Tres toques.',
@@ -479,7 +479,7 @@ export const clipperCopy: Record<Locale, ClipperCopy> = {
         },
         {
           q: '¿Puedo clipear cualquier stream?',
-          a: 'Clipeas los streams que los streamers abren en ClipyRush, siguiendo las reglas de cada canal.',
+          a: 'Clipeas los streams que los streamers abren en RushClippy, siguiendo las reglas de cada canal.',
         },
         {
           q: '¿La IA publica por mí?',

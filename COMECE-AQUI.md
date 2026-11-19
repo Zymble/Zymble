@@ -1,10 +1,10 @@
 # Comece aqui (pra você, não pro Claude Code)
 
 ## 1. Montar o repositório (uma vez)
-1. Crie um repo novo no GitHub, por exemplo `Zymble/clipyrush-site` (separado do repo do app).
+1. Crie um repo novo no GitHub, por exemplo `Zymble/rushclippy-site` (separado do repo do app).
 2. Suba o conteúdo desta pasta: `CLAUDE.md`, `docs/`, `brand/`, `COMECE-AQUI.md`.
 3. Conecte o repo na Vercel (Import Project). Cada PR ganha um link de preview que abre no celular.
-4. Registre o domínio `clipyrush.com` (e, se der, `.com.br` e `.gg` para proteger a marca).
+4. Registre o domínio `rushclippy.com` (e, se der, `.com.br` e `.gg` para proteger a marca).
 
 ## 2. Primeira conversa com o Claude Code (pelo celular)
 Abra o Claude Code apontando para o repo e mande:

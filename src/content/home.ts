@@ -84,7 +84,7 @@ export const homeCopy: Record<Locale, HomeCopy> = {
   en: {
     meta: {
       description:
-        'Clip streams live. ClipyRush flags the plays as they happen and hands over the moment in 9:16 with captions. Streamers find their clipper; clippers cut and post while it’s hot.',
+        'Clip streams live. RushClippy flags the plays as they happen and hands over the moment in 9:16 with captions. Streamers find their clipper; clippers cut and post while it’s hot.',
     },
     hero: {
       kicker: 'Live stream clipping for TikTok, Shorts and Reels',
@@ -267,7 +267,7 @@ export const homeCopy: Record<Locale, HomeCopy> = {
         },
         {
           q: 'How does a streamer find a clipper?',
-          a: 'Streamers open their stream to clippers on ClipyRush, and clippers pick the streams they want to cut. The details of how each side connects come with early access.',
+          a: 'Streamers open their stream to clippers on RushClippy, and clippers pick the streams they want to cut. The details of how each side connects come with early access.',
         },
         {
           q: 'Does the AI post on its own?',
@@ -305,7 +305,7 @@ export const homeCopy: Record<Locale, HomeCopy> = {
   'pt-br': {
     meta: {
       description:
-        'Clipe lives ao vivo. A ClipyRush marca os lances na hora e entrega o trecho em 9:16, legendado. Streamer encontra clipador; clipador corta e posta com o momento ainda quente.',
+        'Clipe lives ao vivo. A RushClippy marca os lances na hora e entrega o trecho em 9:16, legendado. Streamer encontra clipador; clipador corta e posta com o momento ainda quente.',
     },
     hero: {
       kicker: 'Cortes de live ao vivo para TikTok, Shorts e Reels',
@@ -488,7 +488,7 @@ export const homeCopy: Record<Locale, HomeCopy> = {
         },
         {
           q: 'Como o streamer encontra um clipador?',
-          a: 'O streamer libera a live na ClipyRush e os clipadores escolhem quais lives querem cortar. Os detalhes de como cada lado se conecta saem junto com o acesso antecipado.',
+          a: 'O streamer libera a live na RushClippy e os clipadores escolhem quais lives querem cortar. Os detalhes de como cada lado se conecta saem junto com o acesso antecipado.',
         },
         {
           q: 'A IA posta sozinha?',
@@ -527,7 +527,7 @@ export const homeCopy: Record<Locale, HomeCopy> = {
   es: {
     meta: {
       description:
-        'Clipea streams en vivo. ClipyRush marca las jugadas al momento y entrega el clip en 9:16 con subtítulos. El streamer encuentra a su clipper; el clipper recorta y publica mientras está caliente.',
+        'Clipea streams en vivo. RushClippy marca las jugadas al momento y entrega el clip en 9:16 con subtítulos. El streamer encuentra a su clipper; el clipper recorta y publica mientras está caliente.',
     },
     hero: {
       kicker: 'Clips de streams en vivo para TikTok, Shorts y Reels',
@@ -639,7 +639,7 @@ export const homeCopy: Record<Locale, HomeCopy> = {
       youLabel: 'Tu corte',
     },
     features: {
-      title: 'Lo que trae ClipyRush',
+      title: 'Lo que trae RushClippy',
       items: [
         {
           id: 'features/ai-moments',
@@ -711,7 +711,7 @@ export const homeCopy: Record<Locale, HomeCopy> = {
         },
         {
           q: '¿Cómo encuentra un streamer a su clipper?',
-          a: 'El streamer abre su stream a clippers en ClipyRush y los clippers eligen qué streams quieren recortar. Los detalles de cómo se conecta cada lado llegan con el acceso anticipado.',
+          a: 'El streamer abre su stream a clippers en RushClippy y los clippers eligen qué streams quieren recortar. Los detalles de cómo se conecta cada lado llegan con el acceso anticipado.',
         },
         {
           q: '¿La IA publica sola?',

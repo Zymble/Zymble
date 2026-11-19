@@ -1,31 +1,33 @@
 ---
 /**
- * Official horizontal signature. Files come from brand/logo (copied to public/brand)
- * and are swapped by theme, never recolored.
+ * TEMPORARY wordmark (2026-11-19): the product was renamed to RushClippy and the official
+ * brand/logo SVGs still carry the old lettering. Until the designer delivers the new
+ * signature, we show the official symbol + the name set in Inter. Replace with the new
+ * official SVGs as soon as they exist (CLAUDE.md: never redraw the official logo).
  */
 interface Props {
   height?: number;
   class?: string;
 }
 const { height = 28, class: className = '' } = Astro.props;
-const width = Math.round((312 / 66) * height);
 ---
 
-<span class:list={['inline-flex', className]}>
-  <img
-    class="logo-on-light"
-    src="/brand/horizontal-light.svg"
-    alt="ClipyRush"
-    width={width}
-    height={height}
-    decoding="async"
-  />
-  <img
-    class="logo-on-dark"
-    src="/brand/horizontal-dark.svg"
-    alt="ClipyRush"
-    width={width}
-    height={height}
-    decoding="async"
-  />
+<span class:list={['logo', className]} style={`--h:${height}px`}>
+  <img src="/brand/symbol.svg" alt="" width={height} height={height} decoding="async" />
+  <span class="word">RushClippy</span>
 </span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--h) * 0.3);
+    color: var(--cr-text);
+  }
+  .word {
+    font-size: calc(var(--h) * 0.82);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+</style>

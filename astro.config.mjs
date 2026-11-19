@@ -8,7 +8,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { loadEnv } from 'vite';
 
 const env = loadEnv(process.env.NODE_ENV ?? 'production', process.cwd(), '');
-const site = env.PUBLIC_SITE_URL || 'https://clipyrush.com';
+const site = env.PUBLIC_SITE_URL || 'https://rushclippy.com';
 
 // Only pages with status "live" in src/config/routes.ts go into the sitemap.
 import { indexablePaths } from './src/config/routes.ts';

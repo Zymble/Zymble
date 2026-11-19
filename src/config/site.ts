@@ -3,10 +3,10 @@ import { localizedPath, type Locale } from './routes';
 const env = import.meta.env;
 
 export const site = {
-  name: 'ClipyRush',
+  name: 'RushClippy',
   tagline: 'Your stream. Your cut.',
-  url: env.PUBLIC_SITE_URL || 'https://clipyrush.com',
-  appUrl: env.PUBLIC_APP_URL || 'https://app.clipyrush.com',
+  url: env.PUBLIC_SITE_URL || 'https://rushclippy.com',
+  appUrl: env.PUBLIC_APP_URL || 'https://app.rushclippy.com',
   /** false = CTAs go to the waitlist; true = CTAs go to the app. */
   appLive: env.PUBLIC_APP_LIVE === 'true',
   plausibleDomain: env.PUBLIC_PLAUSIBLE_DOMAIN || '',

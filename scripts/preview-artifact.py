@@ -111,7 +111,7 @@ for url_path, f in pages.items():
         )
         keep = re.sub(r'<title>.*?</title>', '', keep, flags=re.S)
         frag = (
-            '<title>ClipyRush</title>\n<style>body{background:var(--cr-bg);color:var(--cr-text)}</style>\n'
+            '<title>RushClippy</title>\n<style>body{background:var(--cr-bg);color:var(--cr-text)}</style>\n'
             + keep
             + f'\n<div class="{body_cls}">{body_m.group(2)}</div>'
         )

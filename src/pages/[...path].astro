@@ -48,15 +48,15 @@ const meta: Partial<Record<RouteId, { title: string; description: string }>> = {
   streamers: streamerCopy[locale].meta,
   clippers: clipperCopy[locale].meta,
   'early-access': {
-    title: `${waitlistCopy[locale].page.title} — ClipyRush`,
+    title: `${waitlistCopy[locale].page.title} — RushClippy`,
     description: waitlistCopy[locale].page.lead,
   },
   'early-access/confirmed': {
-    title: `${waitlistCopy[locale].confirmed.title} — ClipyRush`,
+    title: `${waitlistCopy[locale].confirmed.title} — RushClippy`,
     description: waitlistCopy[locale].confirmed.body,
   },
 };
-const title = meta[id]?.title ?? `${page(id)} — ClipyRush`;
+const title = meta[id]?.title ?? `${page(id)} — RushClippy`;
 const description = meta[id]?.description ?? t('soon.body');
 ---
 

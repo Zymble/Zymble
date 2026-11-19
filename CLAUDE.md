@@ -1,8 +1,8 @@
-# CLAUDE.md — ClipyRush marketing site
+# CLAUDE.md — RushClippy marketing site
 
-You are building the **public marketing website** for ClipyRush (clipyrush.com): an AI tool that finds the best moments in long streams/videos and turns them into short vertical clips the creator fine-tunes before posting. Tagline: **"Your stream. Your cut."**
+You are building the **public marketing website** for RushClippy (rushclippy.com): an AI tool that finds the best moments in long streams/videos and turns them into short vertical clips the creator fine-tunes before posting. Tagline: **"Your stream. Your cut."**
 
-This repo is ONLY the marketing site (landing, features, use cases, pricing, blog, changelog, legal, waitlist). The SaaS app lives in a separate repo and will be served at `app.clipyrush.com`. Never build app features (auth, video processing, billing) here.
+This repo is ONLY the marketing site (landing, features, use cases, pricing, blog, changelog, legal, waitlist). The SaaS app lives in a separate repo and will be served at `app.rushclippy.com`. Never build app features (auth, video processing, billing) here.
 
 ## Read before any task
 1. `docs/PRD-SITE.md` — what the site is, sitemap, every page and section.
@@ -21,6 +21,7 @@ This repo is ONLY the marketing site (landing, features, use cases, pricing, blo
 
 ## Brand rules (non-negotiable)
 - Use ONLY tokens from `brand/tokens/variables.css` and `brand/tokens/tailwind-theme.css`. No hard-coded hex colors, no new fonts. Font: Inter Variable from `brand/fonts/`.
+- Name: the product is **RushClippy** (renamed on 2026-11-19 from ClipyRush). `brand/` still has the old lettering in the logo files; the header/footer use a temporary wordmark (official symbol + name in Inter) until the new official SVGs arrive.
 - Logos: use the official SVGs from `brand/logo/` as files. Never redraw, stretch, recolor or rebuild the logo. Follow `brand/guidelines/brand-guidelines.pdf` (clear space, min sizes, correct/incorrect uses).
 - Orange (`--cr-palette-orange`) = brand + primary action only. Cyan = playhead/focus. Respect contrast pairs in `brand/colors/palette.md` (WCAG AA minimum).
 - Component behavior/states: `brand/components/specifications.md` + `components.css`.

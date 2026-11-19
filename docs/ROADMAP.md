@@ -1,4 +1,4 @@
-# Roadmap — Site ClipyRush
+# Roadmap — Site RushClippy
 
 Cada fase = 1 branch + 1 PR + 1 link de preview. Pelo celular, mande o prompt da fase e aprove o plano antes da implementação.
 
@@ -70,7 +70,7 @@ Cada fase = 1 branch + 1 PR + 1 link de preview. Pelo celular, mande o prompt da
 ## Fase 5 — Polimento e lançamento
 - [ ] Auditoria de acessibilidade completa e Lighthouse em todas as rotas
 - [ ] Páginas 404/erro, estados vazios, mensagens de erro na voz da marca
-- [ ] Domínio clipyrush.com na Vercel, redirects, headers de segurança (CSP, HSTS)
+- [ ] Domínio rushclippy.com na Vercel, redirects, headers de segurança (CSP, HSTS)
 - [ ] Checklist do PRD §10 completo
 
 **Prompt:**
@@ -79,6 +79,6 @@ Cada fase = 1 branch + 1 PR + 1 link de preview. Pelo celular, mande o prompt da
 ---
 
 ## Depois do lançamento do app
-- [ ] `PUBLIC_APP_LIVE=true`: CTAs viram Sign up / Sign in; hero manda o link para `app.clipyrush.com/import?url=`
+- [ ] `PUBLIC_APP_LIVE=true`: CTAs viram Sign up / Sign in; hero manda o link para `app.rushclippy.com/import?url=`
 - [ ] Ativar a prova social com dados reais aprovados
 - [ ] Página de status/integrações conforme o app realmente suportar

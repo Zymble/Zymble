@@ -1,7 +1,7 @@
-# PRD — Site de marketing ClipyRush
+# PRD — Site de marketing RushClippy
 
 ## 1. Objetivo
-Site público global (clipyrush.com) que apresenta a ClipyRush, gera confiança e **captura cadastros na lista de espera (early access)**. Quando o app for lançado, os mesmos CTAs passam a levar para `app.clipyrush.com` com uma flag de configuração, sem refazer páginas.
+Site público global (rushclippy.com) que apresenta a RushClippy, gera confiança e **captura cadastros na lista de espera (early access)**. Quando o app for lançado, os mesmos CTAs passam a levar para `app.rushclippy.com` com uma flag de configuração, sem refazer páginas.
 
 **Métrica principal:** taxa de conversão visitante → cadastro na waitlist.
 **Secundárias:** cliques em "Paste a stream link" no hero, tráfego orgânico (SEO) para blog/comparativos/casos de uso.
@@ -49,7 +49,7 @@ Idiomas: `/` (en), `/pt-br/`, `/es/`. Todas as páginas existem nos três.
 | `/404` | Erro com atalho para home e waitlist |
 
 ## 5. Home — seções em ordem
-1. **Hero** — título "Your stream. Your cut.", subtítulo da promessa, campo **"Paste a stream link"** + botão **"Get early access"**. Antes do lançamento, o link colado vai junto no cadastro da waitlist ("we'll clip it first when we launch"). Depois do lançamento, redireciona para `app.clipyrush.com/import?url=`. Ao lado: vídeo `brand/mockups/night-stage.mp4` (mudo, loop, legenda `.vtt`, poster `.jpg`) dentro de uma moldura com as alças In/Out.
+1. **Hero** — título "Your stream. Your cut.", subtítulo da promessa, campo **"Paste a stream link"** + botão **"Get early access"**. Antes do lançamento, o link colado vai junto no cadastro da waitlist ("we'll clip it first when we launch"). Depois do lançamento, redireciona para `app.rushclippy.com/import?url=`. Ao lado: vídeo `brand/mockups/night-stage.mp4` (mudo, loop, legenda `.vtt`, poster `.jpg`) dentro de uma moldura com as alças In/Out.
 2. **Plataformas suportadas** — Twitch, YouTube, Kick, upload de arquivo (texto + ícones neutros; só listar o que o app realmente vai suportar, vindo de um arquivo de config).
 3. **Como funciona (3 passos)** — Import → Review suggested clips → Save & schedule. Usa os ícones `upload`, `trim`, `calendar` do kit.
 4. **Diferencial In/Out** — timeline animada mostrando a IA sugerindo e o criador ajustando início/fim (alças do símbolo). Seção principal da página.
@@ -80,7 +80,7 @@ Hero curto com uma frase concreta da etapa → demo visual (mock de UI baseado n
 Login, upload/processamento real, editor funcional, cobrança, publicação nas redes, dashboard. Tudo isso fica no repo do app.
 
 ## 10. Critérios de lançamento
-- [ ] Domínio clipyrush.com com HTTPS, `www` redirecionando para o apex
+- [ ] Domínio rushclippy.com com HTTPS, `www` redirecionando para o apex
 - [ ] Home, features, use cases, pricing, early-access, about, brand, legal em 3 idiomas
 - [ ] Waitlist funcionando com double opt-in e antispam
 - [ ] OG images por página e idioma, sitemap, robots, hreflang, JSON-LD

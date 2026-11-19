@@ -6,13 +6,13 @@ import type { Locale, RouteId } from '../config/routes';
  */
 export const ui = {
   en: {
-    'meta.home.title': 'ClipyRush — Your stream. Your cut.',
+    'meta.home.title': 'RushClippy — Your stream. Your cut.',
     'meta.home.description':
-      'ClipyRush finds the moments in your stream worth a clip. You decide where it starts, where it ends and which version goes live.',
+      'RushClippy finds the moments in your stream worth a clip. You decide where it starts, where it ends and which version goes live.',
     'a11y.skip': 'Skip to content',
     'a11y.mainNav': 'Main',
     'a11y.footerNav': 'Footer',
-    'a11y.home': 'ClipyRush home',
+    'a11y.home': 'RushClippy home',
     'a11y.menu': 'Menu',
     'a11y.language': 'Language',
     'theme.toDark': 'Switch to dark theme',
@@ -44,19 +44,19 @@ export const ui = {
     'soon.back': 'Back to home',
     'home.title': 'Your stream. Your cut.',
     'home.lead':
-      'ClipyRush finds the moments in your stream worth a clip. You decide where it starts, where it ends and which version goes live.',
+      'RushClippy finds the moments in your stream worth a clip. You decide where it starts, where it ends and which version goes live.',
     'home.note': 'Early access — the app is not live yet.',
     'notFound.title': 'This page isn’t in the cut.',
     'notFound.body': 'The link may be old or mistyped.',
   },
   'pt-br': {
-    'meta.home.title': 'ClipyRush — Your stream. Your cut.',
+    'meta.home.title': 'RushClippy — Your stream. Your cut.',
     'meta.home.description':
-      'A ClipyRush encontra os trechos da sua live que valem um corte. Você decide o começo, o fim e a versão que vai ao ar.',
+      'A RushClippy encontra os trechos da sua live que valem um corte. Você decide o começo, o fim e a versão que vai ao ar.',
     'a11y.skip': 'Pular para o conteúdo',
     'a11y.mainNav': 'Principal',
     'a11y.footerNav': 'Rodapé',
-    'a11y.home': 'Início da ClipyRush',
+    'a11y.home': 'Início da RushClippy',
     'a11y.menu': 'Menu',
     'a11y.language': 'Idioma',
     'theme.toDark': 'Mudar para tema escuro',
@@ -88,20 +88,20 @@ export const ui = {
     'soon.back': 'Voltar ao início',
     'home.title': 'Your stream. Your cut.',
     'home.lead':
-      'A ClipyRush encontra os trechos da sua live que valem um corte. Você decide o começo, o fim e a versão que vai ao ar.',
+      'A RushClippy encontra os trechos da sua live que valem um corte. Você decide o começo, o fim e a versão que vai ao ar.',
     'home.note': 'Acesso antecipado — o app ainda não foi lançado.',
     'notFound.title': 'Esta página ficou fora do corte.',
     'notFound.body': 'O link pode estar antigo ou com erro de digitação.',
   },
   // TODO review: Spanish strings need a native translator pass.
   es: {
-    'meta.home.title': 'ClipyRush — Your stream. Your cut.',
+    'meta.home.title': 'RushClippy — Your stream. Your cut.',
     'meta.home.description':
-      'ClipyRush encuentra los momentos de tu stream que valen un clip. Tú decides dónde empieza, dónde termina y qué versión se publica.',
+      'RushClippy encuentra los momentos de tu stream que valen un clip. Tú decides dónde empieza, dónde termina y qué versión se publica.',
     'a11y.skip': 'Saltar al contenido',
     'a11y.mainNav': 'Principal',
     'a11y.footerNav': 'Pie de página',
-    'a11y.home': 'Inicio de ClipyRush',
+    'a11y.home': 'Inicio de RushClippy',
     'a11y.menu': 'Menú',
     'a11y.language': 'Idioma',
     'theme.toDark': 'Cambiar a tema oscuro',
@@ -133,7 +133,7 @@ export const ui = {
     'soon.back': 'Volver al inicio',
     'home.title': 'Your stream. Your cut.',
     'home.lead':
-      'ClipyRush encuentra los momentos de tu stream que valen un clip. Tú decides dónde empieza, dónde termina y qué versión se publica.',
+      'RushClippy encuentra los momentos de tu stream que valen un clip. Tú decides dónde empieza, dónde termina y qué versión se publica.',
     'home.note': 'Acceso anticipado: la app aún no está disponible.',
     'notFound.title': 'Esta página quedó fuera del corte.',
     'notFound.body': 'Puede que el enlace sea antiguo o tenga un error.',

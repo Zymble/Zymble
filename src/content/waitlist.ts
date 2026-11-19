@@ -60,7 +60,8 @@ export const waitlistCopy: Record<Locale, WaitlistCopy> = {
       platformNone: 'Choose one',
       channel: 'Your channel link (optional)',
       channelHint: 'Helps us invite channels that fit first.',
-      consent: 'Email me the early access invite and ClipyRush updates. I can unsubscribe anytime.',
+      consent:
+        'Email me the early access invite and RushClippy updates. I can unsubscribe anytime.',
       privacy: 'Privacy policy',
       submit: 'Join the list',
       sending: 'Saving your spot…',
@@ -97,9 +98,9 @@ export const waitlistCopy: Record<Locale, WaitlistCopy> = {
       clipper: 'For clippers',
     },
     email: {
-      subject: 'Confirm your spot on ClipyRush',
+      subject: 'Confirm your spot on RushClippy',
       heading: 'One click to save your spot',
-      body: 'Confirm your email and you’re on the ClipyRush early access list. We’ll invite you as we open.',
+      body: 'Confirm your email and you’re on the RushClippy early access list. We’ll invite you as we open.',
       button: 'Confirm my spot',
       ignore: 'If this wasn’t you, ignore this email and nothing happens.',
     },
@@ -125,7 +126,7 @@ export const waitlistCopy: Record<Locale, WaitlistCopy> = {
       channel: 'Link do seu canal (opcional)',
       channelHint: 'Ajuda a gente a chamar primeiro os canais que combinam.',
       consent:
-        'Quero receber o convite do acesso antecipado e novidades da ClipyRush por e-mail. Posso sair quando quiser.',
+        'Quero receber o convite do acesso antecipado e novidades da RushClippy por e-mail. Posso sair quando quiser.',
       privacy: 'Política de privacidade',
       submit: 'Entrar na lista',
       sending: 'Guardando seu lugar…',
@@ -162,9 +163,9 @@ export const waitlistCopy: Record<Locale, WaitlistCopy> = {
       clipper: 'Pra clipadores',
     },
     email: {
-      subject: 'Confirme seu lugar na ClipyRush',
+      subject: 'Confirme seu lugar na RushClippy',
       heading: 'Falta um clique pra guardar seu lugar',
-      body: 'Confirme seu e-mail e você entra na lista de acesso antecipado da ClipyRush. A gente te chama conforme for abrindo.',
+      body: 'Confirme seu e-mail e você entra na lista de acesso antecipado da RushClippy. A gente te chama conforme for abrindo.',
       button: 'Confirmar meu lugar',
       ignore: 'Se não foi você, é só ignorar este e-mail.',
     },
@@ -191,7 +192,7 @@ export const waitlistCopy: Record<Locale, WaitlistCopy> = {
       channel: 'Enlace de tu canal (opcional)',
       channelHint: 'Nos ayuda a invitar primero a los canales que encajan.',
       consent:
-        'Quiero recibir por correo la invitación al acceso anticipado y novedades de ClipyRush. Puedo darme de baja cuando quiera.',
+        'Quiero recibir por correo la invitación al acceso anticipado y novedades de RushClippy. Puedo darme de baja cuando quiera.',
       privacy: 'Política de privacidad',
       submit: 'Entrar en la lista',
       sending: 'Guardando tu lugar…',
@@ -228,9 +229,9 @@ export const waitlistCopy: Record<Locale, WaitlistCopy> = {
       clipper: 'Para clippers',
     },
     email: {
-      subject: 'Confirma tu lugar en ClipyRush',
+      subject: 'Confirma tu lugar en RushClippy',
       heading: 'Un clic para guardar tu lugar',
-      body: 'Confirma tu correo y entras en la lista de acceso anticipado de ClipyRush. Te invitamos a medida que abramos.',
+      body: 'Confirma tu correo y entras en la lista de acceso anticipado de RushClippy. Te invitamos a medida que abramos.',
       button: 'Confirmar mi lugar',
       ignore: 'Si no fuiste tú, ignora este correo y no pasa nada.',
     },

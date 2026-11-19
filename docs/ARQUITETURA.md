@@ -1,4 +1,4 @@
-# Arquitetura — Site ClipyRush
+# Arquitetura — Site RushClippy
 
 ## Stack
 | Camada | Escolha | Por quê |
@@ -26,7 +26,7 @@
 ├─ public/
 │  ├─ favicon.svg, favicon.ico, app icons (copiados de brand/logo)
 │  ├─ media/night-stage.mp4|.jpg|.vtt
-│  └─ downloads/clipyrush-brand-kit.zip
+│  └─ downloads/rushclippy-brand-kit.zip
 ├─ src/
 │  ├─ styles/global.css       importa tailwind + tokens + components
 │  ├─ config/site.ts          nome, URLs, APP_LIVE, redes, plataformas suportadas
@@ -66,15 +66,15 @@
 
 ## Variáveis de ambiente (`.env.example`)
 ```
-PUBLIC_SITE_URL=https://clipyrush.com
-PUBLIC_APP_URL=https://app.clipyrush.com
+PUBLIC_SITE_URL=https://rushclippy.com
+PUBLIC_APP_URL=https://app.rushclippy.com
 PUBLIC_APP_LIVE=false
-PUBLIC_PLAUSIBLE_DOMAIN=clipyrush.com
+PUBLIC_PLAUSIBLE_DOMAIN=rushclippy.com
 PUBLIC_TURNSTILE_SITE_KEY=
 TURNSTILE_SECRET_KEY=
 RESEND_API_KEY=
 RESEND_AUDIENCE_ID=
-WAITLIST_FROM_EMAIL=hello@clipyrush.com
+WAITLIST_FROM_EMAIL=hello@rushclippy.com
 CONTACT_TO_EMAIL=
 ```
 
@@ -94,4 +94,4 @@ CONTACT_TO_EMAIL=
 ## Integração futura com o app
 - Todos os CTAs leem `PUBLIC_APP_LIVE`. `false` → waitlist. `true` → `PUBLIC_APP_URL` (`/signup`, `/import?url=`).
 - O campo de link do hero usa o mesmo contrato do `ClipImport` do kit (POST com o campo `url`), facilitando apontar para o app depois.
-- Domínios: `clipyrush.com` (este repo) e `app.clipyrush.com` (repo do app). Cookies de analytics não são compartilhados entre os dois sem consentimento.
+- Domínios: `rushclippy.com` (este repo) e `app.rushclippy.com` (repo do app). Cookies de analytics não são compartilhados entre os dois sem consentimento.
