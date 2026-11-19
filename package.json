@@ -1,0 +1,44 @@
+{
+  "name": "clipyrush-site",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "engines": {
+    "node": ">=20.3"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "node scripts/serve-static.mjs",
+    "check": "astro check",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "test:e2e": "playwright test --trace off",
+    "serve": "npm run build && node scripts/serve-static.mjs"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "4.3.14",
+    "@astrojs/sitemap": "3.7.6",
+    "@astrojs/svelte": "7.2.5",
+    "@astrojs/vercel": "8.2.11",
+    "@tailwindcss/vite": "4.3.5",
+    "astro": "5.18.2",
+    "svelte": "5.58.0",
+    "tailwindcss": "4.3.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "@axe-core/playwright": "4.14.0",
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.63.0",
+    "eslint": "10.15.0",
+    "eslint-plugin-astro": "3.2.1",
+    "eslint-plugin-svelte": "3.24.1",
+    "globals": "17.14.0",
+    "prettier": "3.10.1",
+    "prettier-plugin-astro": "1.1.2",
+    "prettier-plugin-svelte": "4.2.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.73.0"
+  }
+}

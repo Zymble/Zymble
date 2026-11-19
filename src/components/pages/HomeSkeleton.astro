@@ -1,0 +1,47 @@
+---
+/**
+ * Phase 0 home: hero shell only. Phase 1 replaces this with every section of PRD §5.
+ */
+import JsonLd from '@/components/seo/JsonLd.astro';
+import type { Locale } from '@/config/routes';
+import { primaryCtaHref, site } from '@/config/site';
+import { useTranslations } from '@/i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const { t, lang } = useTranslations(locale);
+---
+
+<JsonLd
+  data={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: site.name,
+      url: site.url,
+      logo: new URL('/icon-512.png', site.url).href,
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: site.name,
+      url: site.url,
+      inLanguage: lang,
+    },
+  ]}
+/>
+
+<section class="container-cr py-20 md:py-32">
+  <h1 class="max-w-4xl text-hero-cr" lang="en">
+    {t('home.title')}
+  </h1>
+  <p class="mt-6 max-w-2xl text-lg text-cr-muted">{t('home.lead')}</p>
+  <div class="mt-10 flex flex-wrap items-center gap-3">
+    <a href={primaryCtaHref(locale)} class="cr-btn">
+      {site.appLive ? t('cta.app') : t('cta.primary')}
+    </a>
+  </div>
+  {!site.appLive && <p class="mt-4 text-cr-caption text-cr-muted">{t('home.note')}</p>}
+</section>

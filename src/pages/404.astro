@@ -1,0 +1,40 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { primaryCtaHref } from '@/config/site';
+import { useTranslations } from '@/i18n/utils';
+
+// A single static 404 is served for every locale; it is English with links to all homes.
+const locale = 'en';
+const { t, href } = useTranslations(locale);
+---
+
+<BaseLayout
+  locale={locale}
+  routeId="home"
+  title="Page not found — ClipyRush"
+  description={t('notFound.body')}
+  noindex
+>
+  <section class="container-cr py-24 md:py-32">
+    <p class="text-cr-label text-cr-selected tabular-nums">404</p>
+    <h1 class="mt-3 text-title-cr">{t('notFound.title')}</h1>
+    <p class="mt-4 text-cr-muted">{t('notFound.body')}</p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href={href('home')} class="cr-btn secondary">
+        {t('soon.back')}
+      </a>
+      <a href={primaryCtaHref(locale)} class="cr-btn">
+        {t('cta.primary')}
+      </a>
+    </div>
+    <p class="mt-8 text-cr-caption text-cr-muted">
+      <a href="/pt-br/" hreflang="pt-BR" lang="pt-BR">
+        Voltar ao início (Português)
+      </a>{' '}
+      ·
+      <a href="/es/" hreflang="es" lang="es">
+        Volver al inicio (Español)
+      </a>
+    </p>
+  </section>
+</BaseLayout>

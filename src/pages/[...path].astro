@@ -1,0 +1,45 @@
+---
+/**
+ * Generates every page in every locale from src/config/routes.ts.
+ * Pages still marked 'soon' render the placeholder with noindex.
+ * When a phase ships a real page, give it its own template here (or its own
+ * file under src/pages/[...locale]/) and flip its status to 'live'.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ComingSoon from '@/components/pages/ComingSoon.astro';
+import HomeSkeleton from '@/components/pages/HomeSkeleton.astro';
+import {
+  defaultLocale,
+  locales,
+  routeIds,
+  routeStatus,
+  type Locale,
+  type RouteId,
+} from '@/config/routes';
+import { useTranslations } from '@/i18n/utils';
+
+export function getStaticPaths() {
+  return locales.flatMap((locale) =>
+    routeIds.map((id) => {
+      const segments = [locale === defaultLocale ? '' : locale, id === 'home' ? '' : id]
+        .filter(Boolean)
+        .join('/');
+      return { params: { path: segments || undefined }, props: { locale, id } };
+    }),
+  );
+}
+
+interface Props {
+  locale: Locale;
+  id: RouteId;
+}
+const { locale, id } = Astro.props;
+const { t, page } = useTranslations(locale);
+const live = routeStatus[id] === 'live';
+const title = id === 'home' ? t('meta.home.title') : `${page(id)} — ClipyRush`;
+const description = id === 'home' ? t('meta.home.description') : t('soon.body');
+---
+
+<BaseLayout locale={locale} routeId={id} title={title} description={description} noindex={!live}>
+  {id === 'home' ? <HomeSkeleton locale={locale} /> : <ComingSoon locale={locale} routeId={id} />}
+</BaseLayout>

@@ -5,13 +5,13 @@ Cada fase = 1 branch + 1 PR + 1 link de preview. Pelo celular, mande o prompt da
 ---
 
 ## Fase 0 — Fundação
-- [ ] Projeto Astro 5 + TS strict + Tailwind v4 + Svelte + MDX + sitemap + adaptador Vercel
-- [ ] `global.css` importando tokens e components do kit; Inter self-hosted; favicons e ícones
-- [ ] i18n (en raiz, pt-br, es), `t()`, LocaleSwitcher, hreflang
-- [ ] BaseLayout com SEO, tema claro/escuro sem flash, skip link
-- [ ] Header + Footer completos (links podem apontar para páginas "em breve")
-- [ ] ESLint, Prettier, `astro check`, Playwright + axe, Lighthouse CI no GitHub Actions
-- [ ] `.env.example`, `docs/DECISIONS.md`, README de como rodar
+- [x] Projeto Astro 5 + TS strict + Tailwind v4 + Svelte + MDX + sitemap + adaptador Vercel
+- [x] `global.css` importando tokens e components do kit; Inter self-hosted; favicons e ícones
+- [x] i18n (en raiz, pt-br, es), `t()`, LocaleSwitcher, hreflang
+- [x] BaseLayout com SEO, tema claro/escuro sem flash, skip link
+- [x] Header + Footer completos (links podem apontar para páginas "em breve")
+- [x] ESLint, Prettier, `astro check`, Playwright + axe, Lighthouse CI no GitHub Actions
+- [x] `.env.example`, `docs/DECISIONS.md`, README de como rodar
 
 **Prompt:**
 > Leia CLAUDE.md e todos os arquivos de docs/. Execute a Fase 0 do ROADMAP. Comece em plan mode e me mostre o plano em até 15 linhas antes de implementar.

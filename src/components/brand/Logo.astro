@@ -1,0 +1,31 @@
+---
+/**
+ * Official horizontal signature. Files come from brand/logo (copied to public/brand)
+ * and are swapped by theme, never recolored.
+ */
+interface Props {
+  height?: number;
+  class?: string;
+}
+const { height = 28, class: className = '' } = Astro.props;
+const width = Math.round((312 / 66) * height);
+---
+
+<span class:list={['inline-flex', className]}>
+  <img
+    class="logo-on-light"
+    src="/brand/horizontal-light.svg"
+    alt="ClipyRush"
+    width={width}
+    height={height}
+    decoding="async"
+  />
+  <img
+    class="logo-on-dark"
+    src="/brand/horizontal-dark.svg"
+    alt="ClipyRush"
+    width={width}
+    height={height}
+    decoding="async"
+  />
+</span>

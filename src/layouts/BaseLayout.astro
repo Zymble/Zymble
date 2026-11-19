@@ -1,0 +1,71 @@
+---
+import '@/styles/global.css';
+import interUrl from '@/assets/fonts/InterVariable-latin.woff2?url';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import SEO from '@/components/seo/SEO.astro';
+import { localeMeta, type Locale, type RouteId } from '@/config/routes';
+import { useTranslations } from '@/i18n/utils';
+
+interface Props {
+  locale: Locale;
+  routeId: RouteId;
+  title: string;
+  description: string;
+  noindex?: boolean;
+}
+const { locale, routeId, title, description, noindex } = Astro.props;
+const { t } = useTranslations(locale);
+---
+
+<!doctype html>
+<html lang={localeMeta[locale].lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Apply the theme before first paint (stored choice, else system). -->
+    <script is:inline>
+      (() => {
+        let stored = null;
+        try {
+          stored = localStorage.getItem('cr-theme');
+        } catch {
+          /* storage blocked */
+        }
+        const dark =
+          stored === 'dark' ||
+          (stored !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      })();
+    </script>
+    <meta name="theme-color" content="#F8FAFC" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0B1220" media="(prefers-color-scheme: dark)" />
+    <link rel="preload" href={interUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <SEO
+      title={title}
+      description={description}
+      locale={locale}
+      routeId={routeId}
+      noindex={noindex}
+    />
+    <slot name="head" />
+  </head>
+  <body class="cr-ui min-h-dvh flex flex-col">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-cr-control focus:bg-cr-surface focus:px-4 focus:py-3 focus:text-cr-text focus:shadow-cr-overlay"
+    >
+      {t('a11y.skip')}
+    </a>
+    <Header locale={locale} routeId={routeId} />
+    <main id="main" tabindex="-1" class="flex-1 focus:outline-none">
+      <slot />
+    </main>
+    <Footer locale={locale} routeId={routeId} />
+  </body>
+</html>

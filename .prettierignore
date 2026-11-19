@@ -1,0 +1,11 @@
+brand/
+public/
+dist/
+.vercel/
+.astro/
+node_modules/
+package-lock.json
+src/scenes/
+docs/
+CLAUDE.md
+COMECE-AQUI.md
