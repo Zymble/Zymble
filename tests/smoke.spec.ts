@@ -12,7 +12,12 @@ const pages = [
 
 for (const scheme of ['light', 'dark'] as const) {
   test.describe(`${scheme} theme`, () => {
-    test.use({ colorScheme: scheme });
+    // Dark is the default; light is an explicit visitor choice (stored).
+    test.beforeEach(async ({ page }) => {
+      if (scheme === 'light') {
+        await page.addInitScript(() => localStorage.setItem('cr-theme', 'light'));
+      }
+    });
 
     for (const path of pages) {
       test(`${path} renders, has no horizontal scroll and no axe violations`, async ({ page }) => {
@@ -89,4 +94,13 @@ test('home doors lead to each side', async ({ page }) => {
   await page.goto('/pt-br/');
   await page.locator('#hero-cta a.door').first().click();
   await expect(page).toHaveURL(/\/pt-br\/streamers\/$/);
+});
+
+test('prize board splits the pool the visitor sets', async ({ page }) => {
+  await page.goto('/pt-br/clippers/');
+  const slider = page.locator('.board input[type=range]').first();
+  await slider.scrollIntoViewIfNeeded();
+  await slider.fill('20000');
+  await expect(page.locator('.board .pool-value').first()).toHaveText(/20\.000/);
+  await expect(page.locator('.board .amt').first()).toHaveText(/10\.000/);
 });

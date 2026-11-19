@@ -32,14 +32,12 @@ const { t } = useTranslations(locale);
         } catch {
           /* storage blocked */
         }
-        const dark =
-          stored === 'dark' ||
-          (stored !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+        // Dark-first (broadcast look); light only when the visitor picks it.
+        const dark = stored !== 'light';
         document.documentElement.dataset.theme = dark ? 'dark' : 'light';
       })();
     </script>
-    <meta name="theme-color" content="#F8FAFC" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0B1220" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#0B1220" />
     <link rel="preload" href={interUrl} as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />

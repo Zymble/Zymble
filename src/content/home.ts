@@ -35,11 +35,7 @@ export interface HomeCopy {
     pause: string;
     play: string;
   };
-  sides: {
-    title: string;
-    streamer: { who: string; steps: string[] };
-    clipper: { who: string; steps: string[] };
-  };
+  sides: { title: string };
   clippers: {
     title: string;
     body: string;
@@ -94,7 +90,7 @@ export const homeCopy: Record<Locale, HomeCopy> = {
       kicker: 'Live stream clipping for TikTok, Shorts and Reels',
       titleA: 'Don’t miss the moment.',
       titleB: 'Clip it live.',
-      lead: 'While the stream is still going, ClipyRush flags the plays and hands over the moment in 9:16 with captions. Streamers find their clipper. Clippers cut and post while the moment is still hot.',
+      lead: 'The AI flags the play while the stream is live. Streamers put up the prize; clippers post before it cools off.',
       note: 'We haven’t launched yet. Pick your side and you’re on the list.',
       worksWith:
         'Twitch, YouTube and Kick, live or recorded. Posts to TikTok, YouTube Shorts and Instagram Reels.',
@@ -125,28 +121,10 @@ export const homeCopy: Record<Locale, HomeCopy> = {
       pause: 'Pause animation',
       play: 'Play animation',
     },
-    sides: {
-      title: 'Streamers find clippers. Clippers find the moment.',
-      streamer: {
-        who: 'If you stream',
-        steps: [
-          'Connect your Twitch, YouTube or Kick channel.',
-          'Let clippers cut your stream while you play.',
-          'See the clips and approve what goes out.',
-        ],
-      },
-      clipper: {
-        who: 'If you clip',
-        steps: [
-          'Pick the streams you want to clip.',
-          'Get the plays the AI flags, live.',
-          'Set In/Out, caption it and post to your TikTok.',
-        ],
-      },
-    },
+    sides: { title: 'One side puts up the prize. The other races for it.' },
     clippers: {
       title: 'Clip it live. Post while it’s still hot.',
-      body: 'A clip that drops the next day lands cold. With ClipyRush you follow several streams in one queue, the AI flags the plays as they happen, and you trim, caption and post without waiting for the stream to end.',
+      body: 'Many streams in one queue. The AI flags, you post.',
       points: [
         {
           title: 'Plays flagged live',
@@ -333,7 +311,7 @@ export const homeCopy: Record<Locale, HomeCopy> = {
       kicker: 'Cortes de live ao vivo para TikTok, Shorts e Reels',
       titleA: 'Não perca o momento.',
       titleB: 'Clipe ao vivo.',
-      lead: 'Enquanto a live rola, a ClipyRush marca os lances e entrega o trecho em 9:16, já legendado. Quem faz live encontra quem clipa. Quem clipa corta e posta com o momento ainda quente.',
+      lead: 'A IA marca o lance com a live no ar. O streamer põe o prêmio, o clipador posta antes de esfriar.',
       note: 'Ainda não lançamos. Escolha seu lado e você entra na lista.',
       worksWith:
         'Twitch, YouTube e Kick, ao vivo ou gravadas. Posta no TikTok, YouTube Shorts e Instagram Reels.',
@@ -364,28 +342,10 @@ export const homeCopy: Record<Locale, HomeCopy> = {
       pause: 'Pausar animação',
       play: 'Reproduzir animação',
     },
-    sides: {
-      title: 'Streamer encontra clipador. Clipador encontra o lance.',
-      streamer: {
-        who: 'Se você faz live',
-        steps: [
-          'Conecte seu canal da Twitch, YouTube ou Kick.',
-          'Libere clipadores pra cortar sua live enquanto você joga.',
-          'Veja os cortes e aprove o que vai pro ar.',
-        ],
-      },
-      clipper: {
-        who: 'Se você clipa',
-        steps: [
-          'Escolha as lives que você quer clipar.',
-          'Receba os lances que a IA marca, ao vivo.',
-          'Ajuste In/Out, legende e poste no seu TikTok.',
-        ],
-      },
-    },
+    sides: { title: 'Um lado põe o prêmio. O outro disputa.' },
     clippers: {
       title: 'Clipe ao vivo. Poste com o lance ainda quente.',
-      body: 'Corte que sai no dia seguinte chega frio. Na ClipyRush você acompanha várias lives numa fila só, a IA marca os lances na hora e você ajusta, legenda e posta sem esperar a live acabar.',
+      body: 'Várias lives numa fila só. A IA marca, você posta.',
       points: [
         {
           title: 'Lances marcados ao vivo',
@@ -573,7 +533,7 @@ export const homeCopy: Record<Locale, HomeCopy> = {
       kicker: 'Clips de streams en vivo para TikTok, Shorts y Reels',
       titleA: 'No pierdas el momento.',
       titleB: 'Clipea en vivo.',
-      lead: 'Mientras el stream sigue, ClipyRush marca las jugadas y entrega el momento en 9:16, ya con subtítulos. Quien hace streams encuentra a su clipper. Quien clipea recorta y publica con el momento todavía caliente.',
+      lead: 'La IA marca la jugada con el stream en vivo. El streamer pone el premio; el clipper publica antes de que se enfríe.',
       note: 'Todavía no lanzamos. Elige tu lado y entras en la lista.',
       worksWith:
         'Twitch, YouTube y Kick, en vivo o grabados. Publica en TikTok, YouTube Shorts e Instagram Reels.',
@@ -604,28 +564,10 @@ export const homeCopy: Record<Locale, HomeCopy> = {
       pause: 'Pausar animación',
       play: 'Reproducir animación',
     },
-    sides: {
-      title: 'El streamer encuentra a su clipper. El clipper encuentra el momento.',
-      streamer: {
-        who: 'Si haces streams',
-        steps: [
-          'Conecta tu canal de Twitch, YouTube o Kick.',
-          'Deja que clippers recorten tu stream mientras juegas.',
-          'Mira los clips y aprueba lo que se publica.',
-        ],
-      },
-      clipper: {
-        who: 'Si haces clips',
-        steps: [
-          'Elige los streams que quieres clipear.',
-          'Recibe las jugadas que marca la IA, en vivo.',
-          'Ajusta In/Out, ponle subtítulos y publica en tu TikTok.',
-        ],
-      },
-    },
+    sides: { title: 'Un lado pone el premio. El otro compite.' },
     clippers: {
       title: 'Clipea en vivo. Publica con la jugada todavía caliente.',
-      body: 'Un clip que sale al día siguiente llega frío. Con ClipyRush sigues varios streams en una sola cola, la IA marca las jugadas al momento y tú ajustas, subtitulas y publicas sin esperar a que termine el stream.',
+      body: 'Varios streams en una sola cola. La IA marca, tú publicas.',
       points: [
         {
           title: 'Jugadas marcadas en vivo',

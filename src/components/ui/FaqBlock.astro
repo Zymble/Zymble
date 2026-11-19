@@ -69,7 +69,8 @@ const { title, items, id = 'faq' } = Astro.props;
     transform: rotate(0deg);
   }
   .faq summary:hover {
-    color: var(--cr-selected);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
   }
   @media (prefers-reduced-motion: no-preference) {
     .faq::details-content {

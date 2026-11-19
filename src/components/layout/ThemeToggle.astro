@@ -118,16 +118,5 @@ const { t } = useTranslations(locale);
       ),
     );
 
-  // Follow the system while the visitor has not chosen explicitly.
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-    let stored: string | null = null;
-    try {
-      stored = localStorage.getItem('cr-theme');
-    } catch {
-      /* ignore */
-    }
-    if (!stored) apply(e.matches ? 'dark' : 'light', false);
-  });
-
   sync();
 </script>

@@ -112,3 +112,31 @@
     transform: scaleX(1);
   }
 }
+
+/*
+ * Key-phrase highlight with the In/Out brackets from the symbol (instead of colored text).
+ * Orange stays reserved for the brand mark and primary actions.
+ */
+.cut {
+  position: relative;
+  display: inline-block;
+  padding: 0.04em 0.16em 0.08em;
+}
+.cut::before,
+.cut::after {
+  content: '';
+  position: absolute;
+  width: 0.32em;
+  height: 0.32em;
+  border: 0 solid var(--cr-palette-orange);
+}
+.cut::before {
+  top: 0;
+  left: 0;
+  border-width: 0.075em 0 0 0.075em;
+}
+.cut::after {
+  right: 0;
+  bottom: 0;
+  border-width: 0 0.075em 0.075em 0;
+}

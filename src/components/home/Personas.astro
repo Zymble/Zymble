@@ -29,7 +29,7 @@ const { href } = useTranslations(locale);
             i === 0 && 'md:pr-8',
           ]}
         >
-          <h3 class="text-cr-label text-cr-selected">{p.who}</h3>
+          <h3 class="text-cr-label text-cr-muted">{p.who}</h3>
           <p class="mt-4 text-xl leading-snug font-semibold tracking-[-0.01em]">{p.problem}</p>
           <p class="mt-4 flex-1 text-cr-muted">{p.answer}</p>
           <a href={href(p.id)} class="mt-6 inline-flex min-h-11 items-center font-semibold">

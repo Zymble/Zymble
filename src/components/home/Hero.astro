@@ -35,7 +35,7 @@ const bars = Array.from({ length: 56 }, (_, i) => {
       <p class="text-cr-label text-cr-muted">{c.hero.kicker}</p>
       <h1 id="hero-title" class="hero-title mt-4">
         <span class="block">{c.hero.titleA}</span>
-        <span class="block text-cr-selected">{c.hero.titleB}</span>
+        <span class="cut">{c.hero.titleB}</span>
       </h1>
     </div>
 
@@ -45,9 +45,6 @@ const bars = Array.from({ length: 56 }, (_, i) => {
         <CtaDoors locale={locale} />
       </div>
       {!site.appLive && <p class="mt-4 text-cr-caption text-cr-muted">{c.hero.note}</p>}
-      <p class="mt-8 max-w-[34rem] border-t border-cr-rule pt-4 text-cr-caption text-cr-muted">
-        {c.hero.worksWith}
-      </p>
     </div>
 
     <figure class="hero-stage" aria-labelledby="stage-label">

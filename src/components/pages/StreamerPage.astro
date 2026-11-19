@@ -1,14 +1,17 @@
 ---
 /**
- * /streamers/ — "control room". The streamer runs a crew of clippers:
- * a live radar of who's clipping, rewards they set, contests they run, rules on their name.
+ * /streamers/ — "control room", v2: minimal text, visual triggers.
+ * Hero = live radar of who's clipping you. Then the contest builder (streamer drags the prize),
+ * pay-for-results tiles and the rules on your name.
  */
+import PrizeBoard from '@/components/islands/PrizeBoard.svelte';
 import Door from '@/components/ui/Door.astro';
 import FaqBlock from '@/components/ui/FaqBlock.astro';
 import SignupBand from '@/components/waitlist/SignupBand.astro';
 import type { Locale } from '@/config/routes';
 import { homeCopy } from '@/content/home';
 import { streamerCopy } from '@/content/landings';
+import { prize } from '@/content/prize';
 
 interface Props {
   locale: Locale;
@@ -16,19 +19,23 @@ interface Props {
 const { locale } = Astro.props;
 const c = streamerCopy[locale];
 const who = homeCopy[locale].doors.streamer.who;
-const L = c.levers;
+const p = prize[locale];
+const payIcons = [
+  'M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z',
+  'm4 12 5 5 11-11',
+  'M4 6h16v12H4z M4 10h16 M8 15h3',
+];
 ---
 
-<!-- Hero: headline + live radar -->
-<section data-theme="dark" class="s-hero bg-cr-bg text-cr-text" aria-labelledby="s-title">
-  <div class="container-cr grid items-center gap-12 py-14 md:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
+<section data-theme="dark" class="bg-cr-bg text-cr-text" aria-labelledby="s-title">
+  <div class="container-cr grid items-center gap-12 py-12 md:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
     <div>
       <p class="text-cr-label text-cr-muted">{c.hero.kicker}</p>
       <h1 id="s-title" class="s-title mt-4">
         <span class="block">{c.hero.titleA}</span>
-        <span class="block text-cr-selected">{c.hero.titleB}</span>
+        <span class="cut">{c.hero.titleB}</span>
       </h1>
-      <p class="mt-6 max-w-[34rem] text-lg leading-relaxed text-cr-muted">{c.hero.lead}</p>
+      <p class="mt-6 max-w-[30rem] text-xl leading-snug text-cr-muted">{c.hero.sub}</p>
       <Door href="#signup" who={who} action={c.hero.cta} class="mt-8 max-w-[22rem]" />
     </div>
 
@@ -55,103 +62,104 @@ const L = c.levers;
           </li>
         ))}
       </ul>
-      <div class="radar-foot">
-        <div>
-          <span class="block text-cr-caption text-cr-muted">{c.radar.reward[0]}</span>
-          <span class="font-semibold">{c.radar.reward[1]}</span>
-        </div>
-        <div>
-          <span class="block text-cr-caption text-cr-muted">{c.radar.contest[0]}</span>
-          <span class="font-semibold">{c.radar.contest[1]}</span>
-        </div>
-      </div>
     </figure>
   </div>
 </section>
 
-<!-- Three levers, each with its own piece of UI -->
-<section class="container-cr py-24 md:py-32" aria-labelledby="levers-title">
-  <h2 id="levers-title" class="max-w-[22ch] text-title-cr [text-wrap:balance]">
-    {L.title}
-  </h2>
-
-  <div class="mt-14 grid gap-20">
-    <article class="lever">
-      <div>
-        <p class="lever-name">{L.reward.name}</p>
-        <h3 class="lever-title">{L.reward.title}</h3>
-        <p class="lever-body">{L.reward.body}</p>
-      </div>
-      <div class="mock" aria-hidden="true">
-        {L.reward.rows.map(([k, v], i) => (
-          <div class="mock-row">
-            <span class="text-cr-muted">{k}</span>
-            <span class:list={['font-semibold', i === 0 && 'mock-key']}>{v}</span>
-          </div>
+<!-- Contest builder -->
+<section class="container-cr py-24 md:py-28" aria-labelledby="s-contest">
+  <div class="grid items-center gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16">
+    <div>
+      <h2 id="s-contest" class="text-title-cr">
+        {c.contest.title}
+      </h2>
+      <ul class="checks mt-8">
+        {c.contest.bullets.map((b) => (
+          <li>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="m4 12 5 5 11-11" />
+            </svg>
+            {b}
+          </li>
         ))}
-      </div>
-    </article>
-
-    <article class="lever lever-flip">
-      <div>
-        <p class="lever-name">{L.contest.name}</p>
-        <h3 class="lever-title">{L.contest.title}</h3>
-        <p class="lever-body">{L.contest.body}</p>
-      </div>
-      <div class="mock" aria-hidden="true">
-        <div class="mock-head">
-          <span class="font-semibold">{L.contest.board}</span>
-          <span class="text-cr-caption text-cr-muted">{L.contest.meta}</span>
-        </div>
-        {L.contest.rows.map(([handle, count], i) => (
-          <div class="mock-row rank">
-            <span class:list={['pos tabular-nums', i === 0 && 'first']}>{i + 1}</span>
-            <span class="font-semibold">{handle}</span>
-            <span class="ml-auto text-cr-muted tabular-nums">{count}</span>
-          </div>
-        ))}
-      </div>
-    </article>
-
-    <article class="lever">
-      <div>
-        <p class="lever-name">{L.radar.name}</p>
-        <h3 class="lever-title">{L.radar.title}</h3>
-        <p class="lever-body">{L.radar.body}</p>
-      </div>
-      <div class="mock" aria-hidden="true">
-        {L.radar.rows.map(([where, handle, when]) => (
-          <div class="mock-row">
-            <span class="where">{where}</span>
-            <span class="font-semibold">{handle}</span>
-            <span class="ml-auto text-cr-caption text-cr-muted">{when}</span>
-          </div>
-        ))}
-      </div>
-    </article>
+      </ul>
+    </div>
+    <PrizeBoard
+      client:visible
+      lang={p.lang}
+      currency={p.currency}
+      pool={p.pool}
+      min={p.min}
+      max={p.max}
+      step={p.step}
+      split={p.split}
+      handles={p.handles}
+      labels={{
+        contest: p.contest,
+        host: p.host,
+        total: p.total,
+        slider: p.slider.streamer,
+        you: p.you,
+        join: p.join,
+        joinHref: '#signup',
+        note: p.note,
+      }}
+    />
   </div>
 </section>
 
-<!-- Rules on the streamer's name -->
-<section class="border-t border-cr-rule bg-cr-surface py-20 md:py-28" aria-labelledby="rules-title">
+<!-- Pay for results -->
+<section class="border-y border-cr-rule bg-cr-surface py-20" aria-labelledby="s-pay">
   <div class="container-cr">
-    <h2 id="rules-title" class="text-title-cr">
+    <h2 id="s-pay" class="text-title-cr">
+      {c.pay.title}
+    </h2>
+    <ul class="mt-10 grid gap-4 md:grid-cols-3">
+      {c.pay.tiles.map(([k, v], i) => (
+        <li class="pay">
+          <span class="pay-icon" aria-hidden="true">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d={payIcons[i]} />
+            </svg>
+          </span>
+          <span class="pay-title">{k}</span>
+          <span class="text-cr-muted">{v}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<!-- Rules -->
+<section class="container-cr py-20" aria-labelledby="s-rules">
+  <div class="grid gap-8 md:grid-cols-[auto_1fr] md:items-center md:gap-16">
+    <h2 id="s-rules" class="text-title-cr">
       {c.rules.title}
     </h2>
-    <dl class="mt-10 grid border-t border-cr-text md:grid-cols-3">
-      {c.rules.items.map(([k, v], i) => (
-        <div
-          class:list={[
-            'py-6',
-            i > 0 && 'border-t border-cr-rule md:border-t-0 md:border-l md:pl-8',
-            i < 2 && 'md:pr-8',
-          ]}
-        >
-          <dt class="text-cr-section">{k}</dt>
-          <dd class="mt-2 text-cr-muted">{v}</dd>
-        </div>
+    <ul class="rules">
+      {c.rules.items.map((r) => (
+        <li>{r}</li>
       ))}
-    </dl>
+    </ul>
   </div>
 </section>
 
@@ -161,17 +169,16 @@ const L = c.levers;
 
 <style>
   .s-title {
-    font-size: clamp(2.4rem, 5vw, 4.25rem);
+    font-size: clamp(2.6rem, 5.6vw, 4.75rem);
     line-height: 0.98;
     letter-spacing: -0.045em;
     font-weight: var(--cr-weight-display);
-    text-wrap: balance;
   }
 
   /* ---------- Radar ---------- */
   .radar {
     border: 1px solid var(--cr-rule);
-    border-radius: var(--cr-radius-panel);
+    border-radius: var(--cr-radius-dialog);
     background: var(--cr-surface);
     overflow: hidden;
     box-shadow: 0 30px 80px -30px rgb(0 0 0 / 0.6);
@@ -181,7 +188,7 @@ const L = c.levers;
     align-items: center;
     gap: 0.75rem;
     min-height: 2.75rem;
-    padding-inline: 0.85rem;
+    padding-inline: 1.1rem;
     border-bottom: 1px solid var(--cr-rule);
     font-size: var(--cr-type-label-size);
     font-weight: 600;
@@ -202,18 +209,18 @@ const L = c.levers;
   }
   .radar-list li {
     display: grid;
-    grid-template-columns: 2.25rem minmax(0, 1fr) auto;
+    grid-template-columns: 2.5rem minmax(0, 1fr) auto;
     grid-template-areas: 'av main where' 'av state state';
     align-items: center;
-    gap: 0.2rem 0.75rem;
-    padding: 0.9rem 0.85rem;
+    gap: 0.2rem 0.85rem;
+    padding: 1rem 1.1rem;
   }
   .radar-list li + li {
     border-top: 1px solid var(--cr-rule);
   }
   @media (width >= 40rem) {
     .radar-list li {
-      grid-template-columns: 2.25rem minmax(0, 1fr) 4rem 8.5rem;
+      grid-template-columns: 2.5rem minmax(0, 1fr) 4rem 8.5rem;
       grid-template-areas: 'av main where state';
     }
   }
@@ -221,8 +228,8 @@ const L = c.levers;
     grid-area: av;
     display: grid;
     place-items: center;
-    width: 2.25rem;
-    height: 2.25rem;
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: 50%;
     background: var(--cr-raised);
     font-weight: 700;
@@ -252,7 +259,7 @@ const L = c.levers;
     color: var(--cr-info);
   }
   .state.waiting {
-    color: var(--cr-selected);
+    color: var(--cr-warning);
   }
   .state.editing {
     color: var(--cr-success);
@@ -267,94 +274,72 @@ const L = c.levers;
       opacity: 0.3;
     }
   }
-  .radar-foot {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    border-top: 1px solid var(--cr-rule);
-    background: var(--cr-raised);
-  }
-  .radar-foot > div {
-    padding: 0.85rem;
-  }
-  .radar-foot > div + div {
-    border-left: 1px solid var(--cr-rule);
-  }
 
-  /* ---------- Levers ---------- */
-  .lever {
+  .checks {
     display: grid;
-    gap: 2rem;
-    align-items: center;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 1.25rem;
+    font-weight: 600;
   }
-  @media (width >= 64rem) {
-    .lever {
-      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-      gap: 4rem;
-    }
-    .lever-flip > :first-child {
-      order: 2;
-    }
-  }
-  .lever-name {
-    font-size: var(--cr-type-label-size);
-    font-weight: 700;
-    color: var(--cr-selected);
-  }
-  .lever-title {
-    margin-top: 0.5rem;
-    font-size: clamp(1.5rem, 3vw, 2rem);
-    line-height: 1.1;
-    letter-spacing: -0.03em;
-    font-weight: 700;
-  }
-  .lever-body {
-    margin-top: 0.75rem;
-    max-width: 44ch;
-    font-size: 1.0625rem;
-    color: var(--cr-muted);
-  }
-  .mock {
-    border: 1px solid var(--cr-rule);
-    border-radius: var(--cr-radius-panel);
-    background: var(--cr-surface);
-    overflow: hidden;
-    box-shadow: 0 24px 60px -32px rgb(16 24 40 / 0.35);
-  }
-  .mock-head {
-    display: grid;
-    gap: 0.15rem;
-    padding: 1rem 1.1rem;
-    border-bottom: 1px solid var(--cr-rule);
-  }
-  .mock-row {
+  .checks li {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    min-height: 3.5rem;
-    padding: 0.75rem 1.1rem;
+    gap: 0.75rem;
   }
-  .mock-row + .mock-row {
-    border-top: 1px solid var(--cr-rule);
+  .checks svg {
+    flex: none;
+    color: var(--cr-success);
   }
-  .mock-key {
-    padding: 0.2rem 0.5rem;
-    border: 1px dashed var(--cr-edge);
-    border-radius: var(--cr-radius-control);
+
+  .pay {
+    display: grid;
+    gap: 0.35rem;
+    padding: 1.5rem;
+    border: 1px solid var(--cr-rule);
+    border-radius: var(--cr-radius-dialog);
+    background: var(--cr-bg);
   }
-  .rank {
-    justify-content: flex-start;
+  .pay-icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 0.5rem;
+    border-radius: 50%;
+    border: 1px solid var(--cr-edge);
   }
-  .pos {
-    width: 1.5rem;
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: var(--cr-muted);
+  .pay-title {
+    font-size: var(--cr-type-section-size);
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
-  .pos.first {
-    color: var(--cr-selected);
+
+  .rules {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--cr-text);
   }
-  .mock .where {
-    min-width: 3.5rem;
+  @media (width >= 48rem) {
+    .rules {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .rules li {
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--cr-rule);
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+  @media (width >= 48rem) {
+    .rules li + li {
+      padding-left: 1.5rem;
+      border-left: 1px solid var(--cr-rule);
+    }
   }
 </style>
