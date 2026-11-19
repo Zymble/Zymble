@@ -7,19 +7,19 @@ import Hero from '@/components/home/Hero.astro';
 import HowItWorks from '@/components/home/HowItWorks.astro';
 import InOutShowcase from '@/components/home/InOutShowcase.astro';
 import Personas from '@/components/home/Personas.astro';
-import Platforms from '@/components/home/Platforms.astro';
 import PricingPreview from '@/components/home/PricingPreview.astro';
 import SocialProof from '@/components/home/SocialProof.astro';
 import StickyCta from '@/components/home/StickyCta.astro';
 import type { Locale } from '@/config/routes';
 import { site } from '@/config/site';
+import { homeCopy } from '@/content/home';
 import { useTranslations } from '@/i18n/utils';
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
-const { lang, t } = useTranslations(locale);
+const { lang } = useTranslations(locale);
 ---
 
 <JsonLd
@@ -44,14 +44,13 @@ const { lang, t } = useTranslations(locale);
       name: site.name,
       applicationCategory: 'MultimediaApplication',
       operatingSystem: 'Web',
-      description: t('meta.home.description'),
+      description: homeCopy[locale].meta.description,
       url: site.url,
     },
   ]}
 />
 
 <Hero locale={locale} />
-<Platforms locale={locale} />
 <HowItWorks locale={locale} />
 <InOutShowcase locale={locale} />
 <Features locale={locale} />

@@ -19,3 +19,7 @@
 | 2026-11-19 | Hero = looping 14 s "story" (live → AI finds moment → 9:16 + captions → scheduled), synced with rotating questions; pause button, paused off-screen, static frame with reduced motion | Shows the product promise before reading; meets WCAG 2.2.2 |
 | 2026-11-19 | Mobile sticky CTA appears after the hero form scrolls away and hides at the final CTA | Keeps the CTA in reach while scrolling ("CTA descendo") |
 | 2026-11-19 | Pricing preview shows plans without prices ("Price announced at launch") | Prices not defined yet; no invented numbers |
+| 2026-11-19 | Redesign v2 ("less template"): no pills, no eyebrows, no icon-tile cards, no glow. Editorial layout with hairline rules, big tabular numbers, feature index rows, In/Out brackets as the only ornament | Owner feedback: v1 looked AI-generated |
+| 2026-11-19 | Hero H1 is a concrete local-language line ("Sua live teve quatro horas. O corte tem 38 segundos."); the English tagline moves to the closing band and footer | A BR/ES visitor understands the product in the first line; tagline stays as signature |
+| 2026-11-19 | Hero always dark (broadcast feel) with a mock editor: LIVE→CLIP tag, chat overlay, In/Out brackets, 9:16 reframe, timecoded log synced to the 14 s loop | Shows the product instead of describing it |
+| 2026-11-19 | Scroll progress line under the header in cyan (playhead), pure CSS scroll-driven | Page reads as a timeline; zero JS |

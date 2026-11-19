@@ -1,6 +1,6 @@
 ---
 /**
- * Mobile-only CTA bar: appears once the hero form scrolls away, hides again
+ * Mobile-only CTA bar: shown whenever the hero form is off screen, hides again
  * when the final CTA is on screen. Desktop keeps the header CTA.
  */
 import type { Locale } from '@/config/routes';
@@ -46,7 +46,8 @@ const { locale } = Astro.props;
   if (bar && hero) {
     const seen = new Map<Element, boolean>();
     const update = () => {
-      const heroOnScreen = !!seen.get(hero) || hero.getBoundingClientRect().top > 0;
+      // Visible whenever the hero form is not on screen (above or below), until the final CTA.
+      const heroOnScreen = !!seen.get(hero);
       const finalReached = !!final && final.getBoundingClientRect().top < innerHeight;
       bar.hidden = heroOnScreen || finalReached;
     };

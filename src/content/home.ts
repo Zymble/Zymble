@@ -3,40 +3,47 @@ import type { Locale, RouteId } from '../config/routes';
 /**
  * Home page copy, written per market (see docs/LOCALIZATION.md):
  * en = US creators, pt-br = Brazilian creators, es = Spanish-speaking creators (LatAm neutral).
- * No virality promises, no numbers without a source, no invented proof.
+ * Rules: concrete over generic, no virality promises, no numbers presented as results.
+ * The 4:12:33 / 3 / 0:38 figures are an illustrative example and are labeled as such.
  */
 export interface HomeCopy {
+  meta: { description: string };
   hero: {
-    live: string;
-    questions: [string, string, string, string];
+    kicker: string;
+    titleA: string;
+    titleB: string;
     lead: string;
     linkLabel: string;
     linkPlaceholder: string;
     linkHint: string;
     submit: string;
     note: string;
+    worksWith: string;
   };
   stage: {
     label: string;
-    steps: [string, string, string, string];
+    vod: string;
     liveTime: string;
-    chat: [string, string, string];
-    found: string;
-    foundWhy: string;
+    clipLen: string;
+    chat: [string, string][];
     caption: [string, string];
+    log: { tc: string; text: string }[];
     post: string;
     postWhen: string;
     pause: string;
     play: string;
   };
-  platforms: { from: string; to: string; upload: string };
-  how: {
-    eyebrow: string;
+  story: {
     title: string;
-    steps: { title: string; body: string }[];
+    example: string;
+    stats: { value: string; label: string }[];
+    note: string;
+  };
+  steps: {
+    title: string;
+    items: { title: string; body: string }[];
   };
   inout: {
-    eyebrow: string;
     title: string;
     body: string;
     hint: string;
@@ -51,387 +58,378 @@ export interface HomeCopy {
     youLabel: string;
   };
   features: {
-    eyebrow: string;
     title: string;
     items: { id: RouteId; title: string; body: string }[];
     more: string;
   };
   personas: {
-    eyebrow: string;
     title: string;
-    tabs: { id: RouteId; label: string; title: string; body: string; points: string[] }[];
-    link: string;
+    items: { id: RouteId; who: string; problem: string; answer: string; link: string }[];
   };
-  pricing: {
-    eyebrow: string;
-    title: string;
-    badge: string;
-    plans: { name: string; for: string }[];
-    price: string;
-    link: string;
-  };
-  faq: { eyebrow: string; title: string; items: { q: string; a: string }[] };
+  pricing: { title: string; body: string; note: string; link: string };
+  faq: { title: string; items: { q: string; a: string }[] };
   final: { title: string; body: string };
   sticky: string;
 }
 
 export const homeCopy: Record<Locale, HomeCopy> = {
   en: {
+    meta: {
+      description:
+        'ClipyRush watches your whole stream, flags where chat and audio blew up and hands you the moment in 9:16 with captions. You set the start and end.',
+    },
     hero: {
-      live: 'Live right now?',
-      questions: [
-        'Streaming for hours?',
-        'Want the best moments clipped?',
-        'Captioned and cut for vertical?',
-        'Ready for your TikTok?',
-      ],
-      lead: 'ClipyRush finds the moments in your stream worth a clip, captions them and frames them for vertical. You decide where each cut starts and ends.',
-      linkLabel: 'Paste a stream link',
-      linkPlaceholder: 'twitch.tv/yourchannel/v/…',
-      linkHint: 'Twitch, YouTube or Kick. We’ll clip it first when we launch.',
+      kicker: 'Stream clips for TikTok, Shorts and Reels',
+      titleA: 'Your stream ran four hours.',
+      titleB: 'The clip is 38 seconds.',
+      lead: 'ClipyRush watches the whole stream, flags where chat and audio blew up, and hands you the moment in 9:16 with captions. You set the start and the end, then schedule it to TikTok.',
+      linkLabel: 'Paste a link to one of your streams',
+      linkPlaceholder: 'twitch.tv/videos/…',
+      linkHint: 'Twitch, YouTube or Kick VOD. When we open, it’s the first one we clip.',
       submit: 'Get early access',
-      note: 'Early access. The app isn’t live yet.',
+      note: 'We haven’t launched yet. We’ll email you when it’s your turn.',
+      worksWith:
+        'Works with Twitch, YouTube and Kick VODs, or a file upload. Schedules to TikTok, YouTube Shorts and Instagram Reels.',
     },
     stage: {
-      label: 'How a stream becomes a clip',
-      steps: ['You go live', 'AI finds the moment', 'Captioned, 9:16', 'Scheduled'],
+      label: 'Example: how a stream becomes a clip',
+      vod: 'VOD 4:12:33',
       liveTime: '02:14:07',
-      chat: ['CLIP IT', 'NO WAY', 'run it back'],
-      found: 'Moment found',
-      foundWhy: 'Chat spike + audio peak',
+      clipLen: '0:38',
+      chat: [
+        ['jaxx', 'CLIP IT'],
+        ['mo_plays', 'NO WAY'],
+        ['kenz', 'run it back'],
+      ],
       caption: ['DID HE JUST', 'DRIFT THAT?!'],
+      log: [
+        { tc: '02:13:58', text: 'Chat spikes: “CLIP IT” ×42' },
+        { tc: '02:14:07', text: 'AI flags 38 s: audio peak + chat' },
+        { tc: '9:16', text: 'Captioned and reframed, ready for your tweaks' },
+        { tc: '7:00 PM', text: 'Scheduled to TikTok, New York time' },
+      ],
       post: 'TikTok',
-      postWhen: 'Scheduled for 7:00 PM · New York',
+      postWhen: 'Today, 7:00 PM · New York',
       pause: 'Pause animation',
       play: 'Play animation',
     },
-    platforms: { from: 'Clip from', to: 'Post to', upload: 'or upload a file' },
-    how: {
-      eyebrow: 'How it works',
-      title: 'From a three-hour stream to a clip you’re proud of.',
-      steps: [
+    story: {
+      title: 'Nobody’s watching four hours to find the good 38 seconds.',
+      example: 'A Saturday stream, for example:',
+      stats: [
+        { value: '4:12:33', label: 'of VOD' },
+        { value: '3', label: 'moments flagged by the AI, each with its reason' },
+        { value: '0:38', label: 'the cut you approved and posted' },
+      ],
+      note: 'Illustrative example.',
+    },
+    steps: {
+      title: 'You paste the link. The AI does the boring part. You make the call.',
+      items: [
         {
-          title: 'Paste your stream',
-          body: 'Drop a VOD link or upload a file. ClipyRush reads the audio, the speech and the chat.',
+          title: 'Paste the VOD',
+          body: 'A Twitch, YouTube or Kick link, or the file itself. ClipyRush reads the speech, the audio and the chat.',
         },
         {
-          title: 'Review suggested clips',
-          body: 'See why each moment was picked. Drag In and Out until the joke lands.',
+          title: 'Review what the AI flagged',
+          body: 'Every moment shows why it was picked: a chat spike, a scream, a laugh. Skip the ones that miss.',
         },
         {
-          title: 'Save and schedule',
-          body: 'Captions and vertical framing stay editable. Pick the time, in your audience’s time zone.',
+          title: 'Trim, caption, schedule',
+          body: 'Drag In and Out, fix a word in the captions, pick the time. Nothing posts until you say so.',
         },
       ],
     },
     inout: {
-      eyebrow: 'The In/Out editor',
-      title: 'The AI suggests. You make the cut.',
-      body: 'Every suggestion comes with its reason. Move the In and Out handles to keep the setup, the play and the reaction.',
-      hint: 'Pick a clip, then drag the handles or use the arrow keys.',
+      title: 'The AI flags it. You cut it.',
+      body: 'Sometimes the AI misses the timing of a joke. That’s why every suggestion shows its reason and comes with two handles: pull In back for the setup, push Out for the reaction.',
+      hint: 'Pick a moment, then drag the handles or use the arrow keys.',
       clips: [
         { title: 'The drift', why: 'Chat spike' },
-        { title: 'Clutch save', why: 'Audio peak' },
-        { title: 'Chat goes wild', why: 'Laughter + chat' },
+        { title: 'Last-second save', why: 'Audio peak' },
+        { title: 'Chat loses it', why: 'Laughter + chat' },
       ],
       inLabel: 'In',
       outLabel: 'Out',
-      duration: 'Clip length',
+      duration: 'Length',
       save: 'Save this cut',
       saved: 'Cut saved',
-      disclaimer: 'Interactive demo with sample data.',
+      disclaimer: 'Demo with sample data. Nothing is uploaded.',
       aiLabel: 'AI suggestion',
       youLabel: 'Your cut',
     },
     features: {
-      eyebrow: 'Features',
-      title: 'Everything between “that was insane” and “posted”.',
+      title: 'What’s inside',
       items: [
         {
           id: 'features/ai-moments',
           title: 'AI moments',
-          body: 'Finds highlights from speech, audio peaks and chat activity.',
+          body: 'Reads speech, audio peaks and chat pace, and tells you why it flagged each moment.',
         },
         {
           id: 'features/in-out-editor',
           title: 'In/Out editor',
-          body: 'Frame-accurate start and end. The AI suggests, you decide.',
+          body: 'Frame-accurate start and end. Nothing leaves without your approval.',
         },
         {
           id: 'features/captions',
           title: 'Captions',
-          body: 'Auto captions you can edit word by word, styled for vertical.',
+          body: 'Editable word by word, styled for vertical video.',
         },
         {
           id: 'features/vertical-reframe',
-          title: 'Vertical reframe',
-          body: 'Turns 16:9 into 9:16 and keeps the action in frame.',
+          title: '9:16 reframe',
+          body: 'Keeps the action in frame. If it follows the wrong thing, you move it.',
         },
         {
           id: 'features/scheduling',
           title: 'Scheduling',
-          body: 'Schedule to TikTok, Shorts and Reels in the right time zone.',
+          body: 'TikTok, Shorts and Reels, in your audience’s time zone.',
         },
         {
           id: 'features/analytics',
           title: 'Analytics',
-          body: 'See which clips worked, per platform, without spreadsheets.',
+          body: 'Which clips worked, on which platform. No spreadsheet.',
         },
       ],
-      more: 'See all features',
+      more: 'All features',
     },
     personas: {
-      eyebrow: 'Built for',
-      title: 'Whoever makes the cut.',
-      tabs: [
+      title: 'For people who stream, edit, or run channels.',
+      items: [
         {
           id: 'use-cases/streamers',
-          label: 'Streamers',
-          title: 'Keep the play and the reaction.',
-          body: 'Stream like you always do. The next day, your best moments are waiting, ready to review.',
-          points: [
-            'Clips from Twitch, YouTube and Kick',
-            'Your call on every cut',
-            'Captions in your style',
-          ],
+          who: 'Streamers',
+          problem: 'You stream for hours and don’t want to become an editor the next day.',
+          answer:
+            'When you come back, your best moments are already flagged. Review, adjust, post.',
+          link: 'How it works for streamers',
         },
         {
           id: 'use-cases/editors',
-          label: 'Editors',
-          title: 'Skip the scrubbing. Keep the control.',
-          body: 'Start from suggested moments with source, framing, captions and timing all still editable.',
-          points: [
-            'Frame-accurate In/Out',
-            'Editable captions and framing',
-            'Source timecode on every clip',
-          ],
+          who: 'Editors and clippers',
+          problem: 'You cut for five channels and spend the night scrubbing timelines.',
+          answer:
+            'Start from flagged moments with source timecode, and captions and framing you can still edit.',
+          link: 'How it works for editors',
         },
         {
           id: 'use-cases/agencies',
-          label: 'Agencies',
-          title: 'Every channel, version and owner in sight.',
-          body: 'Review queues per channel, explicit versions and scheduling in each audience’s time zone.',
-          points: ['Shared review queue', 'Versions before approval', 'Time zone per destination'],
+          who: 'Agencies',
+          problem: 'You need to know which version got approved, by whom, and for which time zone.',
+          answer: 'A review queue per channel, explicit versions and scheduling per destination.',
+          link: 'How it works for agencies',
         },
       ],
-      link: 'Learn more',
     },
     pricing: {
-      eyebrow: 'Pricing',
-      title: 'Plans for creators, editors and agencies.',
-      badge: 'Early access. Pricing may change.',
-      plans: [
-        { name: 'Creator', for: 'For streamers clipping their own channel.' },
-        { name: 'Editor', for: 'For editors and clippers working for creators.' },
-        { name: 'Agency', for: 'For teams running many channels.' },
-      ],
-      price: 'Price announced at launch',
-      link: 'See pricing details',
+      title: 'Pricing',
+      body: 'Three plans: Creator, Editor and Agency. Prices come out at launch, and people on the list hear first.',
+      note: 'Early access. Pricing may change.',
+      link: 'See the plans',
     },
     faq: {
-      eyebrow: 'FAQ',
-      title: 'Questions, answered.',
+      title: 'Before you ask',
       items: [
         {
-          q: 'What is ClipyRush?',
-          a: 'A tool that finds the best moments in long streams and VODs and turns them into vertical, captioned clips. You review and adjust every cut before it goes anywhere.',
+          q: 'What does ClipyRush do?',
+          a: 'It finds the best moments in long streams and VODs and turns them into vertical, captioned clips. You review and adjust every cut before it goes anywhere.',
         },
         {
           q: 'Does the AI post for me?',
-          a: 'No. The AI suggests. Nothing is published until you approve the cut and the schedule.',
+          a: 'No. The AI suggests. Nothing is published until you approve the cut and the time.',
         },
         {
           q: 'Which platforms does it work with?',
-          a: 'We’re building for Twitch, YouTube and Kick streams, plus file upload, and scheduling to TikTok, YouTube Shorts and Instagram Reels.',
+          a: 'We’re building for Twitch, YouTube and Kick VODs plus file upload, and scheduling to TikTok, YouTube Shorts and Instagram Reels.',
         },
         {
-          q: 'Which caption languages are supported?',
-          a: 'We’ll confirm the launch languages before early access opens. English, Portuguese and Spanish are our priority.',
+          q: 'Which caption languages?',
+          a: 'We’ll confirm the launch languages before early access opens. English, Portuguese and Spanish come first.',
         },
         {
           q: 'Who owns my clips?',
           a: 'You do. Your streams and clips are your content. The details will be in our Terms before launch.',
         },
         {
-          q: 'What do you do with my email?',
-          a: 'We use it only to send your early access invite and product updates you agree to. You can leave the list at any time.',
+          q: 'What happens to my email?',
+          a: 'We use it to send your early access invite and the updates you agree to. You can leave the list at any time.',
         },
         {
           q: 'When does it launch?',
-          a: 'There’s no public date yet. People on the early access list get in first.',
+          a: 'There’s no public date yet. People on the list get in first.',
         },
       ],
     },
     final: {
       title: 'Your stream. Your cut.',
-      body: 'Join the early access list. Paste a stream link and we’ll clip it first when we launch.',
+      body: 'Paste a link to one of your streams. When we open, it’s the first one we clip.',
     },
     sticky: 'Get early access',
   },
 
   'pt-br': {
+    meta: {
+      description:
+        'A ClipyRush assiste à sua live inteira, marca onde o chat e o áudio explodiram e entrega o trecho em 9:16, já legendado. Você decide o começo e o fim.',
+    },
     hero: {
-      live: 'Tá ao vivo agora?',
-      questions: [
-        'Tá gravando live de horas?',
-        'Quer os melhores momentos já cortados?',
-        'Legendados e no formato vertical?',
-        'Prontos pro seu TikTok?',
-      ],
-      lead: 'A ClipyRush encontra os trechos da sua live que valem um corte, legenda e deixa no formato vertical. Você decide onde cada corte começa e termina.',
-      linkLabel: 'Cole o link da sua live',
-      linkPlaceholder: 'twitch.tv/seucanal/v/…',
-      linkHint: 'Twitch, YouTube ou Kick. A gente corta ela primeiro quando lançar.',
+      kicker: 'Cortes de live para TikTok, Shorts e Reels',
+      titleA: 'Sua live teve quatro horas.',
+      titleB: 'O corte tem 38 segundos.',
+      lead: 'A ClipyRush assiste à live inteira, marca onde o chat e o áudio explodiram e te entrega o trecho em 9:16, já legendado. Você acerta o começo e o fim e agenda no TikTok.',
+      linkLabel: 'Cole o link de uma live sua',
+      linkPlaceholder: 'twitch.tv/videos/…',
+      linkHint:
+        'VOD da Twitch, YouTube ou Kick. Quando a gente abrir, ela é a primeira a virar corte.',
       submit: 'Quero acesso antecipado',
-      note: 'Acesso antecipado. O app ainda não foi lançado.',
+      note: 'Ainda não lançamos. A gente avisa por e-mail quando chegar a sua vez.',
+      worksWith:
+        'Funciona com VODs da Twitch, YouTube e Kick ou upload de arquivo. Agenda no TikTok, YouTube Shorts e Instagram Reels.',
     },
     stage: {
-      label: 'Como uma live vira um corte',
-      steps: ['Você entra ao vivo', 'A IA acha o momento', 'Legenda e 9:16', 'Agendado'],
+      label: 'Exemplo: como uma live vira corte',
+      vod: 'VOD 4:12:33',
       liveTime: '02:14:07',
-      chat: ['CLIPA ISSO', 'KKKKKKK', 'replay pfv'],
-      found: 'Momento encontrado',
-      foundWhy: 'Pico no chat + no áudio',
+      clipLen: '0:38',
+      chat: [
+        ['rafa_gg', 'CLIPA ISSO'],
+        ['duda', 'KKKKKKKK'],
+        ['teteu', 'replay pfv'],
+      ],
       caption: ['QUE CURVA', 'FOI ESSA?!'],
+      log: [
+        { tc: '02:13:58', text: 'Chat dispara: “CLIPA ISSO” ×42' },
+        { tc: '02:14:07', text: 'IA marca 38 s: pico de áudio + chat' },
+        { tc: '9:16', text: 'Legendado e enquadrado, pronto pra você ajustar' },
+        { tc: '19h', text: 'Agendado no TikTok, horário de São Paulo' },
+      ],
       post: 'TikTok',
-      postWhen: 'Agendado para 19h · São Paulo',
+      postWhen: 'Hoje, 19h · São Paulo',
       pause: 'Pausar animação',
       play: 'Reproduzir animação',
     },
-    platforms: { from: 'Corta lives da', to: 'Posta no', upload: 'ou envie um arquivo' },
-    how: {
-      eyebrow: 'Como funciona',
-      title: 'De uma live de três horas a um corte que dá orgulho.',
-      steps: [
+    story: {
+      title: 'Ninguém vai assistir quatro horas pra achar os 38 segundos bons.',
+      example: 'Uma live de sábado, por exemplo:',
+      stats: [
+        { value: '4:12:33', label: 'de VOD' },
+        { value: '3', label: 'momentos marcados pela IA, cada um com o motivo' },
+        { value: '0:38', label: 'o corte que você aprovou e postou' },
+      ],
+      note: 'Exemplo ilustrativo.',
+    },
+    steps: {
+      title: 'Você cola o link. A IA faz a parte chata. Você decide.',
+      items: [
         {
-          title: 'Cole sua live',
-          body: 'Mande o link do VOD ou suba o arquivo. A ClipyRush lê o áudio, a fala e o chat.',
+          title: 'Cole o VOD',
+          body: 'Link da Twitch, YouTube ou Kick, ou o próprio arquivo. A ClipyRush lê a fala, o áudio e o chat.',
         },
         {
-          title: 'Revise os cortes sugeridos',
-          body: 'Veja por que cada momento foi escolhido. Arraste o In e o Out até a piada encaixar.',
+          title: 'Revise o que a IA marcou',
+          body: 'Cada momento mostra por que foi escolhido: pico no chat, grito, risada. Descarte o que não serve.',
         },
         {
-          title: 'Salve e agende',
-          body: 'Legenda e enquadramento continuam editáveis. Escolha o horário no fuso do seu público.',
+          title: 'Corte, legende, agende',
+          body: 'Arraste o In e o Out, corrija uma palavra da legenda, escolha o horário. Nada vai ao ar sem o seu ok.',
         },
       ],
     },
     inout: {
-      eyebrow: 'O editor In/Out',
-      title: 'A IA sugere. Você faz o corte.',
-      body: 'Cada sugestão vem com o motivo. Mexa nas alças de In e Out para manter o contexto, o lance e a reação.',
-      hint: 'Escolha um corte e arraste as alças ou use as setas do teclado.',
+      title: 'A IA marca. O corte é seu.',
+      body: 'Às vezes a IA erra o tempo da piada. Por isso cada sugestão mostra o motivo e vem com duas alças: puxe o In pra pegar o contexto, empurre o Out pra pegar a reação.',
+      hint: 'Escolha um momento e arraste as alças ou use as setas do teclado.',
       clips: [
         { title: 'A curva', why: 'Pico no chat' },
-        { title: 'Defesa no fim', why: 'Pico no áudio' },
-        { title: 'Chat explodiu', why: 'Risada + chat' },
+        { title: 'Defesa no último segundo', why: 'Pico no áudio' },
+        { title: 'Chat perdeu a linha', why: 'Risada + chat' },
       ],
       inLabel: 'In',
       outLabel: 'Out',
-      duration: 'Duração do corte',
+      duration: 'Duração',
       save: 'Salvar este corte',
       saved: 'Corte salvo',
-      disclaimer: 'Demonstração interativa com dados de exemplo.',
+      disclaimer: 'Demonstração com dados de exemplo. Nada é enviado.',
       aiLabel: 'Sugestão da IA',
       youLabel: 'Seu corte',
     },
     features: {
-      eyebrow: 'Recursos',
-      title: 'Tudo entre o “mano, que isso?!” e o “postado”.',
+      title: 'O que tem dentro',
       items: [
         {
           id: 'features/ai-moments',
           title: 'Momentos com IA',
-          body: 'Acha os destaques pela fala, pelos picos de áudio e pela movimentação do chat.',
+          body: 'Lê a fala, os picos de áudio e o ritmo do chat, e mostra por que marcou cada trecho.',
         },
         {
           id: 'features/in-out-editor',
           title: 'Editor In/Out',
-          body: 'Início e fim no quadro exato. A IA sugere, você decide.',
+          body: 'Começo e fim no quadro exato. Nada sai sem a sua aprovação.',
         },
         {
           id: 'features/captions',
           title: 'Legendas',
-          body: 'Legenda automática que você edita palavra por palavra, no estilo do vertical.',
+          body: 'Editáveis palavra por palavra, no estilo de vídeo vertical.',
         },
         {
           id: 'features/vertical-reframe',
-          title: 'Enquadramento vertical',
-          body: 'Transforma 16:9 em 9:16 sem perder o lance de vista.',
+          title: 'Enquadramento 9:16',
+          body: 'Mantém a ação no quadro. Se ele seguir a coisa errada, você move.',
         },
         {
           id: 'features/scheduling',
           title: 'Agendamento',
-          body: 'Agende para TikTok, Shorts e Reels no fuso certo.',
+          body: 'TikTok, Shorts e Reels, no fuso de quem vai assistir.',
         },
         {
           id: 'features/analytics',
           title: 'Analytics',
-          body: 'Veja quais cortes funcionaram em cada rede, sem planilha.',
+          body: 'Quais cortes renderam, em qual rede. Sem planilha.',
         },
       ],
-      more: 'Ver todos os recursos',
+      more: 'Todos os recursos',
     },
     personas: {
-      eyebrow: 'Feito para',
-      title: 'Quem decide o corte.',
-      tabs: [
+      title: 'Pra quem faz live, edita ou cuida de canal.',
+      items: [
         {
           id: 'use-cases/streamers',
-          label: 'Streamers',
-          title: 'Guarde o lance e a reação.',
-          body: 'Faça a live como sempre. No dia seguinte, seus melhores momentos estão lá esperando revisão.',
-          points: [
-            'Cortes de Twitch, YouTube e Kick',
-            'Você decide cada corte',
-            'Legenda com a sua cara',
-          ],
+          who: 'Streamers',
+          problem: 'Você faz live de horas e não quer virar editor no dia seguinte.',
+          answer:
+            'Quando você volta, os melhores momentos já estão marcados. Revisa, ajusta e posta.',
+          link: 'Como funciona pra streamers',
         },
         {
           id: 'use-cases/editors',
-          label: 'Editores',
-          title: 'Sem caçar momento na timeline. Com controle total.',
-          body: 'Comece pelos momentos sugeridos, com origem, enquadramento, legenda e tempo editáveis.',
-          points: [
-            'In/Out no quadro exato',
-            'Legenda e enquadramento editáveis',
-            'Timecode de origem em cada corte',
-          ],
+          who: 'Editores e clippers',
+          problem: 'Você corta pra cinco canais e passa a noite caçando momento na timeline.',
+          answer:
+            'Comece pelos momentos marcados, com o timecode da origem e legenda e enquadramento editáveis.',
+          link: 'Como funciona pra editores',
         },
         {
           id: 'use-cases/agencies',
-          label: 'Agências',
-          title: 'Cada canal, versão e responsável à vista.',
-          body: 'Fila de revisão por canal, versões explícitas e agendamento no fuso de cada público.',
-          points: [
-            'Fila de revisão compartilhada',
-            'Versões antes da aprovação',
-            'Fuso por destino',
-          ],
+          who: 'Agências',
+          problem: 'Você precisa saber qual versão foi aprovada, por quem e pra qual fuso.',
+          answer: 'Fila de revisão por canal, versões explícitas e agendamento por destino.',
+          link: 'Como funciona pra agências',
         },
       ],
-      link: 'Saiba mais',
     },
     pricing: {
-      eyebrow: 'Preços',
-      title: 'Planos para criadores, editores e agências.',
-      badge: 'Acesso antecipado. Os preços podem mudar.',
-      plans: [
-        { name: 'Creator', for: 'Para streamers que cortam o próprio canal.' },
-        { name: 'Editor', for: 'Para editores e clippers que trabalham para criadores.' },
-        { name: 'Agency', for: 'Para equipes que cuidam de vários canais.' },
-      ],
-      price: 'Preço anunciado no lançamento',
-      link: 'Ver detalhes dos preços',
+      title: 'Preço',
+      body: 'Três planos: Creator, Editor e Agency. Os valores saem no lançamento, e quem está na lista fica sabendo antes.',
+      note: 'Acesso antecipado. Os preços podem mudar.',
+      link: 'Ver os planos',
     },
     faq: {
-      eyebrow: 'Dúvidas',
-      title: 'Perguntas frequentes.',
+      title: 'Antes de você perguntar',
       items: [
         {
-          q: 'O que é a ClipyRush?',
-          a: 'Uma ferramenta que encontra os melhores momentos de lives e VODs longos e transforma em cortes verticais com legenda. Você revisa e ajusta cada corte antes de ir pra qualquer lugar.',
+          q: 'O que a ClipyRush faz?',
+          a: 'Encontra os melhores momentos de lives e VODs longos e transforma em cortes verticais com legenda. Você revisa e ajusta cada corte antes de ir pra qualquer lugar.',
         },
         {
           q: 'A IA posta por mim?',
@@ -439,228 +437,228 @@ export const homeCopy: Record<Locale, HomeCopy> = {
         },
         {
           q: 'Funciona com quais plataformas?',
-          a: 'Estamos construindo para lives da Twitch, YouTube e Kick, além de envio de arquivo, e agendamento para TikTok, YouTube Shorts e Instagram Reels.',
+          a: 'Estamos construindo para VODs da Twitch, YouTube e Kick, além de upload de arquivo, e agendamento no TikTok, YouTube Shorts e Instagram Reels.',
         },
         {
-          q: 'Quais idiomas de legenda?',
-          a: 'Vamos confirmar os idiomas antes de abrir o acesso antecipado. Português, inglês e espanhol são prioridade.',
+          q: 'Legenda em quais idiomas?',
+          a: 'Vamos confirmar os idiomas antes de abrir o acesso antecipado. Português, inglês e espanhol vêm primeiro.',
         },
         {
           q: 'De quem são os cortes?',
           a: 'Seus. As lives e os cortes são conteúdo seu. Os detalhes vão estar nos Termos antes do lançamento.',
         },
         {
-          q: 'O que vocês fazem com meu e-mail?',
-          a: 'Usamos só para mandar seu convite de acesso antecipado e as novidades que você autorizar. Dá para sair da lista quando quiser.',
+          q: 'O que acontece com meu e-mail?',
+          a: 'A gente usa pra mandar seu convite de acesso antecipado e as novidades que você autorizar. Dá pra sair da lista quando quiser.',
         },
         {
           q: 'Quando lança?',
-          a: 'Ainda não tem data pública. Quem está na lista de acesso antecipado entra primeiro.',
+          a: 'Ainda não tem data pública. Quem está na lista entra primeiro.',
         },
       ],
     },
     final: {
       title: 'Your stream. Your cut.',
-      body: 'Entre na lista de acesso antecipado. Cole o link de uma live e a gente corta ela primeiro quando lançar.',
+      body: 'Cole o link de uma live sua. Quando a gente abrir, ela é a primeira a virar corte.',
     },
     sticky: 'Quero acesso antecipado',
   },
 
   // TODO review: native Spanish (LatAm neutral) pass before launch.
   es: {
+    meta: {
+      description:
+        'ClipyRush mira tu stream completo, marca dónde explotaron el chat y el audio y te entrega el momento en 9:16 con subtítulos. Tú decides el inicio y el final.',
+    },
     hero: {
-      live: '¿Estás en directo?',
-      questions: [
-        '¿Haces streams de horas?',
-        '¿Quieres tus mejores momentos ya recortados?',
-        '¿Con subtítulos y en vertical?',
-        '¿Listos para tu TikTok?',
-      ],
-      lead: 'ClipyRush encuentra los momentos de tu stream que valen un clip, les pone subtítulos y los encuadra en vertical. Tú decides dónde empieza y termina cada corte.',
-      linkLabel: 'Pega el enlace de tu stream',
-      linkPlaceholder: 'twitch.tv/tucanal/v/…',
-      linkHint: 'Twitch, YouTube o Kick. Lo recortamos primero cuando lancemos.',
-      submit: 'Obtener acceso anticipado',
-      note: 'Acceso anticipado. La app aún no está disponible.',
+      kicker: 'Clips de streams para TikTok, Shorts y Reels',
+      titleA: 'Tu stream duró cuatro horas.',
+      titleB: 'El clip dura 38 segundos.',
+      lead: 'ClipyRush mira el stream completo, marca dónde explotaron el chat y el audio y te entrega el momento en 9:16, ya con subtítulos. Tú ajustas el inicio y el final y lo programas en TikTok.',
+      linkLabel: 'Pega el enlace de uno de tus streams',
+      linkPlaceholder: 'twitch.tv/videos/…',
+      linkHint: 'VOD de Twitch, YouTube o Kick. Cuando abramos, será el primero que recortemos.',
+      submit: 'Quiero acceso anticipado',
+      note: 'Todavía no lanzamos. Te avisamos por correo cuando sea tu turno.',
+      worksWith:
+        'Funciona con VODs de Twitch, YouTube y Kick o subiendo un archivo. Programa en TikTok, YouTube Shorts e Instagram Reels.',
     },
     stage: {
-      label: 'Cómo un stream se convierte en clip',
-      steps: ['Sales en directo', 'La IA encuentra el momento', 'Subtítulos y 9:16', 'Programado'],
+      label: 'Ejemplo: cómo un stream se convierte en clip',
+      vod: 'VOD 4:12:33',
       liveTime: '02:14:07',
-      chat: ['CLIPEA ESO', 'JAJAJAJA', 'otra vez'],
-      found: 'Momento encontrado',
-      foundWhy: 'Pico de chat + audio',
+      clipLen: '0:38',
+      chat: [
+        ['lu_pro', 'CLIPEA ESO'],
+        ['nico', 'JAJAJAJA'],
+        ['vale', 'otra vez pls'],
+      ],
       caption: ['¡¿QUÉ CURVA', 'FUE ESA?!'],
+      log: [
+        { tc: '02:13:58', text: 'El chat explota: “CLIPEA ESO” ×42' },
+        { tc: '02:14:07', text: 'La IA marca 38 s: pico de audio + chat' },
+        { tc: '9:16', text: 'Con subtítulos y encuadre, listo para que lo ajustes' },
+        { tc: '19:00', text: 'Programado en TikTok, hora de Ciudad de México' },
+      ],
       post: 'TikTok',
-      postWhen: 'Programado para las 19:00 · Ciudad de México',
+      postWhen: 'Hoy, 19:00 · Ciudad de México',
       pause: 'Pausar animación',
       play: 'Reproducir animación',
     },
-    platforms: { from: 'Recorta streams de', to: 'Publica en', upload: 'o sube un archivo' },
-    how: {
-      eyebrow: 'Cómo funciona',
-      title: 'De un stream de tres horas a un clip del que te sientas orgulloso.',
-      steps: [
+    story: {
+      title: 'Nadie va a ver cuatro horas para encontrar los 38 segundos buenos.',
+      example: 'Un stream de sábado, por ejemplo:',
+      stats: [
+        { value: '4:12:33', label: 'de VOD' },
+        { value: '3', label: 'momentos marcados por la IA, cada uno con su motivo' },
+        { value: '0:38', label: 'el clip que aprobaste y publicaste' },
+      ],
+      note: 'Ejemplo ilustrativo.',
+    },
+    steps: {
+      title: 'Tú pegas el enlace. La IA hace la parte aburrida. Tú decides.',
+      items: [
         {
-          title: 'Pega tu stream',
-          body: 'Pega el enlace del VOD o sube el archivo. ClipyRush lee el audio, la voz y el chat.',
+          title: 'Pega el VOD',
+          body: 'Un enlace de Twitch, YouTube o Kick, o el archivo. ClipyRush lee la voz, el audio y el chat.',
         },
         {
-          title: 'Revisa los clips sugeridos',
-          body: 'Mira por qué se eligió cada momento. Arrastra el In y el Out hasta que el chiste funcione.',
+          title: 'Revisa lo que marcó la IA',
+          body: 'Cada momento muestra por qué se eligió: un pico de chat, un grito, una risa. Descarta lo que no sirve.',
         },
         {
-          title: 'Guarda y programa',
-          body: 'Subtítulos y encuadre siguen editables. Elige la hora en la zona horaria de tu audiencia.',
+          title: 'Recorta, subtitula, programa',
+          body: 'Arrastra el In y el Out, corrige una palabra del subtítulo, elige la hora. Nada se publica sin tu ok.',
         },
       ],
     },
     inout: {
-      eyebrow: 'El editor In/Out',
-      title: 'La IA sugiere. Tú haces el corte.',
-      body: 'Cada sugerencia trae su motivo. Mueve los controles In y Out para conservar el contexto, la jugada y la reacción.',
-      hint: 'Elige un clip y arrastra los controles o usa las flechas del teclado.',
+      title: 'La IA lo marca. El corte es tuyo.',
+      body: 'A veces la IA no le atina al tiempo del chiste. Por eso cada sugerencia muestra su motivo y trae dos controles: mueve el In hacia atrás para tener el contexto y el Out hacia adelante para tener la reacción.',
+      hint: 'Elige un momento y arrastra los controles o usa las flechas del teclado.',
       clips: [
         { title: 'La curva', why: 'Pico de chat' },
-        { title: 'Salvada final', why: 'Pico de audio' },
-        { title: 'El chat explotó', why: 'Risas + chat' },
+        { title: 'Salvada de último segundo', why: 'Pico de audio' },
+        { title: 'El chat se volvió loco', why: 'Risas + chat' },
       ],
       inLabel: 'In',
       outLabel: 'Out',
-      duration: 'Duración del clip',
+      duration: 'Duración',
       save: 'Guardar este corte',
       saved: 'Corte guardado',
-      disclaimer: 'Demo interactiva con datos de ejemplo.',
+      disclaimer: 'Demo con datos de ejemplo. No se sube nada.',
       aiLabel: 'Sugerencia de la IA',
       youLabel: 'Tu corte',
     },
     features: {
-      eyebrow: 'Funciones',
-      title: 'Todo entre el “¡¿viste eso?!” y el “publicado”.',
+      title: 'Lo que trae ClipyRush',
       items: [
         {
           id: 'features/ai-moments',
           title: 'Momentos con IA',
-          body: 'Encuentra lo mejor por la voz, los picos de audio y la actividad del chat.',
+          body: 'Lee la voz, los picos de audio y el ritmo del chat, y te dice por qué marcó cada momento.',
         },
         {
           id: 'features/in-out-editor',
           title: 'Editor In/Out',
-          body: 'Inicio y fin al fotograma exacto. La IA sugiere, tú decides.',
+          body: 'Inicio y final al fotograma exacto. Nada sale sin tu aprobación.',
         },
         {
           id: 'features/captions',
           title: 'Subtítulos',
-          body: 'Subtítulos automáticos que editas palabra por palabra, con estilo vertical.',
+          body: 'Editables palabra por palabra, con estilo de video vertical.',
         },
         {
           id: 'features/vertical-reframe',
-          title: 'Encuadre vertical',
-          body: 'Convierte 16:9 en 9:16 sin perder la acción.',
+          title: 'Encuadre 9:16',
+          body: 'Mantiene la acción en cuadro. Si sigue lo que no es, tú lo mueves.',
         },
         {
           id: 'features/scheduling',
           title: 'Programación',
-          body: 'Programa en TikTok, Shorts y Reels en la zona horaria correcta.',
+          body: 'TikTok, Shorts y Reels, en la zona horaria de tu audiencia.',
         },
         {
           id: 'features/analytics',
           title: 'Analíticas',
-          body: 'Mira qué clips funcionaron en cada red, sin hojas de cálculo.',
+          body: 'Qué clips funcionaron y en qué red. Sin hojas de cálculo.',
         },
       ],
-      more: 'Ver todas las funciones',
+      more: 'Todas las funciones',
     },
     personas: {
-      eyebrow: 'Hecho para',
-      title: 'Quien decide el corte.',
-      tabs: [
+      title: 'Para quien hace streams, edita o maneja canales.',
+      items: [
         {
           id: 'use-cases/streamers',
-          label: 'Streamers',
-          title: 'Conserva la jugada y la reacción.',
-          body: 'Haz tu stream como siempre. Al día siguiente, tus mejores momentos te esperan para revisar.',
-          points: [
-            'Clips de Twitch, YouTube y Kick',
-            'Tú decides cada corte',
-            'Subtítulos con tu estilo',
-          ],
+          who: 'Streamers',
+          problem: 'Haces streams de horas y no quieres convertirte en editor al día siguiente.',
+          answer:
+            'Cuando vuelves, tus mejores momentos ya están marcados. Revisas, ajustas y publicas.',
+          link: 'Cómo funciona para streamers',
         },
         {
           id: 'use-cases/editors',
-          label: 'Editores',
-          title: 'Sin buscar momentos a ciegas. Con todo el control.',
-          body: 'Empieza por los momentos sugeridos, con origen, encuadre, subtítulos y tiempos editables.',
-          points: [
-            'In/Out al fotograma exacto',
-            'Subtítulos y encuadre editables',
-            'Timecode de origen en cada clip',
-          ],
+          who: 'Editores y clippers',
+          problem:
+            'Recortas para cinco canales y pasas la noche buscando momentos en la línea de tiempo.',
+          answer:
+            'Empieza por los momentos marcados, con el timecode de origen y subtítulos y encuadre editables.',
+          link: 'Cómo funciona para editores',
         },
         {
           id: 'use-cases/agencies',
-          label: 'Agencias',
-          title: 'Cada canal, versión y responsable a la vista.',
-          body: 'Cola de revisión por canal, versiones explícitas y programación en la zona horaria de cada audiencia.',
-          points: [
-            'Cola de revisión compartida',
-            'Versiones antes de aprobar',
-            'Zona horaria por destino',
-          ],
+          who: 'Agencias',
+          problem:
+            'Necesitas saber qué versión se aprobó, quién la aprobó y para qué zona horaria.',
+          answer: 'Cola de revisión por canal, versiones explícitas y programación por destino.',
+          link: 'Cómo funciona para agencias',
         },
       ],
-      link: 'Más información',
     },
     pricing: {
-      eyebrow: 'Precios',
-      title: 'Planes para creadores, editores y agencias.',
-      badge: 'Acceso anticipado. Los precios pueden cambiar.',
-      plans: [
-        { name: 'Creator', for: 'Para streamers que recortan su propio canal.' },
-        { name: 'Editor', for: 'Para editores y clippers que trabajan para creadores.' },
-        { name: 'Agency', for: 'Para equipos que gestionan varios canales.' },
-      ],
-      price: 'Precio anunciado en el lanzamiento',
-      link: 'Ver detalles de precios',
+      title: 'Precios',
+      body: 'Tres planes: Creator, Editor y Agency. Los precios salen en el lanzamiento, y quienes están en la lista se enteran primero.',
+      note: 'Acceso anticipado. Los precios pueden cambiar.',
+      link: 'Ver los planes',
     },
     faq: {
-      eyebrow: 'Preguntas',
-      title: 'Preguntas frecuentes.',
+      title: 'Antes de que preguntes',
       items: [
         {
-          q: '¿Qué es ClipyRush?',
-          a: 'Una herramienta que encuentra los mejores momentos de streams y VODs largos y los convierte en clips verticales con subtítulos. Revisas y ajustas cada corte antes de que vaya a cualquier lado.',
+          q: '¿Qué hace ClipyRush?',
+          a: 'Encuentra los mejores momentos de streams y VODs largos y los convierte en clips verticales con subtítulos. Revisas y ajustas cada corte antes de que vaya a cualquier lado.',
         },
         {
           q: '¿La IA publica por mí?',
-          a: 'No. La IA sugiere. Nada se publica hasta que apruebes el corte y el horario.',
+          a: 'No. La IA sugiere. Nada se publica hasta que apruebes el corte y la hora.',
         },
         {
           q: '¿Con qué plataformas funciona?',
-          a: 'Estamos construyendo para streams de Twitch, YouTube y Kick, además de subida de archivos, y programación en TikTok, YouTube Shorts e Instagram Reels.',
+          a: 'Estamos construyendo para VODs de Twitch, YouTube y Kick, además de subida de archivos, y programación en TikTok, YouTube Shorts e Instagram Reels.',
         },
         {
-          q: '¿Qué idiomas de subtítulos hay?',
-          a: 'Confirmaremos los idiomas antes de abrir el acceso anticipado. Español, inglés y portugués son prioridad.',
+          q: '¿En qué idiomas son los subtítulos?',
+          a: 'Confirmaremos los idiomas antes de abrir el acceso anticipado. Español, inglés y portugués van primero.',
         },
         {
           q: '¿De quién son los clips?',
           a: 'Tuyos. Tus streams y clips son tu contenido. Los detalles estarán en los Términos antes del lanzamiento.',
         },
         {
-          q: '¿Qué hacen con mi correo?',
-          a: 'Solo lo usamos para enviarte tu invitación de acceso anticipado y las novedades que aceptes. Puedes salir de la lista cuando quieras.',
+          q: '¿Qué pasa con mi correo?',
+          a: 'Lo usamos para enviarte tu invitación de acceso anticipado y las novedades que aceptes. Puedes salir de la lista cuando quieras.',
         },
         {
           q: '¿Cuándo se lanza?',
-          a: 'Todavía no hay fecha pública. Quienes están en la lista de acceso anticipado entran primero.',
+          a: 'Todavía no hay fecha pública. Quienes están en la lista entran primero.',
         },
       ],
     },
     final: {
       title: 'Your stream. Your cut.',
-      body: 'Únete a la lista de acceso anticipado. Pega el enlace de un stream y lo recortamos primero cuando lancemos.',
+      body: 'Pega el enlace de uno de tus streams. Cuando abramos, será el primero que recortemos.',
     },
-    sticky: 'Obtener acceso anticipado',
+    sticky: 'Quiero acceso anticipado',
   },
 };

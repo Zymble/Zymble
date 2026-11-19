@@ -16,6 +16,7 @@ import {
   type Locale,
   type RouteId,
 } from '@/config/routes';
+import { homeCopy } from '@/content/home';
 import { useTranslations } from '@/i18n/utils';
 
 export function getStaticPaths() {
@@ -37,7 +38,7 @@ const { locale, id } = Astro.props;
 const { t, page } = useTranslations(locale);
 const live = routeStatus[id] === 'live';
 const title = id === 'home' ? t('meta.home.title') : `${page(id)} — ClipyRush`;
-const description = id === 'home' ? t('meta.home.description') : t('soon.body');
+const description = id === 'home' ? homeCopy[locale].meta.description : t('soon.body');
 ---
 
 <BaseLayout locale={locale} routeId={id} title={title} description={description} noindex={!live}>

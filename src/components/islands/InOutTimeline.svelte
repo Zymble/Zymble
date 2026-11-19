@@ -229,8 +229,16 @@
     list-style: none;
   }
   @media (width < 64rem) {
+    /* A swipeable strip on small screens instead of three squeezed columns. */
     .clips {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(10.5rem, 1fr);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 0.25rem;
+    }
+    .clips li {
+      scroll-snap-align: start;
     }
   }
   .clip {

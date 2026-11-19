@@ -1,9 +1,10 @@
 ---
 /**
- * Hero: rotating questions + a looping, CSS-only "story" of a stream becoming a clip:
- * 1 live → 2 AI finds the moment (In/Out closes on it) → 3 reframed 9:16 with captions → 4 scheduled.
- * One 14 s loop drives every element (no JS animation library). Pause button for WCAG 2.2.2,
- * paused off-screen, static end state with prefers-reduced-motion.
+ * Hero. Always dark (broadcast feel), whatever the site theme.
+ * The stage is a mock editor: one 14 s CSS loop tells the story in four beats
+ *   1 live + chat → 2 AI flags the moment, In/Out close on it → 3 reframed 9:16 with captions → 4 scheduled
+ * and a timecoded log under it follows the same beats. No JS animation library.
+ * Pause control (WCAG 2.2.2), paused off-screen, single static frame with reduced motion.
  */
 import { getImage } from 'astro:assets';
 import poster from '../../../brand/mockups/night-stage.jpg';
@@ -19,51 +20,85 @@ const { locale } = Astro.props;
 const c = homeCopy[locale];
 const posterImg = await getImage({ src: poster, width: 720, format: 'webp', quality: 70 });
 
-// Deterministic "audio waveform" for the track (no randomness between builds).
+// Deterministic waveform; bars 33–40 are the flagged moment.
 const bars = Array.from({ length: 56 }, (_, i) => {
-  const base = 0.28 + 0.22 * Math.abs(Math.sin(i * 1.7)) + 0.12 * Math.abs(Math.sin(i * 0.43));
-  const spike = i >= 32 && i <= 39 ? 0.35 + 0.05 * (i % 3) : 0;
+  const base = 0.24 + 0.22 * Math.abs(Math.sin(i * 1.7)) + 0.12 * Math.abs(Math.sin(i * 0.43));
+  const spike = i >= 32 && i <= 39 ? 0.38 + 0.05 * (i % 3) : 0;
   return Math.min(1, base + spike);
 });
 ---
 
-<section class="hero-story relative overflow-hidden" data-story aria-labelledby="hero-title">
-  <div class="hero-grid container-cr pt-10 pb-16 md:pt-16 lg:pt-20 lg:pb-24">
-    <div class="hero-top">
-      <p class="inline-flex items-center gap-2 rounded-cr-circle border border-cr-rule bg-cr-surface px-3 py-1 text-cr-label">
-        <span class="live-dot" aria-hidden="true"></span>
-        {c.hero.live}
-      </p>
-
-      <p class="sr-only">{c.hero.questions.join(' ')}</p>
-      <p
-        class="questions mt-5 text-cr-section font-semibold text-cr-selected md:text-[1.375rem]"
-        aria-hidden="true"
-      >
-        {c.hero.questions.map((q, i) => (
-          <span class={`q q${i + 1}`}>{q}</span>
-        ))}
-      </p>
-
-      <h1 id="hero-title" class="mt-2 text-hero-cr" lang="en">
-        {site.tagline}
+<section class="hero" data-theme="dark" data-story aria-labelledby="hero-title">
+  <div class="hero-grid container-cr">
+    <div class="hero-head">
+      <p class="text-cr-label text-cr-muted">{c.hero.kicker}</p>
+      <h1 id="hero-title" class="hero-title mt-4">
+        <span class="block">{c.hero.titleA}</span>
+        <span class="block text-cr-selected">{c.hero.titleB}</span>
       </h1>
     </div>
 
-    <div class="hero-bottom">
-      <p class="max-w-xl text-lg text-cr-muted">{c.hero.lead}</p>
+    <div class="hero-copy">
+      <p class="max-w-[34rem] text-lg leading-relaxed text-cr-muted">{c.hero.lead}</p>
       <div class="mt-8" id="hero-cta">
         <LinkForm locale={locale} id="hero" />
       </div>
-      {!site.appLive && <p class="mt-3 text-cr-caption text-cr-muted">{c.hero.note}</p>}
+      {!site.appLive && <p class="mt-4 text-cr-caption text-cr-muted">{c.hero.note}</p>}
+      <p class="mt-8 max-w-[34rem] border-t border-cr-rule pt-4 text-cr-caption text-cr-muted">
+        {c.hero.worksWith}
+      </p>
     </div>
 
-    <figure class="stage-wrap hero-stage" data-theme="dark" aria-labelledby="stage-label">
+    <figure class="hero-stage" aria-labelledby="stage-label">
       <figcaption id="stage-label" class="sr-only">
-        {c.stage.label}: {c.stage.steps.join(', ')}.
+        {c.stage.label}. {c.stage.log.map((l) => `${l.tc}: ${l.text}`).join('. ')}.
       </figcaption>
 
-      <div class="stage rounded-cr-dialog border border-cr-rule bg-cr-bg p-3 text-cr-text shadow-cr-overlay sm:p-4">
+      <div class="frame">
+        <div class="frame-bar">
+          <span class="tag" aria-hidden="true">
+            <span class="tag-live">LIVE</span>
+            <span class="tag-clip">CLIP</span>
+          </span>
+          <span class="bar-time tabular-nums" aria-hidden="true">
+            <span class="t-live">{c.stage.liveTime}</span>
+            <span class="t-clip">{c.stage.clipLen}</span>
+          </span>
+          <span class="ml-auto text-cr-muted tabular-nums" aria-hidden="true">
+            {c.stage.vod}
+          </span>
+          <button
+            type="button"
+            class="story-toggle"
+            aria-pressed="false"
+            data-label-pause={c.stage.pause}
+            data-label-play={c.stage.play}
+            aria-label={c.stage.pause}
+          >
+            <svg
+              class="i-pause"
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <rect x="6" y="5" width="4" height="14" rx="1"></rect>
+              <rect x="14" y="5" width="4" height="14" rx="1"></rect>
+            </svg>
+            <svg
+              class="i-play"
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M8 5.5v13l11-6.5z"></path>
+            </svg>
+          </button>
+        </div>
+
         <div class="screen" aria-hidden="true">
           <video
             class="video"
@@ -84,8 +119,17 @@ const bars = Array.from({ length: 56 }, (_, i) => {
             width="720"
             height="405"
             decoding="async"
-            fetchpriority="high"
           />
+
+          <span class="chat">
+            {c.stage.chat.map(([user, msg], i) => (
+              <span class={`msg msg${i + 1}`}>
+                <b>{user}</b> {msg}
+              </span>
+            ))}
+          </span>
+
+          <span class="mark"></span>
 
           <span class="side side-l"></span>
           <span class="side side-r"></span>
@@ -94,34 +138,19 @@ const bars = Array.from({ length: 56 }, (_, i) => {
             <span class="cap cap2">{c.stage.caption[1]}</span>
           </span>
 
-          <span class="live-badge">
-            <span class="live-dot"></span>LIVE <span class="tabular-nums">{c.stage.liveTime}</span>
-          </span>
-
-          <span class="chat">
-            {c.stage.chat.map((m, i) => (
-              <span class={`msg msg${i + 1}`}>{m}</span>
-            ))}
-          </span>
-
-          <span class="found">
-            <span class="found-title">{c.stage.found}</span>
-            <span class="found-why">{c.stage.foundWhy}</span>
-          </span>
-
           <span class="post">
             <span class="post-icon">
               <svg
                 viewBox="0 0 24 24"
-                width="16"
-                height="16"
+                width="14"
+                height="14"
                 fill="none"
                 stroke="currentColor"
-                stroke-width="2.5"
+                stroke-width="3"
                 stroke-linecap="round"
                 stroke-linejoin="round"
               >
-                <path d="m5 12 5 5L20 7" />
+                <path d="m5 12 5 5L20 7"></path>
               </svg>
             </span>
             <span>
@@ -134,7 +163,7 @@ const bars = Array.from({ length: 56 }, (_, i) => {
         <div class="track" aria-hidden="true">
           <span class="bars">
             {bars.map((h) => (
-              <span class="bar" style={`--h:${h.toFixed(2)}`} />
+              <span class="wbar" style={`--h:${h.toFixed(2)}`}></span>
             ))}
           </span>
           <span class="segment"></span>
@@ -147,464 +176,129 @@ const bars = Array.from({ length: 56 }, (_, i) => {
           <span class="playhead"></span>
         </div>
 
-        <div class="mt-3 flex items-start gap-3">
-          <ol class="steps grid flex-1 grid-cols-4 gap-2" aria-hidden="true">
-            {c.stage.steps.map((s, i) => (
-              <li class={`step step${i + 1}`}>
-                <span class="step-bar" />
-                <span class="step-label">{s}</span>
-              </li>
-            ))}
-          </ol>
-          <button
-            type="button"
-            class="story-toggle inline-flex size-11 shrink-0 items-center justify-center rounded-cr-control border border-cr-rule bg-cr-surface text-cr-text hover:bg-cr-surface-hover"
-            aria-pressed="false"
-            data-label-pause={c.stage.pause}
-            data-label-play={c.stage.play}
-            aria-label={c.stage.pause}
-          >
-            <svg
-              class="i-pause"
-              viewBox="0 0 24 24"
-              width="18"
-              height="18"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <rect x="6" y="5" width="4" height="14" rx="1" />
-              <rect x="14" y="5" width="4" height="14" rx="1" />
-            </svg>
-            <svg
-              class="i-play"
-              viewBox="0 0 24 24"
-              width="18"
-              height="18"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path d="M8 5.5v13l11-6.5z" />
-            </svg>
-          </button>
-        </div>
+        <ol class="log" aria-hidden="true">
+          {c.stage.log.map((row, i) => (
+            <li class={`row row${i + 1}`}>
+              <span class="row-tc tabular-nums">{row.tc}</span>
+              <span>{row.text}</span>
+            </li>
+          ))}
+        </ol>
       </div>
     </figure>
   </div>
 </section>
 
 <style is:global>
-  .hero-story {
+  .hero {
     --loop: 14s;
-  }
-  .hero-story::before {
-    /* Soft brand glow behind the stage. Decorative. */
-    content: '';
-    position: absolute;
-    inset: -20% -10% auto auto;
-    width: 60rem;
-    height: 40rem;
-    background: radial-gradient(
-      closest-side,
-      color-mix(in srgb, var(--cr-action) 16%, transparent),
-      transparent
-    );
-    pointer-events: none;
-    z-index: -1;
+    background: var(--cr-bg);
+    color: var(--cr-text);
+    border-bottom: 1px solid var(--cr-rule);
   }
 
-  .live-dot {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 999px;
-    background: var(--cr-palette-orange);
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--cr-palette-orange) 60%, transparent);
-    animation: cr-pulse 1.6s var(--cr-ease-standard) infinite;
-  }
-
-  /* Mobile: question + title, then the story, then the form. Desktop: copy left, story right. */
+  /* Mobile: title, story, form. Desktop: title across, form left, story right. */
   .hero-grid {
     display: grid;
-    gap: 1.75rem;
-    grid-template-areas: 'top' 'stage' 'bottom';
+    gap: 2rem;
+    padding-block: 3rem 4rem;
+    grid-template-areas: 'head' 'stage' 'copy';
   }
-  .hero-top {
-    grid-area: top;
+  .hero-head {
+    grid-area: head;
   }
   .hero-stage {
     grid-area: stage;
+    margin: 0;
   }
-  .hero-bottom {
-    grid-area: bottom;
+  .hero-copy {
+    grid-area: copy;
   }
   @media (width >= 64rem) {
     .hero-grid {
-      grid-template-columns: 1fr 1.05fr;
-      grid-template-areas: 'top stage' 'bottom stage';
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
       grid-template-rows: auto 1fr;
-      column-gap: 3.5rem;
-      row-gap: 1.25rem;
+      grid-template-areas: 'head stage' 'copy stage';
+      column-gap: 4rem;
+      row-gap: 2rem;
+      padding-block: 4rem 5rem;
       align-items: start;
     }
-    .hero-stage {
-      align-self: center;
-    }
   }
 
-  /* Rotating questions: all stacked in one grid cell, so no layout shift. */
-  .hero-story .questions {
-    display: grid;
-    min-height: 1.3em;
-  }
-  .hero-story .q {
-    grid-area: 1 / 1;
-    opacity: 0;
-    animation: cr-q var(--loop) linear infinite;
-  }
-  .hero-story .q2 {
-    animation-delay: calc(var(--loop) * 0.25);
-  }
-  .hero-story .q3 {
-    animation-delay: calc(var(--loop) * 0.5);
-  }
-  .hero-story .q4 {
-    animation-delay: calc(var(--loop) * 0.75);
+  .hero-title {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    font-weight: var(--cr-weight-display);
+    max-width: 18ch;
+    text-wrap: balance;
   }
 
-  /* ---------- Stage ---------- */
-  .stage-wrap {
-    margin: 0;
-  }
-  .hero-story .screen {
-    position: relative;
-    aspect-ratio: 16 / 9;
-    overflow: hidden;
+  /* ---------- Editor frame ---------- */
+  .hero .frame {
+    border: 1px solid var(--cr-rule);
     border-radius: var(--cr-radius-panel);
-    background: var(--cr-palette-night);
-    container-type: inline-size;
+    background: var(--cr-surface);
+    overflow: hidden;
+    box-shadow: 0 30px 80px -30px rgb(0 0 0 / 0.6);
   }
-  .hero-story .video {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .hero-story .video.poster {
-    transition: opacity var(--cr-duration-enter) var(--cr-ease-standard);
-  }
-  .hero-story [data-playing] .video.poster {
-    opacity: 0;
-  }
-
-  /* Reframe to 9:16: crop = (9/16) / (16/9) of the width = 31.64%. */
-  .hero-story .side {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 34.18%;
-    background: rgb(11 18 32 / 0.78);
-    transform: scaleX(0);
-    animation: cr-side var(--loop) var(--cr-ease-standard) infinite;
-  }
-  .hero-story .side-l {
-    left: 0;
-    transform-origin: left;
-  }
-  .hero-story .side-r {
-    right: 0;
-    transform-origin: right;
-  }
-
-  .hero-story .crop {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 34.18%;
-    width: 31.64%;
+  .hero .frame-bar {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
-    padding-bottom: 12%;
-    opacity: 0;
-    animation: cr-crop var(--loop) var(--cr-ease-standard) infinite;
-  }
-  /* In/Out brackets from the symbol. */
-  .hero-story .crop::before,
-  .hero-story .crop::after {
-    content: '';
-    position: absolute;
-    width: 28%;
-    height: 16%;
-    border: 0 solid var(--cr-palette-orange);
-  }
-  .hero-story .crop::before {
-    top: 4%;
-    left: 6%;
-    border-width: 4px 0 0 4px;
-  }
-  .hero-story .crop::after {
-    bottom: 4%;
-    right: 6%;
-    border-width: 0 4px 4px 0;
-  }
-
-  .hero-story .cap {
-    font-weight: 800;
-    font-size: clamp(0.7rem, 3.4cqi, 1.15rem);
-    line-height: 1.1;
-    letter-spacing: -0.01em;
-    color: var(--cr-palette-white);
-    text-align: center;
-    text-shadow:
-      0 2px 0 var(--cr-palette-night),
-      0 0 12px rgb(11 18 32 / 0.9);
-    opacity: 0;
-    transform: translateY(6px) scale(0.92);
-    animation: cr-cap1 var(--loop) var(--cr-ease-standard) infinite;
-  }
-  .hero-story .cap2 {
-    color: var(--cr-palette-orange);
-    animation-name: cr-cap2;
-  }
-
-  .hero-story .live-badge {
-    position: absolute;
-    top: 4%;
-    left: 3%;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.2rem 0.5rem;
-    border-radius: var(--cr-radius-control);
-    background: rgb(11 18 32 / 0.8);
-    color: var(--cr-palette-paper);
-    font-size: clamp(0.62rem, 2.2cqi, 0.8rem);
-    font-weight: 700;
-    animation: cr-live var(--loop) linear infinite;
-  }
-
-  .hero-story .chat {
-    position: absolute;
-    right: 3%;
-    bottom: 6%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.3rem;
-  }
-  .hero-story .msg {
-    padding: 0.2rem 0.55rem;
-    border-radius: 999px;
-    background: rgb(16 24 40 / 0.85);
-    border: 1px solid var(--cr-palette-line-dark);
-    color: var(--cr-palette-paper);
-    font-size: clamp(0.6rem, 2.1cqi, 0.78rem);
-    font-weight: 650;
-    opacity: 0;
-    transform: translateY(10px);
-    animation: cr-msg1 var(--loop) var(--cr-ease-standard) infinite;
-  }
-  .hero-story .msg1 {
-    color: var(--cr-palette-orange-hover);
-  }
-  .hero-story .msg2 {
-    animation-name: cr-msg2;
-  }
-  .hero-story .msg3 {
-    animation-name: cr-msg3;
-  }
-
-  .hero-story .found {
-    position: absolute;
-    top: 4%;
-    right: 3%;
-    display: grid;
-    padding: 0.35rem 0.65rem;
-    border-radius: var(--cr-radius-control);
-    background: var(--cr-palette-orange);
-    color: var(--cr-palette-navy);
-    font-size: clamp(0.62rem, 2.2cqi, 0.82rem);
-    line-height: 1.25;
-    opacity: 0;
-    transform: translateY(-8px);
-    animation: cr-found var(--loop) var(--cr-ease-standard) infinite;
-  }
-  .hero-story .found-title {
-    font-weight: 800;
-  }
-  .hero-story .found-why {
+    gap: 0.75rem;
+    min-height: 2.75rem;
+    padding-left: 0.75rem;
+    border-bottom: 1px solid var(--cr-rule);
+    font-size: var(--cr-type-time-size);
     font-weight: 600;
   }
-
-  .hero-story .post {
-    position: absolute;
-    left: 3%;
-    bottom: 6%;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    max-width: 40%;
-    padding: 0.4rem 0.6rem;
-    border-radius: var(--cr-radius-panel);
-    background: var(--cr-palette-paper);
-    color: var(--cr-palette-navy);
-    font-size: clamp(0.58rem, 2cqi, 0.78rem);
-    line-height: 1.25;
-    box-shadow: var(--cr-shadow-overlay);
-    opacity: 0;
-    transform: translateY(14px);
-    animation: cr-post var(--loop) var(--cr-ease-standard) infinite;
+  .hero .tag,
+  .hero .bar-time {
+    display: grid;
   }
-  .hero-story .post-icon {
+  .hero .tag > span,
+  .hero .bar-time > span {
+    grid-area: 1 / 1;
+  }
+  .hero .tag > span {
+    padding: 0.05rem 0.4rem;
+    border-radius: 2px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--cr-palette-navy);
+  }
+  .hero .tag-live {
+    background: var(--cr-palette-orange);
+    animation: cr-a var(--loop) step-end infinite;
+  }
+  .hero .tag-clip {
+    background: var(--cr-palette-paper);
+    opacity: 0;
+    animation: cr-b var(--loop) step-end infinite;
+  }
+  .hero .t-live {
+    animation: cr-a var(--loop) step-end infinite;
+  }
+  .hero .t-clip {
+    opacity: 0;
+    animation: cr-b var(--loop) step-end infinite;
+  }
+  .hero .story-toggle {
     display: grid;
     place-items: center;
-    flex: none;
-    width: 1.6em;
-    height: 1.6em;
-    border-radius: 999px;
-    background: var(--cr-palette-green);
-    color: var(--cr-palette-white);
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 0;
+    border-left: 1px solid var(--cr-rule);
+    background: transparent;
+    color: var(--cr-text);
+    cursor: pointer;
   }
-  .hero-story .post-title {
-    display: block;
-    font-weight: 800;
+  .hero .story-toggle:hover {
+    background: var(--cr-surface-hover);
   }
-  .hero-story .post-when {
-    display: block;
-    font-weight: 600;
-  }
-
-  /* ---------- Track (timeline under the screen) ---------- */
-  .hero-story .track {
-    position: relative;
-    height: 3.25rem;
-    margin-top: 0.75rem;
-    border-radius: var(--cr-radius-control);
-    background: var(--cr-raised);
-    overflow: hidden;
-  }
-  .hero-story .bars {
-    position: absolute;
-    inset: 0.5rem 0.25rem;
-    display: flex;
-    align-items: center;
-    gap: 2px;
-  }
-  .hero-story .bar {
-    flex: 1;
-    height: calc(var(--h) * 100%);
-    border-radius: 2px;
-    background: var(--cr-edge);
-  }
-  .hero-story .bar:nth-child(n + 33):nth-child(-n + 40) {
-    background: var(--cr-palette-orange);
-    opacity: 0.85;
-  }
-  /* Segment = the suggested clip (bars 33–40 ≈ 57%–71%). */
-  .hero-story .segment {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 56%;
-    width: 16%;
-    background: color-mix(in srgb, var(--cr-palette-orange) 22%, transparent);
-    opacity: 0;
-    animation: cr-seg var(--loop) var(--cr-ease-standard) infinite;
-  }
-  /* Handles span the full track so translateX(%) maps to track width. */
-  .hero-story .handle {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0;
-  }
-  .hero-story .handle > span {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 0.6rem;
-    display: grid;
-    place-items: end center;
-    padding-bottom: 2px;
-    background: var(--cr-palette-orange);
-    color: var(--cr-palette-navy);
-    font-size: 0.55rem;
-    font-weight: 800;
-    writing-mode: vertical-rl;
-  }
-  .hero-story .h-in > span {
-    border-radius: 4px 0 0 4px;
-  }
-  .hero-story .h-out > span {
-    border-radius: 0 4px 4px 0;
-    left: -0.6rem;
-  }
-  .hero-story .h-in {
-    animation: cr-hin var(--loop) var(--cr-ease-standard) infinite;
-  }
-  .hero-story .h-out {
-    animation: cr-hout var(--loop) var(--cr-ease-standard) infinite;
-  }
-  .hero-story .playhead {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    animation: cr-play var(--loop) var(--cr-ease-standard) infinite;
-  }
-  .hero-story .playhead::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 2px;
-    background: var(--cr-playhead);
-    box-shadow: 0 0 8px var(--cr-playhead);
-  }
-
-  /* ---------- Steps ---------- */
-  .hero-story .step {
-    display: grid;
-    gap: 0.35rem;
-  }
-  .hero-story .step-bar {
-    position: relative;
-    height: 3px;
-    border-radius: 2px;
-    background: var(--cr-rule);
-    overflow: hidden;
-  }
-  .hero-story .step-bar::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--cr-palette-orange);
-    transform: scaleX(0);
-    transform-origin: left;
-    animation: cr-stepbar var(--loop) linear infinite;
-  }
-  .hero-story .step-label {
-    font-size: clamp(0.66rem, 1.8vw, 0.8rem);
-    font-weight: 600;
-    line-height: 1.25;
-    color: var(--cr-muted);
-    animation: cr-steplabel var(--loop) linear infinite;
-  }
-  .hero-story .step2 .step-bar::after,
-  .hero-story .step2 .step-label {
-    animation-delay: calc(var(--loop) * 0.25);
-  }
-  .hero-story .step3 .step-bar::after,
-  .hero-story .step3 .step-label {
-    animation-delay: calc(var(--loop) * 0.5);
-  }
-  .hero-story .step4 .step-bar::after,
-  .hero-story .step4 .step-label {
-    animation-delay: calc(var(--loop) * 0.75);
-  }
-
   .story-toggle .i-play {
     display: none;
   }
@@ -615,42 +309,334 @@ const bars = Array.from({ length: 56 }, (_, i) => {
     display: none;
   }
 
+  /* ---------- Screen ---------- */
+  .hero .screen {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--cr-palette-night);
+    container-type: inline-size;
+  }
+  .hero .video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero .video.poster {
+    transition: opacity var(--cr-duration-enter) var(--cr-ease-standard);
+  }
+  .hero [data-playing] .video.poster {
+    opacity: 0;
+  }
+
+  /* Stream chat overlay, like an on-screen chat box. */
+  .hero .chat {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.25rem;
+    padding: 4% 4% 6%;
+    background: linear-gradient(to left, rgb(11 18 32 / 0.85), rgb(11 18 32 / 0));
+    font-size: clamp(0.62rem, 2.4cqi, 0.85rem);
+    line-height: 1.3;
+    color: var(--cr-palette-paper);
+    animation: cr-chat var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .chat b {
+    color: var(--cr-palette-orange-hover);
+    font-weight: 700;
+  }
+  .hero .msg {
+    opacity: 0;
+    transform: translateY(8px);
+    animation: cr-msg1 var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .msg2 {
+    animation-name: cr-msg2;
+  }
+  .hero .msg3 {
+    animation-name: cr-msg3;
+  }
+
+  /* Beat 2: the brand In/Out brackets close on the moment. */
+  .hero .mark {
+    position: absolute;
+    inset: 14% 44% 18% 10%;
+    opacity: 0;
+    animation: cr-mark var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .mark::before,
+  .hero .mark::after,
+  .hero .crop::before,
+  .hero .crop::after {
+    content: '';
+    position: absolute;
+    width: 26%;
+    height: 22%;
+    border: 0 solid var(--cr-palette-orange);
+  }
+  .hero .mark::before,
+  .hero .crop::before {
+    top: 0;
+    left: 0;
+    border-width: 4px 0 0 4px;
+  }
+  .hero .mark::after,
+  .hero .crop::after {
+    right: 0;
+    bottom: 0;
+    border-width: 0 4px 4px 0;
+  }
+
+  /* Beat 3: reframe to 9:16 (crop = 9/16 ÷ 16/9 = 31.64% of the width). */
+  .hero .side {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 34.18%;
+    background: rgb(11 18 32 / 0.8);
+    transform: scaleX(0);
+    animation: cr-side var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .side-l {
+    left: 0;
+    transform-origin: left;
+  }
+  .hero .side-r {
+    right: 0;
+    transform-origin: right;
+  }
+  .hero .crop {
+    position: absolute;
+    top: 3%;
+    bottom: 3%;
+    left: 34.18%;
+    width: 31.64%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 14%;
+    opacity: 0;
+    animation: cr-crop var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .cap {
+    font-weight: 850;
+    font-size: clamp(0.72rem, 3.4cqi, 1.2rem);
+    line-height: 1.05;
+    color: var(--cr-palette-white);
+    text-align: center;
+    text-shadow:
+      0 2px 0 var(--cr-palette-night),
+      0 0 14px rgb(11 18 32 / 0.95);
+    opacity: 0;
+    transform: translateY(6px);
+    animation: cr-cap1 var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .cap2 {
+    color: var(--cr-palette-orange);
+    animation-name: cr-cap2;
+  }
+
+  /* Beat 4: scheduled. */
+  .hero .post {
+    position: absolute;
+    left: 3%;
+    bottom: 6%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 30%;
+    padding: 0.45rem 0.6rem;
+    border-radius: var(--cr-radius-control);
+    background: var(--cr-palette-paper);
+    color: var(--cr-palette-navy);
+    font-size: clamp(0.58rem, 2cqi, 0.78rem);
+    line-height: 1.25;
+    box-shadow: var(--cr-shadow-overlay);
+    opacity: 0;
+    transform: translateY(12px);
+    animation: cr-post var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .post-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 50%;
+    background: var(--cr-palette-green);
+    color: var(--cr-palette-white);
+  }
+  .hero .post-title {
+    display: block;
+    font-weight: 800;
+  }
+  .hero .post-when {
+    display: block;
+    font-weight: 600;
+  }
+
+  /* ---------- Track ---------- */
+  .hero .track {
+    position: relative;
+    height: 3rem;
+    background: var(--cr-raised);
+    border-top: 1px solid var(--cr-rule);
+  }
+  .hero .bars {
+    position: absolute;
+    inset: 0.55rem 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .hero .wbar {
+    flex: 1;
+    height: calc(var(--h) * 100%);
+    border-radius: 1px;
+    background: var(--cr-edge);
+  }
+  .hero .wbar:nth-child(n + 33):nth-child(-n + 40) {
+    background: var(--cr-palette-orange);
+  }
+  .hero .segment {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 56.5%;
+    width: 15%;
+    background: color-mix(in srgb, var(--cr-palette-orange) 20%, transparent);
+    opacity: 0;
+    animation: cr-seg var(--loop) var(--cr-ease-standard) infinite;
+  }
+  /* Handles and playhead span the whole track, so translateX(%) maps to track width. */
+  .hero .handle,
+  .hero .playhead {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .hero .handle {
+    opacity: 0;
+  }
+  .hero .handle > span {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 0.65rem;
+    display: grid;
+    place-items: center;
+    background: var(--cr-palette-orange);
+    color: var(--cr-palette-navy);
+    font-size: 0.55rem;
+    font-weight: 800;
+    writing-mode: vertical-rl;
+  }
+  .hero .h-out > span {
+    left: -0.65rem;
+  }
+  .hero .h-in {
+    animation: cr-hin var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .h-out {
+    animation: cr-hout var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .playhead {
+    animation: cr-play var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .playhead::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    background: var(--cr-playhead);
+    box-shadow: 0 0 8px var(--cr-playhead);
+  }
+
+  /* ---------- Log ---------- */
+  .hero .log {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--cr-rule);
+    font-size: var(--cr-type-label-size);
+  }
+  .hero .row {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: 0.75rem;
+    padding: 0.55rem 0.75rem;
+    border-left: 3px solid transparent;
+    color: var(--cr-muted);
+    animation: cr-row var(--loop) step-end infinite;
+  }
+  .hero .row + .row {
+    border-top: 1px solid var(--cr-rule);
+  }
+  .hero .row-tc {
+    font-weight: 600;
+  }
+  .hero .row2 {
+    animation-delay: calc(var(--loop) * 0.25);
+  }
+  .hero .row3 {
+    animation-delay: calc(var(--loop) * 0.5);
+  }
+  .hero .row4 {
+    animation-delay: calc(var(--loop) * 0.75);
+  }
+
   /* Paused by the visitor or off-screen. */
-  .hero-story:is([data-paused], [data-offscreen]) :is(*, *::before, *::after) {
+  .hero:is([data-paused], [data-offscreen]) :is(*, *::before, *::after) {
     animation-play-state: paused !important;
   }
 
   /* ---------- Keyframes (percent of the 14 s loop) ---------- */
-  @keyframes cr-pulse {
+  @keyframes cr-a {
     0% {
-      box-shadow: 0 0 0 0 color-mix(in srgb, var(--cr-palette-orange) 60%, transparent);
-    }
-    100% {
-      box-shadow: 0 0 0 0.5rem transparent;
-    }
-  }
-  @keyframes cr-q {
-    0% {
-      opacity: 0;
-      transform: translateY(0.4em);
-    }
-    3%,
-    22% {
       opacity: 1;
-      transform: none;
     }
-    25%,
-    100% {
+    50% {
       opacity: 0;
-      transform: translateY(-0.4em);
     }
   }
-  @keyframes cr-live {
+  @keyframes cr-b {
+    0% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  @keyframes cr-row {
+    0% {
+      color: var(--cr-text);
+      border-left-color: var(--cr-palette-orange);
+      background: var(--cr-raised);
+    }
+    25% {
+      color: var(--cr-muted);
+      border-left-color: transparent;
+      background: transparent;
+    }
+  }
+  @keyframes cr-chat {
     0%,
-    48% {
+    30% {
       opacity: 1;
     }
-    52%,
+    34%,
     97% {
       opacity: 0;
     }
@@ -662,66 +648,66 @@ const bars = Array.from({ length: 56 }, (_, i) => {
     0%,
     3% {
       opacity: 0;
-      transform: translateY(10px);
+      transform: translateY(8px);
     }
     6%,
-    26% {
+    100% {
       opacity: 1;
       transform: none;
-    }
-    30%,
-    100% {
-      opacity: 0;
-      transform: translateY(-6px);
     }
   }
   @keyframes cr-msg2 {
     0%,
     8% {
       opacity: 0;
-      transform: translateY(10px);
+      transform: translateY(8px);
     }
     11%,
-    26% {
+    100% {
       opacity: 1;
       transform: none;
-    }
-    30%,
-    100% {
-      opacity: 0;
-      transform: translateY(-6px);
     }
   }
   @keyframes cr-msg3 {
     0%,
     13% {
       opacity: 0;
-      transform: translateY(10px);
+      transform: translateY(8px);
     }
     16%,
-    26% {
+    100% {
       opacity: 1;
       transform: none;
     }
-    30%,
+  }
+  @keyframes cr-mark {
+    0%,
+    27% {
+      opacity: 0;
+      transform: scale(1.12);
+    }
+    32%,
+    48% {
+      opacity: 1;
+      transform: none;
+    }
+    52%,
     100% {
       opacity: 0;
-      transform: translateY(-6px);
+      transform: none;
     }
   }
   @keyframes cr-play {
     0% {
       transform: translateX(0);
     }
-    25% {
-      transform: translateX(64%);
-    }
+    25%,
     50% {
       transform: translateX(64%);
     }
     75%,
     96% {
-      transform: translateX(72%);
+      transform: translateX(71.5%);
     }
     100% {
       transform: translateX(0);
@@ -744,57 +730,40 @@ const bars = Array.from({ length: 56 }, (_, i) => {
     0%,
     27% {
       opacity: 0;
-      transform: translateX(40%);
+      transform: translateX(42%);
     }
     31% {
       opacity: 1;
-      transform: translateX(40%);
+      transform: translateX(42%);
     }
     42%,
     96% {
       opacity: 1;
-      transform: translateX(56%);
+      transform: translateX(56.5%);
     }
     100% {
       opacity: 0;
-      transform: translateX(56%);
+      transform: translateX(56.5%);
     }
   }
   @keyframes cr-hout {
     0%,
     27% {
       opacity: 0;
-      transform: translateX(88%);
+      transform: translateX(86%);
     }
     31% {
       opacity: 1;
-      transform: translateX(88%);
+      transform: translateX(86%);
     }
     42%,
     96% {
       opacity: 1;
-      transform: translateX(72%);
+      transform: translateX(71.5%);
     }
     100% {
       opacity: 0;
-      transform: translateX(72%);
-    }
-  }
-  @keyframes cr-found {
-    0%,
-    30% {
-      opacity: 0;
-      transform: translateY(-8px);
-    }
-    34%,
-    48% {
-      opacity: 1;
-      transform: none;
-    }
-    52%,
-    100% {
-      opacity: 0;
-      transform: translateY(-8px);
+      transform: translateX(71.5%);
     }
   }
   @keyframes cr-side {
@@ -827,7 +796,7 @@ const bars = Array.from({ length: 56 }, (_, i) => {
     0%,
     58% {
       opacity: 0;
-      transform: translateY(6px) scale(0.92);
+      transform: translateY(6px);
     }
     61%,
     96% {
@@ -842,7 +811,7 @@ const bars = Array.from({ length: 56 }, (_, i) => {
     0%,
     63% {
       opacity: 0;
-      transform: translateY(6px) scale(0.92);
+      transform: translateY(6px);
     }
     66%,
     96% {
@@ -857,7 +826,7 @@ const bars = Array.from({ length: 56 }, (_, i) => {
     0%,
     76% {
       opacity: 0;
-      transform: translateY(14px);
+      transform: translateY(12px);
     }
     80%,
     96% {
@@ -866,68 +835,46 @@ const bars = Array.from({ length: 56 }, (_, i) => {
     }
     100% {
       opacity: 0;
-      transform: translateY(14px);
-    }
-  }
-  @keyframes cr-stepbar {
-    0% {
-      transform: scaleX(0);
-    }
-    25% {
-      transform: scaleX(1);
-    }
-    25.01%,
-    100% {
-      transform: scaleX(0);
-    }
-  }
-  @keyframes cr-steplabel {
-    0%,
-    24.9% {
-      color: var(--cr-text);
-    }
-    25%,
-    100% {
-      color: var(--cr-muted);
+      transform: translateY(12px);
     }
   }
 
   /* ---------- Reduced motion: one composed, static frame ---------- */
   @media (prefers-reduced-motion: reduce) {
-    .hero-story :is(*, *::before, *::after) {
+    .hero :is(*, *::before, *::after) {
       animation: none !important;
     }
-    .hero-story .q1 {
+    .hero .tag-live,
+    .hero .t-live,
+    .hero .chat {
+      opacity: 0;
+    }
+    .hero .tag-clip,
+    .hero .t-clip {
       opacity: 1;
     }
-    .hero-story :is(.side) {
+    .hero .side {
       transform: scaleX(1);
     }
-    .hero-story :is(.crop, .cap, .segment, .post) {
+    .hero :is(.crop, .cap, .segment, .post) {
       opacity: 1;
       transform: none;
     }
-    .hero-story .h-in {
+    .hero .h-in {
       opacity: 1;
-      transform: translateX(56%);
+      transform: translateX(56.5%);
     }
-    .hero-story .h-out {
+    .hero .h-out {
       opacity: 1;
-      transform: translateX(72%);
+      transform: translateX(71.5%);
     }
-    .hero-story .live-badge {
-      opacity: 0;
-    }
-    .hero-story .playhead {
+    .hero .playhead {
       transform: translateX(64%);
     }
-    .hero-story .step-bar::after {
-      transform: scaleX(1);
-    }
-    .hero-story .step-label {
+    .hero .row {
       color: var(--cr-text);
     }
-    .story-toggle {
+    .hero .story-toggle {
       display: none;
     }
   }
@@ -954,10 +901,9 @@ const bars = Array.from({ length: 56 }, (_, i) => {
       else video.play().catch(() => {});
     }
   }
-
   toggle?.addEventListener('click', () => setPaused(!story?.hasAttribute('data-paused')));
 
-  // Load the clip after the page is idle; never with reduced motion or Save-Data.
+  // Load the clip once the page is idle; never with reduced motion or Save-Data.
   function loadVideo() {
     if (!video || reduce.matches || saveData || !video.dataset.src) return;
     video.src = video.dataset.src;
@@ -971,7 +917,7 @@ const bars = Array.from({ length: 56 }, (_, i) => {
   if ('requestIdleCallback' in window) requestIdleCallback(loadVideo, { timeout: 2500 });
   else setTimeout(loadVideo, 1500);
 
-  // Pause everything while the hero is off-screen (saves battery on phones).
+  // Pause while off-screen (battery on phones).
   if (story) {
     new IntersectionObserver(([entry]) => {
       const off = !entry?.isIntersecting;

@@ -1,4 +1,5 @@
 ---
+/** Closing band: the tagline as a signature, framed by the In/Out brackets, plus the link form. */
 import LinkForm from './LinkForm.astro';
 import type { Locale } from '@/config/routes';
 import { homeCopy } from '@/content/home';
@@ -10,39 +11,49 @@ const { locale } = Astro.props;
 const c = homeCopy[locale].final;
 ---
 
-<section class="container-cr py-20 md:py-28" aria-labelledby="final-title" id="final-cta">
-  <div
-    data-theme="dark"
-    class="final-band relative overflow-hidden rounded-cr-dialog bg-cr-bg px-6 py-14 text-cr-text md:px-14 md:py-20"
-  >
-    <span class="bracket bracket-in" aria-hidden="true"></span>
-    <span class="bracket bracket-out" aria-hidden="true"></span>
-    <h2 id="final-title" class="reveal text-hero-cr" lang="en">
-      {c.title}
-    </h2>
-    <p class="mt-5 max-w-xl text-lg text-cr-muted">{c.body}</p>
-    <div class="mt-8">
-      <LinkForm locale={locale} id="final" />
+<section
+  data-theme="dark"
+  class="bg-cr-bg text-cr-text"
+  aria-labelledby="final-title"
+  id="final-cta"
+>
+  <div class="container-cr py-24 md:py-32">
+    <div class="final-frame relative px-6 py-12 md:px-14 md:py-16">
+      <h2 id="final-title" class="final-title" lang="en">
+        {c.title}
+      </h2>
+      <p class="mt-6 max-w-[40ch] text-lg leading-relaxed text-cr-muted">{c.body}</p>
+      <div class="mt-8">
+        <LinkForm locale={locale} id="final" />
+      </div>
     </div>
   </div>
 </section>
 
 <style>
-  /* In/Out brackets framing the band, from the brand symbol. */
-  .bracket {
+  .final-title {
+    font-size: clamp(2.75rem, 8vw, 6.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+    font-weight: var(--cr-weight-display);
+  }
+  /* In/Out brackets from the brand symbol. */
+  .final-frame::before,
+  .final-frame::after {
+    content: '';
     position: absolute;
-    width: 4rem;
-    height: 3rem;
+    width: clamp(3rem, 8vw, 6rem);
+    height: clamp(2.5rem, 6vw, 4.5rem);
     border: 0 solid var(--cr-palette-orange);
   }
-  .bracket-in {
-    top: 1.25rem;
-    left: 1.25rem;
-    border-width: 5px 0 0 5px;
+  .final-frame::before {
+    top: 0;
+    left: 0;
+    border-width: 6px 0 0 6px;
   }
-  .bracket-out {
-    right: 1.25rem;
-    bottom: 1.25rem;
-    border-width: 0 5px 5px 0;
+  .final-frame::after {
+    right: 0;
+    bottom: 0;
+    border-width: 0 6px 6px 0;
   }
 </style>

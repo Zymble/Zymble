@@ -1,6 +1,9 @@
 ---
-import BrandIcon, { type BrandIconName } from '@/components/brand/BrandIcon.astro';
-import type { Locale, RouteId } from '@/config/routes';
+/**
+ * Features as an index (rows with hairlines), not a card grid.
+ * Hover/focus draws the brand In/Out brackets around the row.
+ */
+import type { Locale } from '@/config/routes';
 import { homeCopy } from '@/content/home';
 import { useTranslations } from '@/i18n/utils';
 
@@ -10,49 +13,90 @@ interface Props {
 const { locale } = Astro.props;
 const c = homeCopy[locale].features;
 const { href } = useTranslations(locale);
-const icon: Partial<Record<RouteId, BrandIconName>> = {
-  'features/ai-moments': 'playhead',
-  'features/in-out-editor': 'trim',
-  'features/captions': 'captions',
-  'features/vertical-reframe': 'reframe',
-  'features/scheduling': 'calendar',
-  'features/analytics': 'chart',
-};
 ---
 
-<section class="container-cr py-20 md:py-28" aria-labelledby="features-title">
+<section class="container-cr py-24 md:py-32" aria-labelledby="features-title">
   <div class="flex flex-wrap items-end justify-between gap-4">
-    <div>
-      <p class="eyebrow-cr">{c.eyebrow}</p>
-      <h2 id="features-title" class="mt-3 max-w-3xl text-title-cr">
-        {c.title}
-      </h2>
-    </div>
-    <a href={href('features')} class="font-semibold">
-      {c.more} →
+    <h2 id="features-title" class="text-title-cr">
+      {c.title}
+    </h2>
+    <a href={href('features')} class="inline-flex min-h-11 items-center font-semibold">
+      {c.more}
     </a>
   </div>
 
-  <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-    {c.items.map((f) => (
-      <li class="reveal">
-        <a
-          href={href(f.id)}
-          class="feature-card group flex h-full flex-col rounded-cr-panel border border-cr-rule bg-cr-surface p-6 text-cr-text no-underline transition-[border-color,transform] duration-[var(--cr-duration-base)] hover:-translate-y-0.5 hover:border-cr-action"
-        >
-          <span class="grid size-11 place-items-center rounded-cr-control bg-cr-raised text-cr-selected">
-            <BrandIcon name={icon[f.id] ?? 'check'} />
-          </span>
-          <h3 class="mt-5 text-cr-section">{f.title}</h3>
-          <p class="mt-2 flex-1 text-cr-muted">{f.body}</p>
-          <span
-            class="mt-4 text-cr-label text-cr-link transition-transform duration-[var(--cr-duration-base)] group-hover:translate-x-1"
-            aria-hidden="true"
-          >
-            →
-          </span>
+  <ul class="mt-10 border-t border-cr-text">
+    {c.items.map((f, i) => (
+      <li class="border-b border-cr-rule">
+        <a href={href(f.id)} class="feature-row">
+          <span class="text-cr-time text-cr-muted tabular-nums">0{i + 1}</span>
+          <span class="feature-title">{f.title}</span>
+          <span class="text-cr-muted">{f.body}</span>
         </a>
       </li>
     ))}
   </ul>
 </section>
+
+<style>
+  .feature-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 0.25rem 1rem;
+    padding: 1.5rem 0.75rem;
+    color: var(--cr-text);
+    text-decoration: none;
+  }
+  .feature-row > :last-child {
+    grid-column: 2;
+  }
+  @media (width >= 48rem) {
+    .feature-row {
+      grid-template-columns: 3rem minmax(12rem, 1fr) minmax(0, 2fr);
+      align-items: baseline;
+      gap: 2rem;
+      padding-block: 1.75rem;
+    }
+    .feature-row > :last-child {
+      grid-column: auto;
+    }
+  }
+  .feature-title {
+    font-size: var(--cr-type-section-size);
+    font-weight: var(--cr-type-section-weight);
+    letter-spacing: var(--cr-type-section-tracking);
+    line-height: 1.2;
+    transition: color var(--cr-duration-fast) var(--cr-ease-standard);
+  }
+  /* In/Out brackets on hover and keyboard focus. */
+  .feature-row::before,
+  .feature-row::after {
+    content: '';
+    position: absolute;
+    width: 1.25rem;
+    height: 1rem;
+    border: 0 solid var(--cr-palette-orange);
+    opacity: 0;
+    transition: opacity var(--cr-duration-fast) var(--cr-ease-standard);
+  }
+  .feature-row::before {
+    top: 0.5rem;
+    left: 0;
+    border-width: 3px 0 0 3px;
+  }
+  .feature-row::after {
+    right: 0;
+    bottom: 0.5rem;
+    border-width: 0 3px 3px 0;
+  }
+  .feature-row:hover::before,
+  .feature-row:hover::after,
+  .feature-row:focus-visible::before,
+  .feature-row:focus-visible::after {
+    opacity: 1;
+  }
+  .feature-row:hover .feature-title {
+    color: var(--cr-selected);
+  }
+</style>
