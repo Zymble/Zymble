@@ -50,16 +50,16 @@ export interface ClipperCopy {
 export const streamerCopy: Record<Locale, StreamerCopy> = {
   en: {
     meta: {
-      title: 'Got $20? Get clippers posting your stream — ClipyRush',
+      title: 'Clippers from $30 — ClipyRush',
       description:
         'Set a prize, run clip contests and see who’s clipping your stream, live. Nothing goes out under your name without your rules.',
     },
     hero: {
       kicker: 'Just starting to stream?',
-      before: 'Got',
-      cut: '$20',
-      after: '?',
-      sub: 'Offer it to clippers to post your best plays on their channels. More people find you.',
+      before: 'Clippers from',
+      cut: '$30',
+      after: '.',
+      sub: 'Post a campaign and clippers from around the world compete to put your best plays on their channels.',
       cta: 'Find my clippers',
     },
     crew: {
@@ -118,7 +118,7 @@ export const streamerCopy: Record<Locale, StreamerCopy> = {
       items: [
         {
           q: 'How much do I need to start?',
-          a: 'Start small: you set the campaign budget and pay only for approved clips. Final minimums come with early access.',
+          a: 'You can start at $30: you set the budget and pay only for approved clips.',
         },
         {
           q: 'Do I have to pay clippers?',
@@ -380,15 +380,15 @@ export const clipperCopy: Record<Locale, ClipperCopy> = {
 
   'pt-br': {
     meta: {
-      title: 'Clipe lives ao vivo e dispute prêmios — ClipyRush',
+      title: 'Clipe lives de canais gringos e receba em dólar — ClipyRush',
       description:
         'A IA marca os lances ao vivo. Você posta, ganha por mil views ou por corte aprovado e disputa campeonatos dos streamers. Os resultados variam.',
     },
     hero: {
-      kicker: 'Quer fazer uma renda extra clipando de casa?',
+      kicker: 'Quer ganhar em dólar clipando de casa?',
       titleA: 'Clipar virou',
       titleB: 'profissão.',
-      sub: 'A IA marca o lance ao vivo. Você posta e disputa o prêmio.',
+      sub: 'Canais de fora pagam em dólar pelos seus cortes. A IA marca o lance ao vivo, você posta.',
       cta: 'Clipar ao vivo',
     },
     earn: {
@@ -406,6 +406,10 @@ export const clipperCopy: Record<Locale, ClipperCopy> = {
         {
           q: 'Preciso saber editar vídeo?',
           a: 'Não. A IA marca o lance, enquadra em 9:16 e legenda. Você ajusta o começo e o fim e posta.',
+        },
+        {
+          q: 'Recebo em dólar?',
+          a: 'Campanhas de canais de fora são pagas em dólar. A conversão pra real segue o câmbio do dia e pode ter taxas; os detalhes saem com o acesso antecipado.',
         },
         {
           q: 'Quanto dá pra ganhar?',
@@ -434,15 +438,15 @@ export const clipperCopy: Record<Locale, ClipperCopy> = {
   // TODO review: native Spanish (LatAm neutral) pass before launch.
   es: {
     meta: {
-      title: 'Clipea streams en vivo y compite por premios — ClipyRush',
+      title: 'Clipea streams de canales de fuera y cobra en dólares — ClipyRush',
       description:
         'La IA marca las jugadas en vivo. Publicas, ganas por mil views o por clip aprobado y compites en torneos de streamers. Los resultados varían.',
     },
     hero: {
-      kicker: '¿Quieres ganar un extra clipeando desde casa?',
+      kicker: '¿Quieres ganar en dólares clipeando desde casa?',
       titleA: 'Clipear ya es',
       titleB: 'un trabajo.',
-      sub: 'La IA marca la jugada en vivo. Tú publicas y compites por el premio.',
+      sub: 'Canales de fuera pagan en dólares por tus clips. La IA marca la jugada en vivo, tú publicas.',
       cta: 'Clipear en vivo',
     },
     earn: {
@@ -464,6 +468,10 @@ export const clipperCopy: Record<Locale, ClipperCopy> = {
         {
           q: '¿Necesito saber editar video?',
           a: 'No. La IA marca la jugada, la encuadra en 9:16 y le pone subtítulos. Tú ajustas el inicio y el final y publicas.',
+        },
+        {
+          q: '¿Cobro en dólares?',
+          a: 'Las campañas de canales de fuera se pagan en dólares. La conversión a tu moneda sigue el tipo de cambio del día y puede tener comisiones; los detalles llegan con el acceso anticipado.',
         },
         {
           q: '¿Cuánto puedo ganar?',

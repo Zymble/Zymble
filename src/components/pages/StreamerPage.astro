@@ -22,6 +22,9 @@ const { locale } = Astro.props;
 const c = streamerCopy[locale];
 const who = homeCopy[locale].doors.streamer.who;
 const m = mocks[locale];
+// Bracketed amount + trailing text as one unit, so no stray space before punctuation.
+const esc = (t: string) => t.replace(/[&<>"]/g, (ch) => `&#${ch.charCodeAt(0)};`);
+const titleTail = `<span class="cut">${esc(c.hero.cut)}</span>${/^[?.!,]/.test(c.hero.after) ? '' : ' '}${esc(c.hero.after)}`;
 const payIcons = [
   'M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z',
   'm4 12 5 5 11-11',
@@ -34,9 +37,7 @@ const payIcons = [
     <div>
       <p class="kicker">{c.hero.kicker}</p>
       <h1 id="s-title" class="s-title mt-5">
-        {c.hero.before} <span class="cut">{c.hero.cut}</span>
-        {c.hero.after.startsWith('?') ? '' : ' '}
-        {c.hero.after}
+        {c.hero.before} <span class="nowrap" set:html={titleTail} />
       </h1>
       <p class="mt-6 max-w-[30rem] text-xl leading-snug text-cr-muted">{c.hero.sub}</p>
       <Door href="#signup" who={who} action={c.hero.cta} class="mt-8 max-w-[22rem]" />
@@ -178,6 +179,9 @@ const payIcons = [
   }
 
   /* ---------- Radar ---------- */
+  .nowrap {
+    white-space: nowrap;
+  }
   .kicker {
     font-size: 1.2rem;
     font-weight: 650;

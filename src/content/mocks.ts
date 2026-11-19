@@ -37,7 +37,18 @@ export interface MockData {
     rows: { handle: string; size: string; where: string }[];
     accept: string;
   };
-  offer: { from: string; text: string; amount: string; accept: string };
+  offer: Offer;
+  /** Clipper hero (pt-br, es): offers from foreign channels paid in USD. */
+  heroOffers?: Offer[];
+}
+
+export interface Offer {
+  from: string;
+  text: string;
+  amount: string;
+  accept: string;
+  country?: string;
+  tag?: string;
 }
 
 export const mocks: Record<Locale, MockData> = {
@@ -71,20 +82,20 @@ export const mocks: Record<Locale, MockData> = {
     boost: {
       title: 'New campaign',
       budgetLabel: 'Budget',
-      budget: '$20',
-      perClip: '$5 per approved clip',
+      budget: '$30',
+      perClip: '$7.50 per approved clip',
       interested: 'Clippers who want in',
       rows: [
-        { handle: '@jaxxclips', size: '182K followers', where: 'TikTok' },
-        { handle: '@mo.cuts', size: '96K subscribers', where: 'Shorts' },
-        { handle: '@kenzclips', size: '41K followers', where: 'Reels' },
+        { handle: '@rafa.cortes', size: '182K followers', where: 'TikTok · Brazil' },
+        { handle: '@lu.clips', size: '96K subscribers', where: 'Shorts · Mexico' },
+        { handle: '@jaxxclips', size: '41K followers', where: 'Reels · US' },
       ],
       accept: 'Accept',
     },
     offer: {
       from: '@nightlap',
       text: 'wants 4 clips on your TikTok',
-      amount: '$20',
+      amount: '$30',
       accept: 'Accept offer',
     },
   },
@@ -104,13 +115,13 @@ export const mocks: Record<Locale, MockData> = {
       join: 'Entrar na disputa',
     },
     campaign: {
-      streamer: '@lancedozeca',
+      streamer: '@nightlap · EUA',
       title: 'Clipe minhas lives de sexta',
-      rate: 'R$ 2,00',
+      rate: 'US$ 1,00',
       rateLabel: 'por mil views',
       budgetLabel: 'Orçamento restante',
-      left: 'R$ 3.200',
-      of: 'de R$ 5.000',
+      left: 'US$ 640',
+      of: 'de US$ 1.000',
       progress: 0.64,
       platforms: ['TikTok', 'Shorts', 'Reels'],
       join: 'Entrar na campanha',
@@ -134,6 +145,23 @@ export const mocks: Record<Locale, MockData> = {
       amount: 'R$ 100',
       accept: 'Aceitar oferta',
     },
+    heroOffers: [
+      {
+        from: '@nightlap',
+        country: 'EUA',
+        text: 'quer 4 cortes no seu TikTok',
+        amount: 'US$ 30',
+        accept: 'Aceitar oferta',
+        tag: 'Pago em dólar',
+      },
+      {
+        from: '@lancedozeca',
+        country: 'Brasil',
+        text: 'quer 2 cortes no seu Reels',
+        amount: 'R$ 100',
+        accept: 'Aceitar oferta',
+      },
+    ],
   },
   // TODO review: native Spanish (LatAm neutral) pass before launch.
   es: {
@@ -182,5 +210,22 @@ export const mocks: Record<Locale, MockData> = {
       amount: 'US$20',
       accept: 'Aceptar oferta',
     },
+    heroOffers: [
+      {
+        from: '@nightlap',
+        country: 'EE. UU.',
+        text: 'quiere 4 clips en tu TikTok',
+        amount: 'US$30',
+        accept: 'Aceptar oferta',
+        tag: 'Pagado en dólares',
+      },
+      {
+        from: '@rutalu',
+        country: 'México',
+        text: 'quiere 2 clips en tu Reels',
+        amount: 'US$20',
+        accept: 'Aceptar oferta',
+      },
+    ],
   },
 };

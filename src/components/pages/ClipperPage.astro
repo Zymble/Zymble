@@ -1,7 +1,7 @@
 ---
 /**
  * /clippers/ — "the profession", v3: static product screens (how the app will look).
- * Hero = contest leaderboard with a "You?" row that links in. Three ways to earn, each a
+ * Hero = offers from foreign channels paid in USD (pt-br, es) or the contest leaderboard (en). Three ways to earn, each a
  * screen: per-view campaign, contest podium, and offers from streamers to post on your channel.
  */
 import AppFrame from '@/components/mock/AppFrame.astro';
@@ -47,9 +47,17 @@ const stepIcons = [
       />
     </div>
 
-    <AppFrame tabs={m.app.tabs} active={1} label={m.contest.host}>
-      <Leaderboard data={m.contest} joinHref="#signup" />
-    </AppFrame>
+    {m.heroOffers ? (
+      <AppFrame tabs={m.app.tabs} label={m.heroOffers[0]?.tag ?? m.app.tabs[0] ?? ''}>
+        {m.heroOffers.map((o, i) => (
+          <OfferCard data={o} compact={i > 0} />
+        ))}
+      </AppFrame>
+    ) : (
+      <AppFrame tabs={m.app.tabs} active={1} label={m.contest.host}>
+        <Leaderboard data={m.contest} joinHref="#signup" />
+      </AppFrame>
+    )}
   </div>
 </section>
 

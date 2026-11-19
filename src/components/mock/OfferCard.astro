@@ -1,22 +1,27 @@
 ---
 /** An offer a clipper receives: a streamer paying to appear on the clipper's channel. */
-import type { MockData } from '@/content/mocks';
+import type { Offer } from '@/content/mocks';
 
 interface Props {
-  data: MockData['offer'];
+  data: Offer;
+  compact?: boolean;
 }
-const { data } = Astro.props;
+const { data, compact = false } = Astro.props;
 ---
 
-<div class="card" aria-hidden="true">
+<div class:list={['card', compact && 'compact']} aria-hidden="true">
   <div class="top">
     <span class="av">{data.from.charAt(1).toUpperCase()}</span>
     <span class="min-w-0">
       <b>{data.from}</b>
+      {data.country && <span class="country"> · {data.country}</span>}
       <span class="text">{data.text}</span>
     </span>
   </div>
-  <span class="amount">{data.amount}</span>
+  <span class="money">
+    <span class="amount">{data.amount}</span>
+    {data.tag && <span class="tag">{data.tag}</span>}
+  </span>
   <span class="btn">{data.accept}</span>
 </div>
 
@@ -58,6 +63,36 @@ const { data } = Astro.props;
   .text {
     display: block;
     color: var(--cr-muted);
+  }
+  .country {
+    color: var(--cr-muted);
+    font-weight: 600;
+  }
+  .money {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+  }
+  .tag {
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    background: var(--cr-success);
+    color: var(--cr-bg);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .compact .amount {
+    font-size: 2rem;
+  }
+  .compact {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+  .compact .top {
+    grid-column: 1 / -1;
   }
   .amount {
     font-size: 3rem;
