@@ -16,18 +16,19 @@ export const featureRoutes: RouteId[] = [
 ];
 
 export const useCaseRoutes: RouteId[] = [
-  'use-cases/streamers',
-  'use-cases/clippers',
+  'streamers',
+  'clippers',
   'use-cases/editors',
   'use-cases/agencies',
 ];
 
 export const resourceRoutes: RouteId[] = ['blog', 'compare', 'changelog', 'brand'];
 
-/** Header: Features ▾ · Use cases ▾ · Pricing · Resources ▾ */
+/** Header: Streamers · Clippers · Features ▾ · Pricing · Resources ▾ (two-sided first). */
 export const headerNav: (NavGroup | { label: UiKey; route: RouteId })[] = [
+  { label: 'nav.streamers', route: 'streamers' },
+  { label: 'nav.clippers', route: 'clippers' },
   { label: 'nav.features', items: ['features', ...featureRoutes] },
-  { label: 'nav.useCases', items: useCaseRoutes },
   { label: 'nav.pricing', route: 'pricing' },
   { label: 'nav.resources', items: resourceRoutes },
 ];

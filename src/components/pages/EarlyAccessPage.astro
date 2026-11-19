@@ -1,0 +1,73 @@
+---
+/**
+ * /early-access/ — generic signup (side chosen in the form; #streamer / #clipper preselect it).
+ * Also shows results of non-JS posts and confirmation links via the URL hash:
+ * #sent (email sent), #invalid (bad/expired link), #error (provider failed).
+ */
+import WaitlistForm from '@/components/waitlist/WaitlistForm.astro';
+import type { Locale } from '@/config/routes';
+import { waitlistCopy } from '@/content/waitlist';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const w = waitlistCopy[locale];
+---
+
+<section class="container-cr grid gap-12 py-16 md:py-24 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+  <div>
+    <h1 class="ea-title">{w.page.title}</h1>
+    <p class="mt-5 max-w-[38ch] text-lg leading-relaxed text-cr-muted">{w.page.lead}</p>
+    <ul class="mt-10 border-t border-cr-text">
+      {w.page.points.map((p) => (
+        <li class="border-b border-cr-rule py-4">{p}</li>
+      ))}
+    </ul>
+  </div>
+
+  <div>
+    <p class="ea-msg ok" data-hash="sent" role="status" hidden>
+      <strong>{w.form.success.title}</strong>
+      {w.form.success.body}
+    </p>
+    <p class="ea-msg bad" data-hash="invalid" role="alert" hidden>
+      {w.page.invalid}
+    </p>
+    <p class="ea-msg bad" data-hash="error" role="alert" hidden>
+      {w.page.error}
+    </p>
+    <div class="rounded-cr-dialog border border-cr-rule bg-cr-surface p-5 md:p-8">
+      <WaitlistForm locale={locale} id="ea" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .ea-title {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    font-weight: var(--cr-weight-display);
+  }
+  .ea-msg {
+    margin-bottom: 1rem;
+    padding: 1rem 1.1rem;
+    border-radius: var(--cr-radius-panel);
+    border: 1px solid;
+    background: var(--cr-surface);
+  }
+  .ea-msg.ok {
+    border-color: var(--cr-success);
+  }
+  .ea-msg.bad {
+    border-color: var(--cr-error);
+  }
+</style>
+
+<script>
+  const key = location.hash.replace('#', '');
+  document.querySelectorAll<HTMLElement>('[data-hash]').forEach((el) => {
+    el.hidden = el.dataset.hash !== key;
+  });
+</script>

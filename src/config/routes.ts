@@ -22,6 +22,8 @@ export const localeMeta: Record<
 
 export const routeIds = [
   'home',
+  'streamers',
+  'clippers',
   'features',
   'features/ai-moments',
   'features/in-out-editor',
@@ -29,8 +31,6 @@ export const routeIds = [
   'features/vertical-reframe',
   'features/scheduling',
   'features/analytics',
-  'use-cases/streamers',
-  'use-cases/clippers',
   'use-cases/editors',
   'use-cases/agencies',
   'pricing',
@@ -40,6 +40,7 @@ export const routeIds = [
   'about',
   'brand',
   'early-access',
+  'early-access/confirmed',
   'contact',
   'legal/terms',
   'legal/privacy',
@@ -48,11 +49,18 @@ export const routeIds = [
 ] as const;
 export type RouteId = (typeof routeIds)[number];
 
-export type RouteStatus = 'live' | 'soon';
+/** live = real page, indexable · hidden = real page, noindex, not in sitemap · soon = placeholder. */
+export type RouteStatus = 'live' | 'hidden' | 'soon';
 
-/** Phase 0: only the home skeleton is live. Flip to 'live' as each phase ships. */
+const liveRoutes: RouteId[] = ['home', 'streamers', 'clippers', 'early-access'];
+const hiddenRoutes: RouteId[] = ['early-access/confirmed'];
+
+/** Flip a route to 'live' when its page ships. */
 export const routeStatus: Record<RouteId, RouteStatus> = Object.fromEntries(
-  routeIds.map((id) => [id, id === 'home' ? 'live' : 'soon']),
+  routeIds.map((id) => [
+    id,
+    liveRoutes.includes(id) ? 'live' : hiddenRoutes.includes(id) ? 'hidden' : 'soon',
+  ]),
 ) as Record<RouteId, RouteStatus>;
 
 /** Path without locale prefix, with leading and trailing slash. */

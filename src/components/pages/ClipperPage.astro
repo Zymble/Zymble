@@ -1,0 +1,289 @@
+---
+/**
+ * /clippers/ — "the profession". Energetic but honest: earnings only next to a disclaimer.
+ * Hero: the finished 9:16 clip surrounded by what a clipper earns from (reward, contest, affiliation).
+ */
+import { getImage } from 'astro:assets';
+import poster from '../../../brand/mockups/night-stage.jpg';
+import Door from '@/components/ui/Door.astro';
+import FaqBlock from '@/components/ui/FaqBlock.astro';
+import SignupBand from '@/components/waitlist/SignupBand.astro';
+import type { Locale } from '@/config/routes';
+import { homeCopy } from '@/content/home';
+import { clipperCopy } from '@/content/landings';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const c = clipperCopy[locale];
+const home = homeCopy[locale];
+const img = await getImage({ src: poster, width: 720, format: 'webp', quality: 70 });
+---
+
+<section data-theme="dark" class="c-hero bg-cr-bg text-cr-text" aria-labelledby="c-title">
+  <div class="container-cr grid items-center gap-14 py-14 md:py-20 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-10">
+    <div>
+      <p class="kicker">{c.hero.kicker}</p>
+      <h1 id="c-title" class="c-title mt-4">
+        <span class="block">{c.hero.titleA}</span>
+        <span class="block text-cr-selected">{c.hero.titleB}</span>
+      </h1>
+      <p class="mt-6 max-w-[34rem] text-lg leading-relaxed text-cr-muted">{c.hero.lead}</p>
+      <Door
+        href="#signup"
+        who={home.doors.clipper.who}
+        action={c.hero.cta}
+        class="mt-8 max-w-[22rem]"
+      />
+      <p class="mt-4 max-w-[34rem] text-cr-caption text-cr-muted">{c.hero.note}</p>
+    </div>
+
+    <figure class="stagecard m-0" aria-hidden="true">
+      <div class="phone">
+        <img src={img.src} alt="" width="720" height="405" decoding="async" />
+        <span class="phone-live">LIVE</span>
+        <span class="phone-cap">
+          <span>{home.stage.caption[0]}</span>
+          <span class="accent">{home.stage.caption[1]}</span>
+        </span>
+      </div>
+      <span class="float f-reward">
+        <span class="f-label">{c.floaters.reward[0]}</span>
+        <span class="f-value">{c.floaters.reward[1]}</span>
+      </span>
+      <span class="float f-contest">
+        <span class="f-label">{c.floaters.contest[0]}</span>
+        <span class="f-value">{c.floaters.contest[1]}</span>
+      </span>
+      <span class="float f-aff">
+        <span class="f-label">{c.floaters.affiliate[0]}</span>
+        <span class="f-value">{c.floaters.affiliate[1]}</span>
+      </span>
+    </figure>
+  </div>
+</section>
+
+<!-- Three steps, big numerals -->
+<section class="container-cr py-24 md:py-32" aria-labelledby="c-steps">
+  <h2 id="c-steps" class="max-w-[20ch] text-title-cr [text-wrap:balance]">
+    {c.steps.title}
+  </h2>
+  <ol class="mt-12 grid gap-10 md:grid-cols-3 md:gap-8">
+    {c.steps.items.map(([title, body], i) => (
+      <li class="step">
+        <span class="step-n tabular-nums" aria-hidden="true">
+          {i + 1}
+        </span>
+        <h3 class="mt-4 text-cr-section">{title}</h3>
+        <p class="mt-2 text-cr-muted">{body}</p>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<!-- How you earn, with the disclaimer in plain sight -->
+<section class="border-t border-cr-rule bg-cr-surface py-20 md:py-28" aria-labelledby="c-earn">
+  <div class="container-cr">
+    <h2 id="c-earn" class="text-title-cr">
+      {c.earn.title}
+    </h2>
+    <dl class="mt-10 grid border-t border-cr-text md:grid-cols-3">
+      {c.earn.items.map(([k, v], i) => (
+        <div
+          class:list={[
+            'py-6',
+            i > 0 && 'border-t border-cr-rule md:border-t-0 md:border-l md:pl-8',
+            i < 2 && 'md:pr-8',
+          ]}
+        >
+          <dt class="text-cr-section">{k}</dt>
+          <dd class="mt-2 text-cr-muted">{v}</dd>
+        </div>
+      ))}
+    </dl>
+    <p class="disclaimer mt-6">{c.earn.disclaimer}</p>
+  </div>
+</section>
+
+<!-- Statement -->
+<section data-theme="dark" class="bg-cr-bg text-cr-text" aria-labelledby="c-statement">
+  <div class="container-cr py-24 md:py-32">
+    <h2 id="c-statement" class="statement">
+      {c.statement.line}
+    </h2>
+    <p class="mt-6 max-w-[36ch] text-lg text-cr-muted">{c.statement.sub}</p>
+    <Door
+      href="#signup"
+      who={home.doors.clipper.who}
+      action={c.hero.cta}
+      class="mt-10 max-w-[22rem]"
+    />
+  </div>
+</section>
+
+<FaqBlock title={c.faq.title} items={c.faq.items} id="c-faq" />
+
+<SignupBand locale={locale} profile="clipper" title={c.form.title} lead={c.form.lead} />
+
+<style>
+  .kicker {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--cr-text);
+  }
+  .c-title {
+    font-size: clamp(2.5rem, 5.4vw, 4.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    font-weight: var(--cr-weight-display);
+    text-wrap: balance;
+  }
+
+  /* ---------- Phone + floating cards ---------- */
+  .stagecard {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 30rem;
+    padding: 1rem 0;
+  }
+  .phone {
+    position: relative;
+    width: min(15rem, 62vw);
+    aspect-ratio: 9 / 16;
+    border: 7px solid var(--cr-palette-navy);
+    outline: 1px solid var(--cr-rule);
+    border-radius: 2rem;
+    overflow: hidden;
+    background: var(--cr-palette-night);
+    box-shadow: 0 40px 90px -30px rgb(0 0 0 / 0.7);
+  }
+  .phone img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 74% 50%;
+  }
+  .phone-live {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.05rem 0.35rem;
+    border-radius: 2px;
+    background: var(--cr-palette-orange);
+    color: var(--cr-palette-navy);
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+  }
+  .phone-cap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 20%;
+    display: grid;
+    justify-items: center;
+    font-size: 1.15rem;
+    font-weight: 850;
+    line-height: 1.05;
+    color: var(--cr-palette-white);
+    text-shadow:
+      0 2px 0 var(--cr-palette-night),
+      0 0 14px rgb(11 18 32 / 0.95);
+  }
+  .phone-cap .accent {
+    color: var(--cr-palette-orange);
+  }
+  .float {
+    position: absolute;
+    display: grid;
+    gap: 0.1rem;
+    min-width: 11rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--cr-rule);
+    border-radius: var(--cr-radius-panel);
+    background: var(--cr-surface);
+    box-shadow: var(--cr-shadow-overlay);
+  }
+  .float::before {
+    content: '';
+    position: absolute;
+    top: 0.45rem;
+    left: 0.45rem;
+    width: 0.6rem;
+    height: 0.6rem;
+    border: 0 solid var(--cr-palette-orange);
+    border-width: 2px 0 0 2px;
+  }
+  .f-label {
+    font-size: var(--cr-type-caption-size);
+    color: var(--cr-muted);
+    padding-left: 0.5rem;
+  }
+  .f-value {
+    font-weight: 700;
+    padding-left: 0.5rem;
+  }
+  .f-reward {
+    top: 8%;
+    left: 0;
+  }
+  .f-contest {
+    top: 42%;
+    right: 0;
+  }
+  .f-aff {
+    bottom: 8%;
+    left: 4%;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .float {
+      animation: c-bob 6s var(--cr-ease-standard) infinite alternate;
+    }
+    .f-contest {
+      animation-delay: -2s;
+    }
+    .f-aff {
+      animation-delay: -4s;
+    }
+  }
+  @keyframes c-bob {
+    to {
+      transform: translateY(-8px);
+    }
+  }
+
+  /* ---------- Steps ---------- */
+  .step {
+    border-top: 1px solid var(--cr-text);
+    padding-top: 1.25rem;
+  }
+  .step-n {
+    display: block;
+    font-size: clamp(4rem, 9vw, 6.5rem);
+    line-height: 0.85;
+    font-weight: 800;
+    letter-spacing: -0.06em;
+    color: var(--cr-selected);
+  }
+
+  .disclaimer {
+    max-width: 60ch;
+    padding-left: 0.85rem;
+    border-left: 3px solid var(--cr-edge);
+    color: var(--cr-muted);
+    font-size: var(--cr-type-label-size);
+  }
+
+  .statement {
+    max-width: 18ch;
+    font-size: clamp(2.25rem, 6vw, 4.75rem);
+    line-height: 1;
+    letter-spacing: -0.045em;
+    font-weight: var(--cr-weight-display);
+    text-wrap: balance;
+  }
+</style>

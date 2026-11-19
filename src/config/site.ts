@@ -37,11 +37,11 @@ export function primaryCtaHref(locale: Locale): string {
   return site.appLive ? `${site.appUrl}/signup` : localizedPath('early-access', locale);
 }
 
-/** CTA per side of the marketplace: the waitlist page with the side preselected, or the app. */
+/** CTA per side of the marketplace: that side's landing page, or the app signup after launch. */
 export function roleCtaHref(locale: Locale, role: 'streamer' | 'clipper'): string {
   return site.appLive
     ? `${site.appUrl}/signup?role=${role}`
-    : `${localizedPath('early-access', locale)}#${role}`;
+    : localizedPath(role === 'streamer' ? 'streamers' : 'clippers', locale);
 }
 
 export function signInHref(): string {

@@ -69,3 +69,24 @@ test('unknown route returns the 404 page', async ({ page }) => {
   expect(res?.status()).toBe(404);
   await expect(page.locator('h1')).toBeVisible();
 });
+
+test('waitlist form validates before sending', async ({ page }) => {
+  await page.goto('/pt-br/early-access/');
+  await page.locator('#ea-email').fill('nope');
+  await page.getByRole('button', { name: 'Entrar na lista' }).click();
+  await expect(page.locator('#ea-email')).toHaveAttribute('aria-invalid', 'true');
+  await expect(page.locator('#ea-email')).toBeFocused();
+  await expect(page.locator('[data-err="consent"]')).toBeVisible();
+});
+
+test('#clipper preselects the clipper side', async ({ page }) => {
+  await page.goto('/pt-br/early-access/#clipper');
+  await expect(page.locator('input[name=profile][value=clipper]')).toBeChecked();
+  await expect(page.locator('label[for="ea-platform"]')).toHaveText('Onde você posta?');
+});
+
+test('home doors lead to each side', async ({ page }) => {
+  await page.goto('/pt-br/');
+  await page.locator('#hero-cta a.door').first().click();
+  await expect(page).toHaveURL(/\/pt-br\/streamers\/$/);
+});

@@ -51,5 +51,13 @@ npm run build
 python3 scripts/preview-artifact.py .vercel/output/static /tmp/clipyrush-preview
 ```
 
-Publishes-ready files: `index.html` (pt-br), `en.html`, `es.html` and their assets, with internal
-links to unfinished pages disabled and forms kept local.
+Produces every page as flat files (`index.html` = pt-br home, `pt-br-clippers.html`, …) with working
+internal links; the waitlist API is stubbed so the form can be tried without sending email.
+
+## Waitlist (Phase 1)
+
+`POST /api/waitlist/` validates, checks the honeypot and Turnstile, stores a pending contact in Resend
+and emails a signed confirmation link (`/api/waitlist/confirm/`, valid 7 days). Required in Vercel:
+`RESEND_API_KEY`, `RESEND_AUDIENCE_ID`, `WAITLIST_FROM_EMAIL`, `WAITLIST_SIGNING_SECRET`; optional
+`PUBLIC_TURNSTILE_SITE_KEY` + `TURNSTILE_SECRET_KEY` and `CONTACT_TO_EMAIL` (team notification).
+Locally, without keys, the endpoint answers with a dry run.

@@ -1,0 +1,416 @@
+---
+/**
+ * Waitlist form (double opt-in via /api/waitlist).
+ * - Works without JS (plain POST, redirect to /early-access/#sent).
+ * - With JS: inline validation, aria-invalid + messages, focus on the first error,
+ *   success panel announced to screen readers.
+ * - Honeypot field + Cloudflare Turnstile when PUBLIC_TURNSTILE_SITE_KEY is set.
+ * - `profile` fixes the side (landing pages); otherwise the visitor picks it
+ *   (and #streamer / #clipper in the URL preselects it).
+ */
+import { localizedPath, type Locale } from '@/config/routes';
+import { waitlistCopy } from '@/content/waitlist';
+import { platforms, profiles, type Profile } from '@/lib/waitlist/schema';
+
+interface Props {
+  locale: Locale;
+  id: string;
+  profile?: Profile;
+}
+const { locale, id, profile } = Astro.props;
+const f = waitlistCopy[locale].form;
+const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
+const errorsJson = JSON.stringify(f.errors);
+---
+
+<form
+  class="wl-form"
+  action="/api/waitlist/"
+  method="post"
+  novalidate
+  data-waitlist
+  data-errors={errorsJson}
+  data-label-stream={f.platformStream}
+  data-label-post={f.platformPost}
+  data-sending={f.sending}
+>
+  <input type="hidden" name="locale" value={locale} />
+  <input type="hidden" name="utm" value="" />
+
+  <!-- Honeypot: hidden from people and assistive tech. -->
+  <div class="wl-hp" aria-hidden="true">
+    <label for={`${id}-website`}>Website</label>
+    <input id={`${id}-website`} name="website" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  {profile ? (
+    <input type="hidden" name="profile" value={profile} />
+  ) : (
+    <fieldset class="wl-field">
+      <legend>{f.profile}</legend>
+      <div class="wl-seg">
+        {profiles.map((p, i) => (
+          <label>
+            <input type="radio" name="profile" value={p} checked={i === 0} />
+            <span>{f.profiles[p]}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  )}
+
+  <div class="wl-field">
+    <label for={`${id}-email`}>{f.email}</label>
+    <input
+      id={`${id}-email`}
+      name="email"
+      type="email"
+      inputmode="email"
+      autocomplete="email"
+      required
+      placeholder={f.emailPlaceholder}
+      aria-describedby={`${id}-email-err`}
+    />
+    <p id={`${id}-email-err`} class="wl-err" data-err="email" hidden></p>
+  </div>
+
+  <div class="wl-row">
+    <div class="wl-field">
+      <label for={`${id}-platform`} data-platform-label>
+        {profile === 'clipper' ? f.platformPost : f.platformStream}
+      </label>
+      <select id={`${id}-platform`} name="platform" data-platform>
+        <option value="">{f.platformNone}</option>
+        {platforms.map((p) => (
+          <option value={p}>{f.platforms[p]}</option>
+        ))}
+      </select>
+    </div>
+    <div class="wl-field">
+      <label for={`${id}-channel`}>{f.channel}</label>
+      <input
+        id={`${id}-channel`}
+        name="channel"
+        type="text"
+        inputmode="url"
+        autocomplete="url"
+        spellcheck="false"
+        placeholder="twitch.tv/…"
+        aria-describedby={`${id}-channel-hint ${id}-channel-err`}
+      />
+      <p id={`${id}-channel-hint`} class="wl-hint">
+        {f.channelHint}
+      </p>
+      <p id={`${id}-channel-err`} class="wl-err" data-err="channel" hidden></p>
+    </div>
+  </div>
+
+  <div class="wl-field wl-consent">
+    <label>
+      <input type="checkbox" name="consent" required aria-describedby={`${id}-consent-err`} />
+      <span>
+        {f.consent}
+        <a href={localizedPath('legal/privacy', locale)}>{f.privacy}</a>.
+      </span>
+    </label>
+    <p id={`${id}-consent-err`} class="wl-err" data-err="consent" hidden></p>
+  </div>
+
+  {turnstileKey && <div class="cf-turnstile" data-sitekey={turnstileKey} data-theme="auto" />}
+
+  <button type="submit" class="wl-submit">
+    <span data-submit-label>{f.submit}</span>
+  </button>
+  <p class="wl-err" data-err="form" role="alert" hidden></p>
+</form>
+
+<div class="wl-success" data-waitlist-success tabindex="-1" hidden>
+  <p class="wl-success-title">{f.success.title}</p>
+  <p>{f.success.body}</p>
+</div>
+
+{turnstileKey && (
+  <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />
+)}
+
+<style>
+  .wl-form {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .wl-hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .wl-field {
+    display: grid;
+    gap: 0.4rem;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .wl-field > label,
+  .wl-field legend {
+    font-size: var(--cr-type-label-size);
+    font-weight: 600;
+    padding: 0;
+  }
+  .wl-field input:not([type='radio'], [type='checkbox']),
+  .wl-field select {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--cr-edge);
+    border-radius: var(--cr-radius-control);
+    background: var(--cr-surface);
+    color: var(--cr-text);
+    font: inherit;
+  }
+  .wl-field input::placeholder {
+    color: var(--cr-muted);
+  }
+  .wl-field [aria-invalid='true'] {
+    border-color: var(--cr-error);
+  }
+  .wl-row {
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (width >= 40rem) {
+    .wl-row {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    }
+  }
+  .wl-hint {
+    margin: 0;
+    font-size: var(--cr-type-caption-size);
+    color: var(--cr-muted);
+  }
+  .wl-err {
+    margin: 0;
+    font-size: var(--cr-type-caption-size);
+    font-weight: 600;
+    color: var(--cr-error);
+  }
+  /* Side picker as a segmented control. */
+  .wl-seg {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem;
+    margin-top: 0.2rem;
+  }
+  @media (width >= 40rem) {
+    .wl-seg {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .wl-seg label {
+    position: relative;
+  }
+  .wl-seg input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+  }
+  .wl-seg span {
+    display: grid;
+    place-items: center;
+    min-height: 48px;
+    border: 1px solid var(--cr-edge);
+    border-radius: var(--cr-radius-control);
+    background: var(--cr-surface);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .wl-seg input:checked + span {
+    border-color: var(--cr-text);
+    background: var(--cr-text);
+    color: var(--cr-bg);
+  }
+  .wl-seg input:focus-visible + span {
+    outline: 3px solid var(--cr-focus);
+    outline-offset: 2px;
+  }
+  .wl-consent label {
+    display: grid;
+    grid-template-columns: 1.25rem 1fr;
+    gap: 0.75rem;
+    align-items: start;
+    font-size: var(--cr-type-label-size);
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--cr-muted);
+  }
+  .wl-consent input {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.1rem;
+    accent-color: var(--cr-palette-orange);
+  }
+  /* Submit with the In/Out brackets, like the doors. */
+  .wl-submit {
+    position: relative;
+    min-height: 3.5rem;
+    border: 0;
+    border-radius: var(--cr-radius-control);
+    background: var(--cr-action);
+    color: var(--cr-on-action);
+    font: inherit;
+    font-size: 1.1rem;
+    font-weight: 750;
+    cursor: pointer;
+    transition: background var(--cr-duration-fast) var(--cr-ease-standard);
+  }
+  .wl-submit:hover {
+    background: var(--cr-action-hover);
+  }
+  .wl-submit:disabled {
+    cursor: progress;
+    opacity: 0.85;
+  }
+  .wl-submit::before,
+  .wl-submit::after {
+    content: '';
+    position: absolute;
+    width: 0.8rem;
+    height: 0.8rem;
+    border: 0 solid currentColor;
+  }
+  .wl-submit::before {
+    top: 0.4rem;
+    left: 0.4rem;
+    border-width: 2.5px 0 0 2.5px;
+  }
+  .wl-submit::after {
+    right: 0.4rem;
+    bottom: 0.4rem;
+    border-width: 0 2.5px 2.5px 0;
+  }
+  .wl-success {
+    padding: 1.5rem;
+    border: 1px solid var(--cr-success);
+    border-radius: var(--cr-radius-panel);
+    background: var(--cr-surface);
+  }
+  .wl-success p {
+    margin: 0;
+  }
+  .wl-success-title {
+    font-size: var(--cr-type-section-size);
+    font-weight: 700;
+    margin-bottom: 0.4rem !important;
+  }
+</style>
+
+<script>
+  type Errors = Record<string, string>;
+  const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const URLISH = /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/\S*)?$/i;
+
+  document.querySelectorAll<HTMLFormElement>('form[data-waitlist]').forEach((form) => {
+    const errors = JSON.parse(form.dataset.errors ?? '{}') as Errors;
+    const success = form.nextElementSibling as HTMLElement | null;
+    const submit = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+    const submitLabel = form.querySelector<HTMLElement>('[data-submit-label]')!;
+    const idleLabel = submitLabel.textContent ?? '';
+
+    // Carry UTM parameters with the signup.
+    const params = new URLSearchParams(location.search);
+    const utm = ['utm_source', 'utm_medium', 'utm_campaign']
+      .map((k) => (params.get(k) ? `${k}=${params.get(k)}` : ''))
+      .filter(Boolean)
+      .join('&');
+    (form.elements.namedItem('utm') as HTMLInputElement).value = utm;
+
+    // #streamer / #clipper preselects the side; the platform label follows it.
+    const radios = form.querySelectorAll<HTMLInputElement>('input[name=profile][type=radio]');
+    const platformLabel = form.querySelector<HTMLElement>('[data-platform-label]');
+    const syncPlatform = () => {
+      const side =
+        form.querySelector<HTMLInputElement>('input[name=profile]:checked')?.value ??
+        (form.elements.namedItem('profile') as HTMLInputElement | null)?.value;
+      if (platformLabel)
+        platformLabel.textContent =
+          (side === 'clipper' ? form.dataset.labelPost : form.dataset.labelStream) ?? '';
+    };
+    const fromHash = location.hash.replace('#', '');
+    radios.forEach((r) => {
+      if (r.value === fromHash) r.checked = true;
+      r.addEventListener('change', syncPlatform);
+    });
+    syncPlatform();
+
+    function show(field: string, message: string | null) {
+      const out = form.querySelector<HTMLElement>(`[data-err="${field}"]`);
+      const input = form.querySelector<HTMLElement>(`[name="${field}"]`);
+      if (out) {
+        out.hidden = !message;
+        out.textContent = message ?? '';
+      }
+      if (input && field !== 'form') input.setAttribute('aria-invalid', String(!!message));
+    }
+
+    function check(): string | null {
+      const data = new FormData(form);
+      const email = String(data.get('email') ?? '').trim();
+      const channel = String(data.get('channel') ?? '').trim();
+      const bad: [string, string][] = [];
+      if (!EMAIL.test(email)) bad.push(['email', errors.email ?? '']);
+      if (channel && !URLISH.test(channel)) bad.push(['channel', errors.channel ?? '']);
+      if (!data.get('consent')) bad.push(['consent', errors.consent ?? '']);
+      ['email', 'channel', 'consent'].forEach((f) => show(f, null));
+      bad.forEach(([f, m]) => show(f, m));
+      return bad[0]?.[0] ?? null;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      show('form', null);
+      const first = check();
+      if (first) {
+        form.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
+        return;
+      }
+      submit.disabled = true;
+      submitLabel.textContent = form.dataset.sending ?? idleLabel;
+      try {
+        const body = Object.fromEntries(new FormData(form).entries());
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        const data = (await res.json().catch(() => ({}))) as {
+          ok?: boolean;
+          error?: string;
+          field?: string;
+        };
+        if (res.ok && data.ok) {
+          form.hidden = true;
+          if (success) {
+            success.hidden = false;
+            success.focus();
+          }
+          return;
+        }
+        if (data.field && errors[data.field]) {
+          show(data.field, errors[data.field] ?? '');
+          form.querySelector<HTMLElement>(`[name="${data.field}"]`)?.focus();
+        } else {
+          const key =
+            res.status === 429 ? 'rate' : data.error === 'captcha' ? 'captcha' : 'generic';
+          show('form', errors[key] ?? '');
+        }
+      } catch {
+        show('form', errors.generic ?? '');
+      } finally {
+        submit.disabled = false;
+        submitLabel.textContent = idleLabel;
+      }
+    });
+  });
+</script>

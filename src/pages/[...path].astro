@@ -7,7 +7,11 @@
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import ComingSoon from '@/components/pages/ComingSoon.astro';
+import ClipperPage from '@/components/pages/ClipperPage.astro';
+import ConfirmedPage from '@/components/pages/ConfirmedPage.astro';
+import EarlyAccessPage from '@/components/pages/EarlyAccessPage.astro';
 import HomePage from '@/components/pages/HomePage.astro';
+import StreamerPage from '@/components/pages/StreamerPage.astro';
 import {
   defaultLocale,
   locales,
@@ -17,6 +21,8 @@ import {
   type RouteId,
 } from '@/config/routes';
 import { homeCopy } from '@/content/home';
+import { clipperCopy, streamerCopy } from '@/content/landings';
+import { waitlistCopy } from '@/content/waitlist';
 import { useTranslations } from '@/i18n/utils';
 
 export function getStaticPaths() {
@@ -36,11 +42,42 @@ interface Props {
 }
 const { locale, id } = Astro.props;
 const { t, page } = useTranslations(locale);
-const live = routeStatus[id] === 'live';
-const title = id === 'home' ? t('meta.home.title') : `${page(id)} — ClipyRush`;
-const description = id === 'home' ? homeCopy[locale].meta.description : t('soon.body');
+const status = routeStatus[id];
+const meta: Partial<Record<RouteId, { title: string; description: string }>> = {
+  home: { title: t('meta.home.title'), description: homeCopy[locale].meta.description },
+  streamers: streamerCopy[locale].meta,
+  clippers: clipperCopy[locale].meta,
+  'early-access': {
+    title: `${waitlistCopy[locale].page.title} — ClipyRush`,
+    description: waitlistCopy[locale].page.lead,
+  },
+  'early-access/confirmed': {
+    title: `${waitlistCopy[locale].confirmed.title} — ClipyRush`,
+    description: waitlistCopy[locale].confirmed.body,
+  },
+};
+const title = meta[id]?.title ?? `${page(id)} — ClipyRush`;
+const description = meta[id]?.description ?? t('soon.body');
 ---
 
-<BaseLayout locale={locale} routeId={id} title={title} description={description} noindex={!live}>
-  {id === 'home' ? <HomePage locale={locale} /> : <ComingSoon locale={locale} routeId={id} />}
+<BaseLayout
+  locale={locale}
+  routeId={id}
+  title={title}
+  description={description}
+  noindex={status !== 'live'}
+>
+  {id === 'home' ? (
+    <HomePage locale={locale} />
+  ) : id === 'streamers' ? (
+    <StreamerPage locale={locale} />
+  ) : id === 'clippers' ? (
+    <ClipperPage locale={locale} />
+  ) : id === 'early-access' ? (
+    <EarlyAccessPage locale={locale} />
+  ) : id === 'early-access/confirmed' ? (
+    <ConfirmedPage locale={locale} />
+  ) : (
+    <ComingSoon locale={locale} routeId={id} />
+  )}
 </BaseLayout>

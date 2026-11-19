@@ -1,9 +1,6 @@
 ---
-/**
- * The two-sided CTA: "I stream → Find my clipper" and "I clip → Start clipping live".
- * Each door carries the In/Out brackets from the brand symbol; on hover they close in,
- * like a cut being set. Replaces a generic button + link field.
- */
+/** The two-sided CTA pair (or one side with `only`). Each door leads to that side's page. */
+import Door from '@/components/ui/Door.astro';
 import type { Locale } from '@/config/routes';
 import { roleCtaHref } from '@/config/site';
 import { homeCopy } from '@/content/home';
@@ -20,26 +17,7 @@ const roles = (only ? [only] : ['streamer', 'clipper']) as ('streamer' | 'clippe
 
 <div class:list={['doors', roles.length > 1 && 'doors-2', className]}>
   {roles.map((role) => (
-    <a href={roleCtaHref(locale, role)} class="door" data-role={role}>
-      <span class="door-who">{d[role].who}</span>
-      <span class="door-action">
-        {d[role].action}
-        <svg
-          class="door-arrow"
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.25"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M5 12h14M13 6l6 6-6 6" />
-        </svg>
-      </span>
-    </a>
+    <Door href={roleCtaHref(locale, role)} who={d[role].who} action={d[role].action} />
   ))}
 </div>
 
@@ -53,70 +31,5 @@ const roles = (only ? [only] : ['streamer', 'clipper']) as ('streamer' | 'clippe
     .doors-2 {
       grid-template-columns: 1fr 1fr;
     }
-  }
-  .door {
-    position: relative;
-    display: grid;
-    gap: 0.35rem;
-    min-height: 5.5rem;
-    padding: 1.1rem 1.35rem 1.15rem;
-    border-radius: var(--cr-radius-control);
-    background: var(--cr-action);
-    color: var(--cr-on-action);
-    text-decoration: none;
-    transition: background var(--cr-duration-fast) var(--cr-ease-standard);
-  }
-  .door:hover {
-    background: var(--cr-action-hover);
-  }
-  .door:active {
-    background: var(--cr-action-active);
-  }
-  .door-who {
-    font-size: var(--cr-type-label-size);
-    font-weight: 600;
-  }
-  .door-action {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    font-size: 1.2rem;
-    font-weight: 750;
-    letter-spacing: -0.015em;
-    line-height: 1.15;
-  }
-  .door-arrow {
-    flex: none;
-    transition: transform var(--cr-duration-base) var(--cr-ease-standard);
-  }
-  .door:hover .door-arrow {
-    transform: translateX(4px);
-  }
-  /* In/Out brackets that close in on hover. */
-  .door::before,
-  .door::after {
-    content: '';
-    position: absolute;
-    width: 0.9rem;
-    height: 0.9rem;
-    border: 0 solid currentColor;
-    transition: transform var(--cr-duration-base) var(--cr-ease-standard);
-  }
-  .door::before {
-    top: 0.45rem;
-    left: 0.45rem;
-    border-width: 2.5px 0 0 2.5px;
-  }
-  .door::after {
-    right: 0.45rem;
-    bottom: 0.45rem;
-    border-width: 0 2.5px 2.5px 0;
-  }
-  .door:hover::before {
-    transform: translate(3px, 3px);
-  }
-  .door:hover::after {
-    transform: translate(-3px, -3px);
   }
 </style>

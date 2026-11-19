@@ -38,6 +38,10 @@
   .cr-ui {
     font-feature-settings: 'cv11', 'ss01';
   }
+  /* Links inside running text must not rely on color alone (WCAG 1.4.1). */
+  .cr-ui :is(p, li, dd, label) a {
+    text-decoration: underline;
+  }
 }
 
 @utility container-cr {
