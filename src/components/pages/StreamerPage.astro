@@ -1,0 +1,354 @@
+---
+/**
+ * /streamers/ — v3: "Got R$ 100?" for streamers starting out. Static product screens
+ * (how the app will look): a small campaign with big-channel clippers asking in, the live
+ * radar of your crew, a contest, pay-for-results and rules.
+ */
+import AppFrame from '@/components/mock/AppFrame.astro';
+import BoostCard from '@/components/mock/BoostCard.astro';
+import Leaderboard from '@/components/mock/Leaderboard.astro';
+import Door from '@/components/ui/Door.astro';
+import FaqBlock from '@/components/ui/FaqBlock.astro';
+import SignupBand from '@/components/waitlist/SignupBand.astro';
+import type { Locale } from '@/config/routes';
+import { homeCopy } from '@/content/home';
+import { streamerCopy } from '@/content/landings';
+import { mocks } from '@/content/mocks';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const c = streamerCopy[locale];
+const who = homeCopy[locale].doors.streamer.who;
+const m = mocks[locale];
+// Bracketed amount + trailing text as one unit, so no stray space before punctuation.
+const esc = (t: string) => t.replace(/[&<>"]/g, (ch) => `&#${ch.charCodeAt(0)};`);
+const titleTail = `<span class="cut">${esc(c.hero.cut)}</span>${/^[?.!,]/.test(c.hero.after) ? '' : ' '}${esc(c.hero.after)}`;
+const payIcons = [
+  'M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z',
+  'm4 12 5 5 11-11',
+  'M4 6h16v12H4z M4 10h16 M8 15h3',
+];
+---
+
+<section data-theme="dark" class="bg-cr-bg text-cr-text" aria-labelledby="s-title">
+  <div class="container-cr grid items-center gap-12 py-12 md:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
+    <div>
+      <p class="kicker">{c.hero.kicker}</p>
+      <h1 id="s-title" class="s-title mt-5">
+        {c.hero.before} <span class="nowrap" set:html={titleTail} />
+      </h1>
+      <p class="mt-6 max-w-[30rem] text-xl leading-snug text-cr-muted">{c.hero.sub}</p>
+      <Door href="#signup" who={who} action={c.hero.cta} class="mt-8 max-w-[22rem]" />
+    </div>
+    <AppFrame tabs={m.app.tabs} label={m.boost.title}>
+      <BoostCard data={m.boost} />
+    </AppFrame>
+  </div>
+</section>
+
+<!-- Your crew, live -->
+<section class="container-cr py-24 md:py-28" aria-labelledby="s-crew">
+  <div class="grid items-center gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16">
+    <div>
+      <h2 id="s-crew" class="text-title-cr">
+        {c.crew.title}
+      </h2>
+      <p class="mt-4 max-w-[30rem] text-lg text-cr-muted">{c.crew.sub}</p>
+    </div>
+    <AppFrame tabs={m.app.tabs} label={c.radar.title}>
+      <div class="radar">
+        <div class="radar-bar">
+          <span class="live-tag" aria-hidden="true">
+            LIVE
+          </span>
+          <span class="tabular-nums">{c.radar.live}</span>
+          <span class="ml-auto truncate text-cr-muted">{c.radar.title}</span>
+        </div>
+        <ul class="radar-list">
+          {c.radar.rows.map((r) => (
+            <li>
+              <span class="avatar" aria-hidden="true">
+                {r.handle.charAt(1).toUpperCase()}
+              </span>
+              <span class="min-w-0">
+                <span class="block truncate font-semibold">{r.handle}</span>
+                <span class="block truncate text-cr-caption text-cr-muted">{r.clip}</span>
+              </span>
+              <span class="where">{r.where}</span>
+              <span class={`state ${r.state}`}>{r.status}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </AppFrame>
+  </div>
+</section>
+
+<!-- Contest -->
+<section class="border-y border-cr-rule bg-cr-surface py-24 md:py-28" aria-labelledby="s-contest">
+  <div class="container-cr grid items-center gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16">
+    <div>
+      <h2 id="s-contest" class="text-title-cr">
+        {c.contest.title}
+      </h2>
+      <ul class="checks mt-8">
+        {c.contest.bullets.map((b) => (
+          <li>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="m4 12 5 5 11-11" />
+            </svg>
+            {b}
+          </li>
+        ))}
+      </ul>
+    </div>
+    <AppFrame tabs={m.app.tabs} active={1} label={m.contest.host}>
+      <Leaderboard data={m.contest} joinHref="#signup" />
+    </AppFrame>
+  </div>
+</section>
+
+<!-- Pay for results -->
+<section class="py-20" aria-labelledby="s-pay">
+  <div class="container-cr">
+    <h2 id="s-pay" class="text-title-cr">
+      {c.pay.title}
+    </h2>
+    <ul class="mt-10 grid gap-4 md:grid-cols-3">
+      {c.pay.tiles.map(([k, v], i) => (
+        <li class="pay">
+          <span class="pay-icon" aria-hidden="true">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d={payIcons[i]} />
+            </svg>
+          </span>
+          <span class="pay-title">{k}</span>
+          <span class="text-cr-muted">{v}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<!-- Rules -->
+<section class="container-cr pb-20" aria-labelledby="s-rules">
+  <div class="grid gap-8 md:grid-cols-[auto_1fr] md:items-center md:gap-16">
+    <h2 id="s-rules" class="text-title-cr">
+      {c.rules.title}
+    </h2>
+    <ul class="rules">
+      {c.rules.items.map((r) => (
+        <li>{r}</li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<FaqBlock title={c.faq.title} items={c.faq.items} id="s-faq" />
+
+<SignupBand locale={locale} profile="streamer" title={c.form.title} lead={c.form.lead} />
+
+<style>
+  .s-title {
+    font-size: clamp(3rem, 7vw, 5.75rem);
+    text-wrap: balance;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    font-weight: var(--cr-weight-display);
+  }
+
+  /* ---------- Radar ---------- */
+  .nowrap {
+    white-space: nowrap;
+  }
+  .kicker {
+    font-size: 1.2rem;
+    font-weight: 650;
+  }
+  .radar {
+    border: 1px solid var(--cr-rule);
+    border-radius: var(--cr-radius-panel);
+    background: var(--cr-surface);
+    overflow: hidden;
+  }
+  .radar-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 2.75rem;
+    padding-inline: 1.1rem;
+    border-bottom: 1px solid var(--cr-rule);
+    font-size: var(--cr-type-label-size);
+    font-weight: 600;
+  }
+  .live-tag {
+    padding: 0.05rem 0.4rem;
+    border-radius: 2px;
+    background: var(--cr-palette-orange);
+    color: var(--cr-palette-navy);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+  }
+  .radar-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .radar-list li {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+    grid-template-areas: 'av main where' 'av state state';
+    align-items: center;
+    gap: 0.2rem 0.85rem;
+    padding: 1rem 1.1rem;
+  }
+  .radar-list li + li {
+    border-top: 1px solid var(--cr-rule);
+  }
+  @media (width >= 40rem) {
+    .radar-list li {
+      grid-template-columns: 2.5rem minmax(0, 1fr) 4rem 8.5rem;
+      grid-template-areas: 'av main where state';
+    }
+  }
+  .avatar {
+    grid-area: av;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: var(--cr-raised);
+    font-weight: 700;
+  }
+  .where {
+    grid-area: where;
+    font-size: var(--cr-type-caption-size);
+    font-weight: 700;
+    color: var(--cr-muted);
+  }
+  .state {
+    grid-area: state;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: var(--cr-type-caption-size);
+    font-weight: 600;
+  }
+  .state::before {
+    content: '';
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .state.posted {
+    color: var(--cr-info);
+  }
+  .state.waiting {
+    color: var(--cr-warning);
+  }
+  .state.editing {
+    color: var(--cr-success);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .state.editing::before {
+      animation: s-pulse 1.4s var(--cr-ease-standard) infinite;
+    }
+  }
+  @keyframes s-pulse {
+    50% {
+      opacity: 0.3;
+    }
+  }
+
+  .checks {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  .checks li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .checks svg {
+    flex: none;
+    color: var(--cr-success);
+  }
+
+  .pay {
+    display: grid;
+    gap: 0.35rem;
+    padding: 1.5rem;
+    border: 1px solid var(--cr-rule);
+    border-radius: var(--cr-radius-dialog);
+    background: var(--cr-bg);
+  }
+  .pay-icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 0.5rem;
+    border-radius: 50%;
+    border: 1px solid var(--cr-edge);
+  }
+  .pay-title {
+    font-size: var(--cr-type-section-size);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .rules {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--cr-text);
+  }
+  @media (width >= 48rem) {
+    .rules {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .rules li {
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--cr-rule);
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+  @media (width >= 48rem) {
+    .rules li + li {
+      padding-left: 1.5rem;
+      border-left: 1px solid var(--cr-rule);
+    }
+  }
+</style>

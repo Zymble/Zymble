@@ -1,0 +1,70 @@
+---
+/**
+ * Mobile-only CTA bar with both sides (I stream / I clip): shown whenever the hero doors
+ * are off screen, hidden when the final CTA is on screen or the menu is open.
+ */
+import type { Locale } from '@/config/routes';
+import { roleCtaHref } from '@/config/site';
+import { homeCopy } from '@/content/home';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+---
+
+<div
+  class="sticky-cta fixed inset-x-0 bottom-0 z-30 border-t border-cr-rule bg-cr-bg/95 p-3 backdrop-blur md:hidden"
+  data-sticky-cta
+  hidden
+>
+  <div class="grid grid-cols-2 gap-2">
+    <a href={roleCtaHref(locale, 'streamer')} class="cr-btn w-full">
+      {homeCopy[locale].sticky.streamer}
+    </a>
+    <a href={roleCtaHref(locale, 'clipper')} class="cr-btn w-full">
+      {homeCopy[locale].sticky.clipper}
+    </a>
+  </div>
+</div>
+
+<style>
+  .sticky-cta {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .sticky-cta:not([hidden]) {
+      animation: cr-slide-up var(--cr-duration-enter) var(--cr-ease-standard);
+    }
+  }
+  /* Never on top of the open mobile menu. */
+  :global(body:has(#mobile-menu:not([hidden]))) .sticky-cta {
+    display: none;
+  }
+  @keyframes cr-slide-up {
+    from {
+      transform: translateY(100%);
+    }
+  }
+</style>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-sticky-cta]');
+  const hero = document.getElementById('hero-cta');
+  const final = document.getElementById('final-cta');
+  if (bar && hero) {
+    const seen = new Map<Element, boolean>();
+    const update = () => {
+      // Visible whenever the hero form is not on screen (above or below), until the final CTA.
+      const heroOnScreen = !!seen.get(hero);
+      const finalReached = !!final && final.getBoundingClientRect().top < innerHeight;
+      bar.hidden = heroOnScreen || finalReached;
+    };
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => seen.set(e.target, e.isIntersecting));
+      update();
+    });
+    io.observe(hero);
+    if (final) io.observe(final);
+  }
+</script>

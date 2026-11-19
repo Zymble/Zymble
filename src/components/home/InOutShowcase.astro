@@ -1,0 +1,41 @@
+---
+/** Dark band with the interactive In/Out demo (Svelte island, hydrates when visible). */
+import InOutTimeline from '@/components/islands/InOutTimeline.svelte';
+import type { Locale } from '@/config/routes';
+import { homeCopy } from '@/content/home';
+
+interface Props {
+  locale: Locale;
+}
+const c = homeCopy[Astro.props.locale].inout;
+---
+
+<section
+  data-theme="dark"
+  class="bg-cr-bg py-24 text-cr-text md:py-32"
+  aria-labelledby="inout-title"
+>
+  <div class="container-cr">
+    <div class="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+      <h2 id="inout-title" class="text-title-cr [text-wrap:balance]">
+        {c.title}
+      </h2>
+      <p class="max-w-[52ch] text-lg leading-relaxed text-cr-muted lg:pt-2">{c.body}</p>
+    </div>
+    <div class="mt-12">
+      <InOutTimeline
+        client:visible
+        clips={c.clips}
+        inLabel={c.inLabel}
+        outLabel={c.outLabel}
+        duration={c.duration}
+        save={c.save}
+        saved={c.saved}
+        hint={c.hint}
+        aiLabel={c.aiLabel}
+        youLabel={c.youLabel}
+      />
+    </div>
+    <p class="mt-4 text-cr-caption text-cr-muted">{c.disclaimer}</p>
+  </div>
+</section>

@@ -1,0 +1,33 @@
+---
+/** /early-access/confirmed/ — landing after the double opt-in link. noindex. */
+import Door from '@/components/ui/Door.astro';
+import { localizedPath, type Locale } from '@/config/routes';
+import { homeCopy } from '@/content/home';
+import { waitlistCopy } from '@/content/waitlist';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const w = waitlistCopy[locale].confirmed;
+const d = homeCopy[locale].doors;
+---
+
+<section class="container-cr py-24 md:py-32">
+  <h1 class="cf-title">{w.title}</h1>
+  <p class="mt-5 max-w-[44ch] text-lg leading-relaxed text-cr-muted">{w.body}</p>
+  <div class="mt-10 grid max-w-[36rem] gap-3 sm:grid-cols-2">
+    <Door href={localizedPath('streamers', locale)} who={d.streamer.who} action={w.streamer} />
+    <Door href={localizedPath('clippers', locale)} who={d.clipper.who} action={w.clipper} />
+  </div>
+</section>
+
+<style>
+  .cf-title {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    font-weight: var(--cr-weight-display);
+    max-width: 16ch;
+  }
+</style>

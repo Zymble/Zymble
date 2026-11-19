@@ -1,0 +1,278 @@
+---
+import Logo from '@/components/brand/Logo.astro';
+import Icon from './Icon.astro';
+import LocaleLinks from './LocaleLinks.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import { headerNav } from '@/config/nav';
+import { localeMeta, localizedPath, locales, type Locale, type RouteId } from '@/config/routes';
+import { primaryCtaHref, signInHref, site } from '@/config/site';
+import { useTranslations } from '@/i18n/utils';
+
+interface Props {
+  locale: Locale;
+  routeId: RouteId;
+}
+const { locale, routeId } = Astro.props;
+const { t, page, href } = useTranslations(locale);
+// The hub link inside the Features menu reads "All features" instead of repeating the group name.
+const label = (id: RouteId) => (id === 'features' ? t('nav.allFeatures') : page(id));
+const cta = site.appLive ? t('cta.app') : t('cta.primary');
+const ctaShort = site.appLive ? t('cta.app') : t('cta.short');
+const ctaHref = primaryCtaHref(locale);
+
+const linkBase =
+  'flex min-h-11 items-center rounded-cr-control px-3 text-cr-label font-semibold text-cr-text no-underline hover:bg-cr-surface-hover aria-[current=page]:text-cr-selected';
+const mobileRow =
+  'flex min-h-14 w-full items-center justify-between border-b border-cr-rule text-lg font-semibold text-cr-text no-underline';
+---
+
+<header class="sticky top-0 z-40 border-b border-cr-rule bg-cr-bg/95 backdrop-blur">
+  <span class="scroll-progress" aria-hidden="true"></span>
+  <div class="container-cr flex h-16 items-center gap-2">
+    <a
+      href={href('home')}
+      aria-label={t('a11y.home')}
+      class="mr-auto flex shrink-0 items-center lg:mr-6"
+    >
+      <Logo height={28} />
+    </a>
+
+    <nav aria-label={t('a11y.mainNav')} class="hidden lg:block lg:mr-auto">
+      <ul class="flex items-center gap-1">
+        {headerNav.map((entry, i) =>
+          'route' in entry ? (
+            <li>
+              <a
+                href={href(entry.route)}
+                class={linkBase}
+                aria-current={routeId === entry.route ? 'page' : undefined}
+              >
+                {t(entry.label)}
+              </a>
+            </li>
+          ) : (
+            <li class="relative" data-disclosure>
+              <button
+                type="button"
+                class:list={[linkBase, 'gap-1 bg-transparent border-0 cursor-pointer']}
+                aria-expanded="false"
+                aria-controls={`nav-panel-${i}`}
+              >
+                {t(entry.label)}
+                <Icon
+                  name="chevron"
+                  size={16}
+                  class="transition-transform [[aria-expanded=true]>&]:rotate-180"
+                />
+              </button>
+              <ul
+                id={`nav-panel-${i}`}
+                hidden
+                class="absolute left-0 top-full mt-2 min-w-60 rounded-cr-panel border border-cr-rule bg-cr-surface p-2 shadow-cr-overlay"
+              >
+                {entry.items.map((id) => (
+                  <li>
+                    <a
+                      href={href(id)}
+                      class={linkBase}
+                      aria-current={routeId === id ? 'page' : undefined}
+                    >
+                      {label(id)}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ),
+        )}
+      </ul>
+    </nav>
+
+    <div class="relative hidden lg:block" data-disclosure>
+      <button
+        type="button"
+        class:list={[linkBase, 'gap-1 bg-transparent border-0 cursor-pointer']}
+        aria-expanded="false"
+        aria-controls="locale-panel"
+      >
+        <Icon name="globe" size={18} />
+        <span class="sr-only">{t('a11y.language')}:</span>
+        {localeMeta[locale].short}
+      </button>
+      <div
+        id="locale-panel"
+        hidden
+        class="absolute right-0 top-full mt-2 min-w-52 rounded-cr-panel border border-cr-rule bg-cr-surface p-2 shadow-cr-overlay"
+      >
+        <LocaleLinks locale={locale} routeId={routeId} linkClass={linkBase} />
+      </div>
+    </div>
+
+    <div class="hidden lg:block">
+      <ThemeToggle locale={locale} />
+    </div>
+
+    {site.appLive && (
+      <a href={signInHref()} class:list={[linkBase, 'hidden sm:flex']}>
+        {t('cta.signIn')}
+      </a>
+    )}
+
+    <a href={ctaHref} class="cr-btn hidden whitespace-nowrap sm:inline-flex">
+      {ctaShort}
+    </a>
+
+    <button
+      type="button"
+      class="inline-flex size-11 items-center justify-center rounded-cr-control border-0 bg-transparent text-cr-text hover:bg-cr-surface-hover lg:hidden"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      data-menu-toggle
+    >
+      <Icon name="menu" class="[[aria-expanded=true]>&]:hidden" />
+      <Icon name="close" class="hidden [[aria-expanded=true]>&]:block" />
+      <span class="sr-only">{t('a11y.menu')}</span>
+    </button>
+  </div>
+
+  <!-- Mobile menu: few top-level rows; groups open on tap. -->
+  <div
+    id="mobile-menu"
+    hidden
+    class="max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-cr-rule bg-cr-bg lg:hidden"
+  >
+    <nav aria-label={t('a11y.mainNav')} class="container-cr pt-2 pb-6">
+      {headerNav.map((entry) =>
+        'route' in entry ? (
+          <a
+            href={href(entry.route)}
+            class={mobileRow}
+            aria-current={routeId === entry.route ? 'page' : undefined}
+          >
+            {t(entry.label)}
+          </a>
+        ) : (
+          <details class="m-group border-b border-cr-rule">
+            <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between text-lg font-semibold">
+              {t(entry.label)}
+              <Icon name="chevron" size={20} class="m-chevron text-cr-muted" />
+            </summary>
+            <ul class="pb-3">
+              {entry.items.map((id) => (
+                <li>
+                  <a
+                    href={href(id)}
+                    class="flex min-h-11 items-center text-cr-muted no-underline hover:text-cr-text aria-[current=page]:text-cr-selected"
+                    aria-current={routeId === id ? 'page' : undefined}
+                  >
+                    {label(id)}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        ),
+      )}
+
+      <div class="mt-6 grid gap-4">
+        <div class="flex items-center justify-between gap-4">
+          <span class="text-cr-label text-cr-muted">{t('a11y.language')}</span>
+          <div class="inline-flex rounded-cr-control border border-cr-rule p-0.5">
+            {locales.map((l) => (
+              <a
+                href={localizedPath(routeId, l)}
+                hreflang={localeMeta[l].lang}
+                lang={localeMeta[l].lang}
+                aria-label={localeMeta[l].label}
+                aria-current={l === locale ? 'true' : undefined}
+                class="grid min-h-9 min-w-12 place-items-center rounded-[4px] text-cr-label font-semibold text-cr-muted no-underline aria-[current=true]:bg-cr-raised aria-[current=true]:text-cr-text"
+              >
+                {localeMeta[l].short}
+              </a>
+            ))}
+          </div>
+        </div>
+        <div class="flex items-center justify-between gap-4">
+          <span class="text-cr-label text-cr-muted">{t('footer.theme')}</span>
+          <ThemeToggle locale={locale} variant="segmented" />
+        </div>
+      </div>
+
+      <div class="mt-6 grid gap-2">
+        <a href={ctaHref} class="cr-btn w-full">
+          {cta}
+        </a>
+        {site.appLive && (
+          <a href={signInHref()} class="cr-btn secondary w-full">
+            {t('cta.signIn')}
+          </a>
+        )}
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .m-group summary::-webkit-details-marker {
+    display: none;
+  }
+  .m-group[open] :global(.m-chevron) {
+    transform: rotate(180deg);
+  }
+</style>
+
+<script>
+  type Toggle = { button: HTMLButtonElement; panel: HTMLElement; root: HTMLElement };
+
+  const toggles: Toggle[] = [];
+
+  function setOpen(t: Toggle, open: boolean) {
+    t.button.setAttribute('aria-expanded', String(open));
+    t.panel.hidden = !open;
+  }
+
+  function closeAll(except?: Toggle) {
+    toggles.forEach((t) => t !== except && setOpen(t, false));
+  }
+
+  document
+    .querySelectorAll<HTMLButtonElement>('[data-disclosure] > button, [data-menu-toggle]')
+    .forEach((button) => {
+      const panel = document.getElementById(button.getAttribute('aria-controls') ?? '');
+      if (!panel) return;
+      const root = (button.closest('[data-disclosure]') as HTMLElement | null) ?? panel;
+      const t: Toggle = { button, panel, root };
+      toggles.push(t);
+      button.addEventListener('click', () => {
+        const open = button.getAttribute('aria-expanded') !== 'true';
+        closeAll(t);
+        setOpen(t, open);
+      });
+    });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const open = toggles.find((t) => t.button.getAttribute('aria-expanded') === 'true');
+    if (open) {
+      setOpen(open, false);
+      open.button.focus();
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    const target = e.target as Node;
+    toggles.forEach((t) => {
+      if (!t.root.contains(target) && !t.button.contains(target) && !t.panel.contains(target)) {
+        setOpen(t, false);
+      }
+    });
+  });
+
+  // Close desktop dropdowns when focus leaves them.
+  document.addEventListener('focusin', (e) => {
+    const target = e.target as Node;
+    toggles.forEach((t) => {
+      if (t.root.hasAttribute('data-disclosure') && !t.root.contains(target)) setOpen(t, false);
+    });
+  });
+</script>

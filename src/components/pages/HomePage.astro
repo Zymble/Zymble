@@ -1,0 +1,64 @@
+---
+import JsonLd from '@/components/seo/JsonLd.astro';
+import Clippers from '@/components/home/Clippers.astro';
+import Faq from '@/components/home/Faq.astro';
+import Features from '@/components/home/Features.astro';
+import FinalCta from '@/components/home/FinalCta.astro';
+import Hero from '@/components/home/Hero.astro';
+import InOutShowcase from '@/components/home/InOutShowcase.astro';
+import Personas from '@/components/home/Personas.astro';
+import PricingPreview from '@/components/home/PricingPreview.astro';
+import SocialProof from '@/components/home/SocialProof.astro';
+import StickyCta from '@/components/home/StickyCta.astro';
+import TwoSides from '@/components/home/TwoSides.astro';
+import type { Locale } from '@/config/routes';
+import { site } from '@/config/site';
+import { homeCopy } from '@/content/home';
+import { useTranslations } from '@/i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const { lang } = useTranslations(locale);
+---
+
+<JsonLd
+  data={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: site.name,
+      url: site.url,
+      logo: new URL('/icon-512.png', site.url).href,
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: site.name,
+      url: site.url,
+      inLanguage: lang,
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      name: site.name,
+      applicationCategory: 'MultimediaApplication',
+      operatingSystem: 'Web',
+      description: homeCopy[locale].meta.description,
+      url: site.url,
+    },
+  ]}
+/>
+
+<Hero locale={locale} />
+<TwoSides locale={locale} />
+<Clippers locale={locale} />
+<InOutShowcase locale={locale} />
+<Features locale={locale} />
+<Personas locale={locale} />
+<SocialProof />
+<PricingPreview locale={locale} />
+<Faq locale={locale} />
+<FinalCta locale={locale} />
+<StickyCta locale={locale} />

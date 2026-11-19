@@ -1,0 +1,27 @@
+---
+import { localeMeta, localizedPath, locales, type Locale, type RouteId } from '@/config/routes';
+
+interface Props {
+  locale: Locale;
+  routeId: RouteId;
+  class?: string;
+  linkClass?: string;
+}
+const { locale, routeId, class: className, linkClass } = Astro.props;
+---
+
+<ul class={className}>
+  {locales.map((l) => (
+    <li>
+      <a
+        href={localizedPath(routeId, l)}
+        hreflang={localeMeta[l].lang}
+        lang={localeMeta[l].lang}
+        aria-current={l === locale ? 'true' : undefined}
+        class={linkClass}
+      >
+        {localeMeta[l].label}
+      </a>
+    </li>
+  ))}
+</ul>

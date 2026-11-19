@@ -1,0 +1,28 @@
+---
+import type { Locale, RouteId } from '@/config/routes';
+import { primaryCtaHref, site } from '@/config/site';
+import { useTranslations } from '@/i18n/utils';
+
+interface Props {
+  locale: Locale;
+  routeId: RouteId;
+}
+const { locale, routeId } = Astro.props;
+const { t, page, href } = useTranslations(locale);
+---
+
+<section class="container-cr py-20 md:py-28">
+  <p class="text-cr-label text-cr-muted">{t('soon.eyebrow')}</p>
+  <h1 class="mt-3 max-w-3xl text-title-cr">{page(routeId)}</h1>
+  <p class="mt-4 max-w-2xl text-cr-muted">{t('soon.body')}</p>
+  <div class="mt-8 flex flex-wrap gap-3">
+    {routeId !== 'early-access' && (
+      <a href={primaryCtaHref(locale)} class="cr-btn">
+        {site.appLive ? t('cta.app') : t('cta.primary')}
+      </a>
+    )}
+    <a href={href('home')} class="cr-btn secondary">
+      {t('soon.back')}
+    </a>
+  </div>
+</section>

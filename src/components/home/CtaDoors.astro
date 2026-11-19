@@ -1,0 +1,35 @@
+---
+/** The two-sided CTA pair (or one side with `only`). Each door leads to that side's page. */
+import Door from '@/components/ui/Door.astro';
+import type { Locale } from '@/config/routes';
+import { roleCtaHref } from '@/config/site';
+import { homeCopy } from '@/content/home';
+
+interface Props {
+  locale: Locale;
+  only?: 'streamer' | 'clipper';
+  class?: string;
+}
+const { locale, only, class: className } = Astro.props;
+const d = homeCopy[locale].doors;
+const roles = (only ? [only] : ['streamer', 'clipper']) as ('streamer' | 'clipper')[];
+---
+
+<div class:list={['doors', roles.length > 1 && 'doors-2', className]}>
+  {roles.map((role) => (
+    <Door href={roleCtaHref(locale, role)} who={d[role].who} action={d[role].action} />
+  ))}
+</div>
+
+<style>
+  .doors {
+    display: grid;
+    gap: 0.75rem;
+    max-width: 36rem;
+  }
+  @media (width >= 40rem) {
+    .doors-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

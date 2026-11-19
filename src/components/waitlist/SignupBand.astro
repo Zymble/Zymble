@@ -1,0 +1,49 @@
+---
+/** Closing signup band for a side landing: copy on the left, the form on a panel on the right. */
+import WaitlistForm from './WaitlistForm.astro';
+import type { Locale } from '@/config/routes';
+import type { Profile } from '@/lib/waitlist/schema';
+
+interface Props {
+  locale: Locale;
+  profile: Profile;
+  title: string;
+  lead: string;
+}
+const { locale, profile, title, lead } = Astro.props;
+---
+
+<section
+  id="signup"
+  data-theme="dark"
+  class="signup bg-cr-bg text-cr-text"
+  aria-labelledby="signup-title"
+>
+  <div class="container-cr grid gap-10 py-24 md:py-28 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+    <div class="signup-copy relative">
+      <h2 id="signup-title" class="text-title-cr [text-wrap:balance]">
+        {title}
+      </h2>
+      <p class="mt-5 max-w-[40ch] text-lg leading-relaxed text-cr-muted">{lead}</p>
+    </div>
+    <div class="rounded-cr-dialog border border-cr-rule bg-cr-surface p-5 md:p-8">
+      <WaitlistForm locale={locale} id={`signup-${profile}`} profile={profile} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .signup {
+    scroll-margin-top: 4rem;
+  }
+  /* In/Out bracket opening the copy column. */
+  .signup-copy::before {
+    content: '';
+    display: block;
+    width: 3rem;
+    height: 2.25rem;
+    margin-bottom: 1.5rem;
+    border: 0 solid var(--cr-palette-orange);
+    border-width: 5px 0 0 5px;
+  }
+</style>

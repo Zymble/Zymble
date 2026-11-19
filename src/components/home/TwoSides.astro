@@ -1,0 +1,44 @@
+---
+/**
+ * Both sides in one picture: the streamer puts up the prize, clippers race for it.
+ * Contest screen as it will look in the app + one door per side.
+ */
+import CtaDoors from './CtaDoors.astro';
+import AppFrame from '@/components/mock/AppFrame.astro';
+import Leaderboard from '@/components/mock/Leaderboard.astro';
+import { localizedPath, type Locale } from '@/config/routes';
+import { homeCopy } from '@/content/home';
+import { mocks } from '@/content/mocks';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const c = homeCopy[locale].sides;
+const m = mocks[locale];
+---
+
+<section class="container-cr py-24 md:py-32" aria-labelledby="sides-title">
+  <div class="grid items-center gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16">
+    <div>
+      <h2 id="sides-title" class="sides-title">
+        {c.title}
+      </h2>
+      <CtaDoors locale={locale} class="mt-10" />
+    </div>
+    <AppFrame tabs={m.app.tabs} active={1} label={m.contest.host}>
+      <Leaderboard data={m.contest} joinHref={localizedPath('clippers', locale)} />
+    </AppFrame>
+  </div>
+</section>
+
+<style>
+  .sides-title {
+    font-size: clamp(2.25rem, 4.6vw, 3.75rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-weight: var(--cr-weight-display);
+    text-wrap: balance;
+    max-width: 14ch;
+  }
+</style>

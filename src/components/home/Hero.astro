@@ -1,0 +1,953 @@
+---
+/**
+ * Hero. Always dark (broadcast feel), whatever the site theme.
+ * The stage is a mock editor: one 14 s CSS loop tells the story in four beats
+ *   1 live + chat → 2 AI flags the play, In/Out close on it → 3 reframed 9:16 with captions → 4 posted,
+ *   all while the stream is still on
+ * and a timecoded log under it follows the same beats. No JS animation library.
+ * Pause control (WCAG 2.2.2), paused off-screen, single static frame with reduced motion.
+ */
+import { getImage } from 'astro:assets';
+import poster from '../../../brand/mockups/night-stage.jpg';
+import CtaDoors from './CtaDoors.astro';
+import type { Locale } from '@/config/routes';
+import { site } from '@/config/site';
+import { homeCopy } from '@/content/home';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const c = homeCopy[locale];
+const posterImg = await getImage({ src: poster, width: 720, format: 'webp', quality: 70 });
+
+// Deterministic waveform; bars 33–40 are the flagged moment.
+const bars = Array.from({ length: 56 }, (_, i) => {
+  const base = 0.24 + 0.22 * Math.abs(Math.sin(i * 1.7)) + 0.12 * Math.abs(Math.sin(i * 0.43));
+  const spike = i >= 32 && i <= 39 ? 0.38 + 0.05 * (i % 3) : 0;
+  return Math.min(1, base + spike);
+});
+---
+
+<section class="hero" data-theme="dark" data-story aria-labelledby="hero-title">
+  <div class="hero-grid container-cr">
+    <div class="hero-head">
+      <p class="text-cr-label text-cr-muted">{c.hero.kicker}</p>
+      <h1 id="hero-title" class="hero-title mt-4">
+        <span class="block">{c.hero.titleA}</span>
+        <span class="cut">{c.hero.titleB}</span>
+      </h1>
+    </div>
+
+    <div class="hero-copy">
+      <p class="max-w-[34rem] text-lg leading-relaxed text-cr-muted">{c.hero.lead}</p>
+      <div class="mt-8" id="hero-cta">
+        <CtaDoors locale={locale} />
+      </div>
+      {!site.appLive && <p class="mt-4 text-cr-caption text-cr-muted">{c.hero.note}</p>}
+    </div>
+
+    <figure class="hero-stage" aria-labelledby="stage-label">
+      <figcaption id="stage-label" class="sr-only">
+        {c.stage.label}. {c.stage.log.map((l) => `${l.tc}: ${l.text}`).join('. ')}.
+      </figcaption>
+
+      <div class="frame">
+        <div class="frame-bar">
+          <span class="tag" aria-hidden="true">
+            <span class="tag-live">LIVE</span>
+            <span class="tag-clip">CLIP</span>
+          </span>
+          <span class="bar-time tabular-nums" aria-hidden="true">
+            <span class="t-live">{c.stage.liveTime}</span>
+            <span class="t-clip">{c.stage.clipLen}</span>
+          </span>
+          <span class="ml-auto"></span>
+          <button
+            type="button"
+            class="story-toggle"
+            aria-pressed="false"
+            data-label-pause={c.stage.pause}
+            data-label-play={c.stage.play}
+            aria-label={c.stage.pause}
+          >
+            <svg
+              class="i-pause"
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <rect x="6" y="5" width="4" height="14" rx="1"></rect>
+              <rect x="14" y="5" width="4" height="14" rx="1"></rect>
+            </svg>
+            <svg
+              class="i-play"
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M8 5.5v13l11-6.5z"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="screen" aria-hidden="true">
+          <video
+            class="video"
+            muted
+            loop
+            playsinline
+            preload="none"
+            poster={posterImg.src}
+            data-src="/media/night-stage.mp4"
+            tabindex="-1"
+          >
+            <track kind="captions" src="/media/night-stage.vtt" srclang="en" label="English" />
+          </video>
+          <img
+            class="video poster"
+            src={posterImg.src}
+            alt=""
+            width="720"
+            height="405"
+            decoding="async"
+          />
+
+          <span class="hud">
+            <b>{c.stage.hud.pos}</b> {c.stage.hud.lap} · {c.stage.hud.speed}
+          </span>
+
+          <span class="chat">
+            {c.stage.chat.map(([user, msg], i) => (
+              <span class={`msg msg${i + 1}`}>
+                <b>{user}</b> {msg}
+              </span>
+            ))}
+          </span>
+
+          <span class="mark"></span>
+
+          <span class="side side-l"></span>
+          <span class="side side-r"></span>
+          <span class="crop">
+            <span class="cap cap1">{c.stage.caption[0]}</span>
+            <span class="cap cap2">{c.stage.caption[1]}</span>
+          </span>
+
+          <span class="post">
+            <span class="post-icon">
+              <svg
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m5 12 5 5L20 7"></path>
+              </svg>
+            </span>
+            <span>
+              <span class="post-title">{c.stage.post}</span>
+              <span class="post-when">{c.stage.postWhen}</span>
+            </span>
+          </span>
+        </div>
+
+        <div class="track" aria-hidden="true">
+          <span class="bars">
+            {bars.map((h) => (
+              <span class="wbar" style={`--h:${h.toFixed(2)}`}></span>
+            ))}
+          </span>
+          <span class="segment"></span>
+          <span class="handle h-in">
+            <span>In</span>
+          </span>
+          <span class="handle h-out">
+            <span>Out</span>
+          </span>
+          <span class="playhead"></span>
+        </div>
+
+        <ol class="log" aria-hidden="true">
+          {c.stage.log.map((row, i) => (
+            <li class={`row row${i + 1}`}>
+              <span class="row-tc tabular-nums">{row.tc}</span>
+              <span>{row.text}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<style is:global>
+  .hero {
+    --loop: 14s;
+    background: var(--cr-bg);
+    color: var(--cr-text);
+    border-bottom: 1px solid var(--cr-rule);
+  }
+
+  /* Mobile: title, story, form. Desktop: title across, form left, story right. */
+  .hero-grid {
+    display: grid;
+    gap: 2rem;
+    padding-block: 3rem 4rem;
+    grid-template-areas: 'head' 'stage' 'copy';
+  }
+  .hero-head {
+    grid-area: head;
+  }
+  .hero-stage {
+    grid-area: stage;
+    margin: 0;
+  }
+  .hero-copy {
+    grid-area: copy;
+  }
+  @media (width >= 64rem) {
+    .hero-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      grid-template-rows: auto 1fr;
+      grid-template-areas: 'head stage' 'copy stage';
+      column-gap: 4rem;
+      row-gap: 2rem;
+      padding-block: 4rem 5rem;
+      align-items: start;
+    }
+  }
+
+  .hero-title {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    font-weight: var(--cr-weight-display);
+    max-width: 18ch;
+    text-wrap: balance;
+  }
+
+  /* ---------- Editor frame ---------- */
+  .hero .frame {
+    border: 1px solid var(--cr-rule);
+    border-radius: var(--cr-radius-panel);
+    background: var(--cr-surface);
+    overflow: hidden;
+    box-shadow: 0 30px 80px -30px rgb(0 0 0 / 0.6);
+  }
+  .hero .frame-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 2.75rem;
+    padding-left: 0.75rem;
+    border-bottom: 1px solid var(--cr-rule);
+    font-size: var(--cr-type-time-size);
+    font-weight: 600;
+  }
+  .hero .tag,
+  .hero .bar-time {
+    display: grid;
+  }
+  .hero .tag > span,
+  .hero .bar-time > span {
+    grid-area: 1 / 1;
+  }
+  .hero .tag > span {
+    padding: 0.05rem 0.4rem;
+    border-radius: 2px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--cr-palette-navy);
+  }
+  .hero .tag-live {
+    background: var(--cr-palette-orange);
+    animation: cr-a var(--loop) step-end infinite;
+  }
+  .hero .tag-clip {
+    background: var(--cr-palette-paper);
+    opacity: 0;
+    animation: cr-b var(--loop) step-end infinite;
+  }
+  .hero .t-live {
+    animation: cr-a var(--loop) step-end infinite;
+  }
+  .hero .t-clip {
+    opacity: 0;
+    animation: cr-b var(--loop) step-end infinite;
+  }
+  .hero .story-toggle {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 0;
+    border-left: 1px solid var(--cr-rule);
+    background: transparent;
+    color: var(--cr-text);
+    cursor: pointer;
+  }
+  .hero .story-toggle:hover {
+    background: var(--cr-surface-hover);
+  }
+  .story-toggle .i-play {
+    display: none;
+  }
+  .story-toggle[aria-pressed='true'] .i-play {
+    display: block;
+  }
+  .story-toggle[aria-pressed='true'] .i-pause {
+    display: none;
+  }
+
+  /* ---------- Screen ---------- */
+  .hero .screen {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--cr-palette-night);
+    container-type: inline-size;
+  }
+  .hero .video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero .video.poster {
+    transition: opacity var(--cr-duration-enter) var(--cr-ease-standard);
+  }
+  .hero [data-playing] .video.poster {
+    opacity: 0;
+  }
+
+  /* Racing-game HUD: makes the demo read as a game stream. */
+  .hero .hud {
+    position: absolute;
+    top: 4%;
+    right: 3%;
+    padding: 0.15rem 0.45rem;
+    background: rgb(11 18 32 / 0.55);
+    color: var(--cr-palette-paper);
+    font-size: clamp(0.58rem, 2cqi, 0.8rem);
+    font-style: italic;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .hero .hud b {
+    color: var(--cr-palette-gold);
+    font-weight: 850;
+  }
+
+  /* Stream chat overlay, like an on-screen chat box. */
+  .hero .chat {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 42%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.25rem;
+    padding: 4% 4% 6%;
+    background: linear-gradient(to right, rgb(11 18 32 / 0.85), rgb(11 18 32 / 0));
+    font-size: clamp(0.62rem, 2.4cqi, 0.85rem);
+    line-height: 1.3;
+    color: var(--cr-palette-paper);
+    animation: cr-chat var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .chat b {
+    color: var(--cr-palette-orange-hover);
+    font-weight: 700;
+  }
+  .hero .msg {
+    opacity: 0;
+    transform: translateY(8px);
+    animation: cr-msg1 var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .msg2 {
+    animation-name: cr-msg2;
+  }
+  .hero .msg3 {
+    animation-name: cr-msg3;
+  }
+
+  /* Beat 2: the brand In/Out brackets close on the moment. */
+  .hero .mark {
+    position: absolute;
+    inset: 14% 1% 10% 45%;
+    opacity: 0;
+    animation: cr-mark var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .mark::before,
+  .hero .mark::after,
+  .hero .crop::before,
+  .hero .crop::after {
+    content: '';
+    position: absolute;
+    width: 26%;
+    height: 22%;
+    border: 0 solid var(--cr-palette-orange);
+  }
+  .hero .mark::before,
+  .hero .crop::before {
+    top: 0;
+    left: 0;
+    border-width: 4px 0 0 4px;
+  }
+  .hero .mark::after,
+  .hero .crop::after {
+    right: 0;
+    bottom: 0;
+    border-width: 0 4px 4px 0;
+  }
+
+  /*
+   * Beat 3: reframe to 9:16 on the car (crop = 9/16 ÷ 16/9 = 31.64% of the width).
+   * The car sits at ~48–97% of the frame for the whole clip, so the crop starts at 57%.
+   */
+  .hero .side {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: rgb(11 18 32 / 0.8);
+    transform: scaleX(0);
+    animation: cr-side var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .side-l {
+    left: 0;
+    width: 57%;
+    transform-origin: left;
+  }
+  .hero .side-r {
+    right: 0;
+    width: 11.36%;
+    transform-origin: right;
+  }
+  .hero .crop {
+    position: absolute;
+    top: 3%;
+    bottom: 3%;
+    left: 57%;
+    width: 31.64%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 14%;
+    opacity: 0;
+    animation: cr-crop var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .cap {
+    font-weight: 850;
+    font-size: clamp(0.72rem, 3.4cqi, 1.2rem);
+    line-height: 1.05;
+    color: var(--cr-palette-white);
+    text-align: center;
+    text-shadow:
+      0 2px 0 var(--cr-palette-night),
+      0 0 14px rgb(11 18 32 / 0.95);
+    opacity: 0;
+    transform: translateY(6px);
+    animation: cr-cap1 var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .cap2 {
+    color: var(--cr-palette-orange);
+    animation-name: cr-cap2;
+  }
+
+  /* Beat 4: scheduled. */
+  .hero .post {
+    position: absolute;
+    left: 3%;
+    bottom: 6%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 30%;
+    padding: 0.45rem 0.6rem;
+    border-radius: var(--cr-radius-control);
+    background: var(--cr-palette-paper);
+    color: var(--cr-palette-navy);
+    font-size: clamp(0.58rem, 2cqi, 0.78rem);
+    line-height: 1.25;
+    box-shadow: var(--cr-shadow-overlay);
+    opacity: 0;
+    transform: translateY(12px);
+    animation: cr-post var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .post-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 50%;
+    background: var(--cr-palette-green);
+    color: var(--cr-palette-white);
+  }
+  .hero .post-title {
+    display: block;
+    font-weight: 800;
+  }
+  .hero .post-when {
+    display: block;
+    font-weight: 600;
+  }
+
+  /* ---------- Track ---------- */
+  .hero .track {
+    position: relative;
+    height: 3rem;
+    background: var(--cr-raised);
+    border-top: 1px solid var(--cr-rule);
+  }
+  .hero .bars {
+    position: absolute;
+    inset: 0.55rem 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .hero .wbar {
+    flex: 1;
+    height: calc(var(--h) * 100%);
+    border-radius: 1px;
+    background: var(--cr-edge);
+  }
+  .hero .wbar:nth-child(n + 33):nth-child(-n + 40) {
+    background: var(--cr-palette-orange);
+  }
+  .hero .segment {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 56.5%;
+    width: 15%;
+    background: color-mix(in srgb, var(--cr-palette-orange) 20%, transparent);
+    opacity: 0;
+    animation: cr-seg var(--loop) var(--cr-ease-standard) infinite;
+  }
+  /* Handles and playhead span the whole track, so translateX(%) maps to track width. */
+  .hero .handle,
+  .hero .playhead {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .hero .handle {
+    opacity: 0;
+  }
+  .hero .handle > span {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 0.65rem;
+    display: grid;
+    place-items: center;
+    background: var(--cr-palette-orange);
+    color: var(--cr-palette-navy);
+    font-size: 0.55rem;
+    font-weight: 800;
+    writing-mode: vertical-rl;
+  }
+  .hero .h-out > span {
+    left: -0.65rem;
+  }
+  .hero .h-in {
+    animation: cr-hin var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .h-out {
+    animation: cr-hout var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .playhead {
+    animation: cr-play var(--loop) var(--cr-ease-standard) infinite;
+  }
+  .hero .playhead::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    background: var(--cr-playhead);
+    box-shadow: 0 0 8px var(--cr-playhead);
+  }
+
+  /* ---------- Log ---------- */
+  .hero .log {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--cr-rule);
+    font-size: var(--cr-type-label-size);
+  }
+  .hero .row {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: 0.75rem;
+    padding: 0.55rem 0.75rem;
+    border-left: 3px solid transparent;
+    color: var(--cr-muted);
+    animation: cr-row var(--loop) step-end infinite;
+  }
+  .hero .row + .row {
+    border-top: 1px solid var(--cr-rule);
+  }
+  .hero .row-tc {
+    font-weight: 600;
+  }
+  .hero .row2 {
+    animation-delay: calc(var(--loop) * 0.25);
+  }
+  .hero .row3 {
+    animation-delay: calc(var(--loop) * 0.5);
+  }
+  .hero .row4 {
+    animation-delay: calc(var(--loop) * 0.75);
+  }
+
+  /* Paused by the visitor or off-screen. */
+  .hero:is([data-paused], [data-offscreen]) :is(*, *::before, *::after) {
+    animation-play-state: paused !important;
+  }
+
+  /* ---------- Keyframes (percent of the 14 s loop) ---------- */
+  @keyframes cr-a {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+  @keyframes cr-b {
+    0% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  @keyframes cr-row {
+    0% {
+      color: var(--cr-text);
+      border-left-color: var(--cr-palette-orange);
+      background: var(--cr-raised);
+    }
+    25% {
+      color: var(--cr-muted);
+      border-left-color: transparent;
+      background: transparent;
+    }
+  }
+  @keyframes cr-chat {
+    0%,
+    30% {
+      opacity: 1;
+    }
+    34%,
+    97% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes cr-msg1 {
+    0%,
+    3% {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    6%,
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes cr-msg2 {
+    0%,
+    8% {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    11%,
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes cr-msg3 {
+    0%,
+    13% {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    16%,
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes cr-mark {
+    0%,
+    27% {
+      opacity: 0;
+      transform: scale(1.12);
+    }
+    32%,
+    48% {
+      opacity: 1;
+      transform: none;
+    }
+    52%,
+    100% {
+      opacity: 0;
+      transform: none;
+    }
+  }
+  @keyframes cr-play {
+    0% {
+      transform: translateX(0);
+    }
+    25%,
+    50% {
+      transform: translateX(64%);
+    }
+    75%,
+    96% {
+      transform: translateX(71.5%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  @keyframes cr-seg {
+    0%,
+    27% {
+      opacity: 0;
+    }
+    32%,
+    96% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes cr-hin {
+    0%,
+    27% {
+      opacity: 0;
+      transform: translateX(42%);
+    }
+    31% {
+      opacity: 1;
+      transform: translateX(42%);
+    }
+    42%,
+    96% {
+      opacity: 1;
+      transform: translateX(56.5%);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(56.5%);
+    }
+  }
+  @keyframes cr-hout {
+    0%,
+    27% {
+      opacity: 0;
+      transform: translateX(86%);
+    }
+    31% {
+      opacity: 1;
+      transform: translateX(86%);
+    }
+    42%,
+    96% {
+      opacity: 1;
+      transform: translateX(71.5%);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(71.5%);
+    }
+  }
+  @keyframes cr-side {
+    0%,
+    50% {
+      transform: scaleX(0);
+    }
+    56%,
+    96% {
+      transform: scaleX(1);
+    }
+    100% {
+      transform: scaleX(0);
+    }
+  }
+  @keyframes cr-crop {
+    0%,
+    53% {
+      opacity: 0;
+    }
+    57%,
+    96% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes cr-cap1 {
+    0%,
+    58% {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    61%,
+    96% {
+      opacity: 1;
+      transform: none;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes cr-cap2 {
+    0%,
+    63% {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    66%,
+    96% {
+      opacity: 1;
+      transform: none;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes cr-post {
+    0%,
+    76% {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    80%,
+    96% {
+      opacity: 1;
+      transform: none;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+
+  /* ---------- Reduced motion: one composed, static frame ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .hero :is(*, *::before, *::after) {
+      animation: none !important;
+    }
+    .hero .tag-live,
+    .hero .t-live,
+    .hero .chat {
+      opacity: 0;
+    }
+    .hero .tag-clip,
+    .hero .t-clip {
+      opacity: 1;
+    }
+    .hero .side {
+      transform: scaleX(1);
+    }
+    .hero :is(.crop, .cap, .segment, .post) {
+      opacity: 1;
+      transform: none;
+    }
+    .hero .h-in {
+      opacity: 1;
+      transform: translateX(56.5%);
+    }
+    .hero .h-out {
+      opacity: 1;
+      transform: translateX(71.5%);
+    }
+    .hero .playhead {
+      transform: translateX(64%);
+    }
+    .hero .row {
+      color: var(--cr-text);
+    }
+    .hero .story-toggle {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const story = document.querySelector<HTMLElement>('[data-story]');
+  const toggle = story?.querySelector<HTMLButtonElement>('.story-toggle');
+  const video = story?.querySelector<HTMLVideoElement>('video.video');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
+    ?.saveData;
+
+  function setPaused(paused: boolean) {
+    if (!story || !toggle) return;
+    story.toggleAttribute('data-paused', paused);
+    toggle.setAttribute('aria-pressed', String(paused));
+    toggle.setAttribute(
+      'aria-label',
+      (paused ? toggle.dataset.labelPlay : toggle.dataset.labelPause) ?? '',
+    );
+    if (video?.src) {
+      if (paused) video.pause();
+      else video.play().catch(() => {});
+    }
+  }
+  toggle?.addEventListener('click', () => setPaused(!story?.hasAttribute('data-paused')));
+
+  // Load the clip once the page is idle; never with reduced motion or Save-Data.
+  function loadVideo() {
+    if (!video || reduce.matches || saveData || !video.dataset.src) return;
+    video.src = video.dataset.src;
+    video.addEventListener(
+      'playing',
+      () => video.closest('.screen')?.setAttribute('data-playing', ''),
+      { once: true },
+    );
+    if (!story?.hasAttribute('data-paused')) video.play().catch(() => {});
+  }
+  if ('requestIdleCallback' in window) requestIdleCallback(loadVideo, { timeout: 2500 });
+  else setTimeout(loadVideo, 1500);
+
+  // Pause while off-screen (battery on phones).
+  if (story) {
+    new IntersectionObserver(([entry]) => {
+      const off = !entry?.isIntersecting;
+      story.toggleAttribute('data-offscreen', off);
+      if (!video?.src) return;
+      if (off) video.pause();
+      else if (!story.hasAttribute('data-paused')) video.play().catch(() => {});
+    }).observe(story);
+  }
+</script>

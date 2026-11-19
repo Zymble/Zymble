@@ -1,0 +1,124 @@
+---
+/** A starting streamer's small campaign: budget + clippers with big channels asking to post. */
+import type { MockData } from '@/content/mocks';
+
+interface Props {
+  data: MockData['boost'];
+}
+const { data } = Astro.props;
+---
+
+<div class="card" aria-hidden="true">
+  <div class="head">
+    <span class="font-semibold">{data.title}</span>
+  </div>
+  <div class="budget">
+    <span class="label">{data.budgetLabel}</span>
+    <span class="value">{data.budget}</span>
+    <span class="per">{data.perClip}</span>
+  </div>
+  <p class="sub">{data.interested}</p>
+  <ul class="list">
+    {data.rows.map((r) => (
+      <li>
+        <span class="av">{r.handle.charAt(1).toUpperCase()}</span>
+        <span class="min-w-0">
+          <span class="who">{r.handle}</span>
+          <span class="size">
+            {r.size} · {r.where}
+          </span>
+        </span>
+        <span class="btn">{data.accept}</span>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  .card {
+    border: 1px solid var(--cr-rule);
+    border-radius: var(--cr-radius-panel);
+    background: var(--cr-surface);
+    overflow: hidden;
+  }
+  .head {
+    display: flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    border-bottom: 1px solid var(--cr-rule);
+    font-size: var(--cr-type-label-size);
+  }
+  .budget {
+    display: grid;
+    gap: 0.15rem;
+    padding: 1.1rem 1rem;
+  }
+  .label,
+  .per {
+    font-size: var(--cr-type-label-size);
+    color: var(--cr-muted);
+  }
+  .value {
+    font-size: clamp(3rem, 9vw, 4.5rem);
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    font-variant-numeric: tabular-nums;
+    color: var(--cr-success);
+  }
+  .sub {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--cr-rule);
+    font-size: var(--cr-type-caption-size);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--cr-muted);
+  }
+  .list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.8rem 1rem;
+    border-top: 1px solid var(--cr-rule);
+  }
+  .av {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: var(--cr-raised);
+    font-weight: 800;
+  }
+  .who {
+    display: block;
+    font-weight: 700;
+  }
+  .size {
+    display: block;
+    font-size: var(--cr-type-caption-size);
+    color: var(--cr-muted);
+  }
+  .btn {
+    margin-left: auto;
+    padding: 0.5rem 0.8rem;
+    border: 1px solid var(--cr-edge);
+    border-radius: var(--cr-radius-control);
+    font-size: var(--cr-type-label-size);
+    font-weight: 700;
+  }
+  .list li:first-child .btn {
+    border-color: transparent;
+    background: var(--cr-action);
+    color: var(--cr-on-action);
+  }
+</style>

@@ -1,0 +1,88 @@
+---
+import Logo from '@/components/brand/Logo.astro';
+import LocaleLinks from './LocaleLinks.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import { footerNav } from '@/config/nav';
+import type { Locale, RouteId } from '@/config/routes';
+import { site } from '@/config/site';
+import { useTranslations } from '@/i18n/utils';
+
+interface Props {
+  locale: Locale;
+  routeId: RouteId;
+}
+const { locale, routeId } = Astro.props;
+const { t, page, href } = useTranslations(locale);
+const social = site.social.filter((s) => s.href);
+const year = new Date().getFullYear();
+const link =
+  'inline-flex min-h-11 items-center text-cr-muted no-underline hover:text-cr-text hover:underline aria-[current=page]:text-cr-text';
+---
+
+<footer class="border-t border-cr-rule bg-cr-surface">
+  <div class="container-cr py-12">
+    <div class="grid gap-10 lg:grid-cols-[1fr_3fr]">
+      <div>
+        <a href={href('home')} aria-label={t('a11y.home')} class="inline-flex">
+          <Logo height={28} />
+        </a>
+        <p class="mt-4 font-semibold text-cr-text">{site.tagline}</p>
+      </div>
+
+      <nav aria-label={t('a11y.footerNav')}>
+        <div class="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-5">
+          {footerNav.map((group) => (
+            <section>
+              <h2 class="text-cr-label text-cr-text">{t(group.label)}</h2>
+              <ul class="mt-2">
+                {group.items.map((id) => (
+                  <li>
+                    <a
+                      href={href(id)}
+                      class={link}
+                      aria-current={routeId === id ? 'page' : undefined}
+                    >
+                      {page(id)}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </nav>
+    </div>
+
+    <div class="mt-12 flex flex-col gap-6 border-t border-cr-rule pt-6 md:flex-row md:items-center md:justify-between">
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
+        <h2 class="sr-only">{t('footer.language')}</h2>
+        <LocaleLinks
+          locale={locale}
+          routeId={routeId}
+          class="flex flex-wrap gap-x-4"
+          linkClass={link}
+        />
+        <div class="flex items-center gap-3 text-cr-muted">
+          <span aria-hidden="true">{t('footer.theme')}</span>
+          <ThemeToggle locale={locale} variant="segmented" />
+        </div>
+      </div>
+
+      {social.length > 0 && (
+        <ul class="flex flex-wrap gap-x-4">
+          {social.map((s) => (
+            <li>
+              <a href={s.href} class={link} rel="me noopener" target="_blank">
+                {s.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <p class="text-cr-caption text-cr-muted">
+        © {year} {site.name}. {t('footer.rights')}
+      </p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,254 @@
+---
+/**
+ * /clippers/ — "the profession", v3: static product screens (how the app will look).
+ * Hero = offers from foreign channels paid in USD (pt-br, es) or the contest leaderboard (en). Three ways to earn, each a
+ * screen: per-view campaign, contest podium, and offers from streamers to post on your channel.
+ */
+import AppFrame from '@/components/mock/AppFrame.astro';
+import CampaignCard from '@/components/mock/CampaignCard.astro';
+import Leaderboard from '@/components/mock/Leaderboard.astro';
+import OfferCard from '@/components/mock/OfferCard.astro';
+import Door from '@/components/ui/Door.astro';
+import FaqBlock from '@/components/ui/FaqBlock.astro';
+import SignupBand from '@/components/waitlist/SignupBand.astro';
+import type { Locale } from '@/config/routes';
+import { homeCopy } from '@/content/home';
+import { clipperCopy } from '@/content/landings';
+import { mocks } from '@/content/mocks';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const c = clipperCopy[locale];
+const home = homeCopy[locale];
+const m = mocks[locale];
+const stepIcons = [
+  'M10 14a5 5 0 0 0 7.1 0l3-3a5 5 0 0 0-7.1-7.1l-1 1 M14 10a5 5 0 0 0-7.1 0l-3 3a5 5 0 0 0 7.1 7.1l1-1',
+  'M16 3h5v5 M21 3l-9 9 M19 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5',
+  'M3 4v13a3 3 0 0 0 3 3h13 M7 4h10a3 3 0 0 1 3 3v10 M8 15l7-7',
+];
+---
+
+<section data-theme="dark" class="bg-cr-bg text-cr-text" aria-labelledby="c-title">
+  <div class="container-cr grid items-center gap-12 py-12 md:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
+    <div>
+      <p class="kicker">{c.hero.kicker}</p>
+      <h1 id="c-title" class="c-title mt-5">
+        <span class="block">{c.hero.titleA}</span>
+        <span class="cut">{c.hero.titleB}</span>
+      </h1>
+      <p class="mt-6 max-w-[30rem] text-xl leading-snug text-cr-muted">{c.hero.sub}</p>
+      <Door
+        href="#signup"
+        who={home.doors.clipper.who}
+        action={c.hero.cta}
+        class="mt-8 max-w-[22rem]"
+      />
+    </div>
+
+    {m.heroOffers ? (
+      <AppFrame tabs={m.app.tabs} label={m.heroOffers[0]?.tag ?? m.app.tabs[0] ?? ''}>
+        {m.heroOffers.map((o, i) => (
+          <OfferCard data={o} compact={i > 0} />
+        ))}
+      </AppFrame>
+    ) : (
+      <AppFrame tabs={m.app.tabs} active={1} label={m.contest.host}>
+        <Leaderboard data={m.contest} joinHref="#signup" />
+      </AppFrame>
+    )}
+  </div>
+</section>
+
+<!-- Three ways to earn: each one is a picture, not a paragraph -->
+<section class="container-cr py-24 md:py-28" aria-labelledby="c-earn">
+  <h2 id="c-earn" class="text-title-cr">
+    {c.earn.title}
+  </h2>
+  <div class="mt-10 grid gap-4 lg:grid-cols-3">
+    <article class="tile">
+      <h3 class="tile-title">{c.earn.views}</h3>
+      <CampaignCard data={m.campaign} />
+    </article>
+
+    <article class="tile">
+      <h3 class="tile-title">{c.earn.contest[0]}</h3>
+      <p class="text-cr-muted">{c.earn.contest[1]}</p>
+      <div class="podium" aria-hidden="true">
+        <span class="p2">
+          <b>2</b>
+        </span>
+        <span class="p1">
+          <b>1</b>
+        </span>
+        <span class="p3">
+          <b>3</b>
+        </span>
+      </div>
+    </article>
+
+    <article class="tile">
+      <h3 class="tile-title">{c.earn.offer[0]}</h3>
+      <p class="text-cr-muted">{c.earn.offer[1]}</p>
+      <OfferCard data={m.offer} />
+    </article>
+  </div>
+  <p class="disclaimer mt-6">{c.earn.disclaimer}</p>
+</section>
+
+<!-- Three taps -->
+<section class="border-y border-cr-rule bg-cr-surface" aria-labelledby="c-steps">
+  <div class="container-cr grid items-center gap-8 py-14 md:grid-cols-[auto_1fr] md:gap-16">
+    <h2 id="c-steps" class="text-title-cr">
+      {c.steps.title}
+    </h2>
+    <ol class="taps">
+      {c.steps.items.map((item, i) => (
+        <li>
+          <span class="tap-icon" aria-hidden="true">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d={stepIcons[i]} />
+            </svg>
+          </span>
+          <span class="font-semibold">{item}</span>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<!-- Statement -->
+<section data-theme="dark" class="bg-cr-bg text-cr-text" aria-labelledby="c-statement">
+  <div class="container-cr py-24 md:py-32">
+    <h2 id="c-statement" class="statement">
+      {c.statement}
+    </h2>
+    <Door
+      href="#signup"
+      who={home.doors.clipper.who}
+      action={c.hero.cta}
+      class="mt-10 max-w-[22rem]"
+    />
+  </div>
+</section>
+
+<FaqBlock title={c.faq.title} items={c.faq.items} id="c-faq" />
+
+<SignupBand locale={locale} profile="clipper" title={c.form.title} lead={c.form.lead} />
+
+<style>
+  .kicker {
+    font-size: 1.2rem;
+    font-weight: 650;
+    line-height: 1.3;
+    max-width: 24ch;
+  }
+  .c-title {
+    font-size: clamp(2.75rem, 6vw, 5rem);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    font-weight: var(--cr-weight-display);
+  }
+
+  .tile {
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid var(--cr-rule);
+    border-radius: var(--cr-radius-dialog);
+    background: var(--cr-surface);
+  }
+  .tile-title {
+    font-size: var(--cr-type-section-size);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  /* Podium */
+  .podium {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: end;
+    gap: 0.5rem;
+    height: 11rem;
+    margin-top: 0.5rem;
+  }
+  .podium span {
+    display: grid;
+    place-items: start center;
+    padding-top: 0.6rem;
+    border-radius: var(--cr-radius-control) var(--cr-radius-control) 0 0;
+    background: var(--cr-raised);
+    font-size: 1.5rem;
+  }
+  .podium b {
+    font-weight: 800;
+  }
+  .p1 {
+    height: 100%;
+    background: var(--cr-palette-gold) !important;
+    color: var(--cr-palette-navy);
+  }
+  .p2 {
+    height: 72%;
+  }
+  .p3 {
+    height: 52%;
+  }
+
+  .disclaimer {
+    max-width: 60ch;
+    padding-left: 0.85rem;
+    border-left: 3px solid var(--cr-edge);
+    color: var(--cr-muted);
+    font-size: var(--cr-type-label-size);
+  }
+
+  .taps {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (width >= 48rem) {
+    .taps {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .taps li {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    font-size: 1.125rem;
+  }
+  .tap-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    border: 1px solid var(--cr-edge);
+  }
+
+  .statement {
+    max-width: 18ch;
+    font-size: clamp(2.25rem, 6vw, 4.75rem);
+    line-height: 1;
+    letter-spacing: -0.045em;
+    font-weight: var(--cr-weight-display);
+    text-wrap: balance;
+  }
+</style>

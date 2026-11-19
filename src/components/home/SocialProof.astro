@@ -1,0 +1,22 @@
+---
+/** Renders nothing until src/data/testimonials.ts has real, approved entries. */
+import { testimonials } from '@/data/testimonials';
+
+const approved = testimonials.filter((t) => t.approved === true);
+---
+
+{approved.length > 0 && (
+  <section class="container-cr py-20" aria-label="Testimonials">
+    <ul class="grid gap-4 md:grid-cols-3">
+      {approved.map((t) => (
+        <li class="cr-card">
+          <blockquote>
+            <p>“{t.quote}”</p>
+          </blockquote>
+          <p class="mt-4 font-semibold">{t.name}</p>
+          <p class="text-cr-caption text-cr-muted">{t.role}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}

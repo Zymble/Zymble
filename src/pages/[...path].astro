@@ -1,0 +1,83 @@
+---
+/**
+ * Generates every page in every locale from src/config/routes.ts.
+ * Pages still marked 'soon' render the placeholder with noindex.
+ * When a phase ships a real page, give it its own template here (or its own
+ * file under src/pages/[...locale]/) and flip its status to 'live'.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ComingSoon from '@/components/pages/ComingSoon.astro';
+import ClipperPage from '@/components/pages/ClipperPage.astro';
+import ConfirmedPage from '@/components/pages/ConfirmedPage.astro';
+import EarlyAccessPage from '@/components/pages/EarlyAccessPage.astro';
+import HomePage from '@/components/pages/HomePage.astro';
+import StreamerPage from '@/components/pages/StreamerPage.astro';
+import {
+  defaultLocale,
+  locales,
+  routeIds,
+  routeStatus,
+  type Locale,
+  type RouteId,
+} from '@/config/routes';
+import { homeCopy } from '@/content/home';
+import { clipperCopy, streamerCopy } from '@/content/landings';
+import { waitlistCopy } from '@/content/waitlist';
+import { useTranslations } from '@/i18n/utils';
+
+export function getStaticPaths() {
+  return locales.flatMap((locale) =>
+    routeIds.map((id) => {
+      const segments = [locale === defaultLocale ? '' : locale, id === 'home' ? '' : id]
+        .filter(Boolean)
+        .join('/');
+      return { params: { path: segments || undefined }, props: { locale, id } };
+    }),
+  );
+}
+
+interface Props {
+  locale: Locale;
+  id: RouteId;
+}
+const { locale, id } = Astro.props;
+const { t, page } = useTranslations(locale);
+const status = routeStatus[id];
+const meta: Partial<Record<RouteId, { title: string; description: string }>> = {
+  home: { title: t('meta.home.title'), description: homeCopy[locale].meta.description },
+  streamers: streamerCopy[locale].meta,
+  clippers: clipperCopy[locale].meta,
+  'early-access': {
+    title: `${waitlistCopy[locale].page.title} — RushClippy`,
+    description: waitlistCopy[locale].page.lead,
+  },
+  'early-access/confirmed': {
+    title: `${waitlistCopy[locale].confirmed.title} — RushClippy`,
+    description: waitlistCopy[locale].confirmed.body,
+  },
+};
+const title = meta[id]?.title ?? `${page(id)} — RushClippy`;
+const description = meta[id]?.description ?? t('soon.body');
+---
+
+<BaseLayout
+  locale={locale}
+  routeId={id}
+  title={title}
+  description={description}
+  noindex={status !== 'live'}
+>
+  {id === 'home' ? (
+    <HomePage locale={locale} />
+  ) : id === 'streamers' ? (
+    <StreamerPage locale={locale} />
+  ) : id === 'clippers' ? (
+    <ClipperPage locale={locale} />
+  ) : id === 'early-access' ? (
+    <EarlyAccessPage locale={locale} />
+  ) : id === 'early-access/confirmed' ? (
+    <ConfirmedPage locale={locale} />
+  ) : (
+    <ComingSoon locale={locale} routeId={id} />
+  )}
+</BaseLayout>

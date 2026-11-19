@@ -1,0 +1,12 @@
+---
+import FaqBlock from '@/components/ui/FaqBlock.astro';
+import type { Locale } from '@/config/routes';
+import { homeCopy } from '@/content/home';
+
+interface Props {
+  locale: Locale;
+}
+const c = homeCopy[Astro.props.locale].faq;
+---
+
+<FaqBlock title={c.title} items={c.items} />
