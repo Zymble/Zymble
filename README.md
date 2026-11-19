@@ -43,3 +43,13 @@ The same steps run in GitHub Actions (`.github/workflows/ci.yml`) on every PR.
 
 `src/assets/fonts/InterVariable-latin.woff2` is a Latin subset of `brand/fonts/InterVariable.woff2`
 (SIL OFL 1.1, see `OFL.txt`). Regenerate with `scripts/subset-font.sh`.
+
+## Private preview on claude.ai (while there is no Vercel preview)
+
+```bash
+npm run build
+python3 scripts/preview-artifact.py .vercel/output/static /tmp/clipyrush-preview
+```
+
+Publishes-ready files: `index.html` (pt-br), `en.html`, `es.html` and their assets, with internal
+links to unfinished pages disabled and forms kept local.
